@@ -1,11 +1,14 @@
+import { Outlet } from 'react-router-dom';
+import Footer from './Components/Footer';
+import Header from './Components/Header';
 function App() {
-  const name = 'mayur'
   return (
-    <div>
-      <h1>Welcome to
-        the venture connect {name}</h1>
-    </div>
-  )
+    <>
+      <Header />
+      <Outlet />
+      <Footer />
+    </>
+  );
 }
 
-export default App
+export default App;
