@@ -1,7 +1,7 @@
 function EventCard() {
   return (
     <>
-      <div className="max-w-xs sm:max-w-sm md:max-w-md w-full min-h-96 rounded-lg shadow-lg mx-auto">
+      <div className="max-w-sm md:max-w-md w-full min-h-96 rounded-lg shadow-lg mx-auto">
 
         <div className="w-full h-60 overflow-hidden rounded-t-lg">
           <img
@@ -43,7 +43,7 @@ function EventCard() {
 
       </div>
 
-      <div className="max-w-xs sm:max-w-sm md:max-w-md w-full min-h-96 rounded-lg shadow-lg mx-auto">
+      <div className="max-w-sm md:max-w-md w-full min-h-96 rounded-lg shadow-lg mx-auto">
 
         <div className="w-full h-60 overflow-hidden rounded-t-lg">
           <img
@@ -85,7 +85,7 @@ function EventCard() {
 
       </div>
 
-      <div className="max-w-xs sm:max-w-sm md:max-w-md w-full min-h-96 rounded-lg shadow-lg mx-auto">
+      <div className="max-w-sm md:max-w-md w-full min-h-96 rounded-lg shadow-lg mx-auto">
 
         <div className="w-full h-60 overflow-hidden rounded-t-lg">
           <img
