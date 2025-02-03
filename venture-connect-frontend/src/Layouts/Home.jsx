@@ -1,22 +1,22 @@
-import React from 'react';
+import { faBolt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Home = () => {
   return (
-    <section className="flex flex-col items-center justify-center text-center px-6 py-16 mt-20 md:mt-32">
-      <button className="px-5 py-2 text-sm md:text-base border border-black rounded-full">
+    <section className="flex flex-col items-center justify-center text-center px-6 py-12 mt-20 md:mt-32">
+      <div className="px-5 py-1 text-sm inline-block mx-auto font-normal md:text-xl border border-black rounded-full">
         Build, Fund, Grow.
-      </button>
-      <h2 className="mt-4 text-3xl md:text-5xl lg:text-6xl font-bold leading-tight">
-        Connecting <span className="text-blue-600">Startups</span> with{' '}
-        <span className="text-black">Investors</span>
-      </h2>
-      <p className="mt-4 text-gray-500 max-w-lg md:max-w-2xl text-sm md:text-lg">
+      </div>
+      <p className="text-3xl md:text-5xl lg:text-7xl font-bold mt-8 leading-tight">
+        Connecting <span className="text-blue-500">Startups</span><br /> with Investors
+      </p>
+      <p className="md:mt-6 mt-4 text-neutral-400 font-normal text-lg md:text-xl">
         Venture Connect bridges the gap between innovation and funding. Build
-        connections, find mentorship, and unlock opportunities to scale your
+        connections, find mentorship, and unlock <br /> opportunities to scale your
         vision.
       </p>
-      <button className="mt-6 px-6 py-3 bg-blue-600 text-white text-lg md:text-xl rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400">
-        ⚡ Join Us — It’s Free
+      <button className="font-sarabun mt-10 px-7 py-2 bg-blue-500 text-white text-lg md:text-lg rounded-lg hover:bg-blue-600 shadow-xl">
+        <FontAwesomeIcon icon={faBolt} size="xs" style={{ color: "#ffffff", }} />   Join Us – It’s Free
       </button>
     </section>
   );
