@@ -6,7 +6,7 @@ const Signup = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-6 mt-[40px]">
       <div className="bg-white shadow-lg rounded-2xl p-8 flex flex-col md:flex-row max-w-4xl w-full">
         {/* Left Section - Form */}
-        <div className="md:w-1/2 w-full md:pr-6">
+        <div className="md:w-1/2 w-full md:pr-6 md:order-1 order-2">
           <h2 className="text-3xl font-bold text-gray-900">
             Where <span className="text-blue-500">Innovation</span> Meets{' '}
             <span className="text-blue-600">Investment</span>
@@ -63,11 +63,11 @@ const Signup = () => {
         </div>
 
         {/* Right Section - Illustration */}
-        <div className="md:w-1/2 w-full flex items-center justify-center p-6">
+        <div className="md:w-1/2 w-full flex items-center justify-center p-6 md:order-2 order-1">
           <img
             src={signupImage}
             alt="Signup Illustration"
-            className="w-full h-auto object-cover rounded-2xl"
+            className="w-full min-h-full object-cover rounded-2xl hidden sm:block"
           />
         </div>
       </div>

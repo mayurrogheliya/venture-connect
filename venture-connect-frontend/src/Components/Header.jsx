@@ -27,7 +27,9 @@ const Header = () => {
         {/* Desktop Buttons */}
         <div className="hidden md:flex space-x-4">
           <Link to="/signin">
-            <button className="text-gray-600 hover:text-black">Sign in</button>
+            <button className="px-4 py-2 text-gray-600 hover:text-black">
+              Sign in
+            </button>
           </Link>
           <Link to="/signup">
             <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
