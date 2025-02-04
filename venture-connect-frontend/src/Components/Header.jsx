@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,10 +26,14 @@ const Header = () => {
 
         {/* Desktop Buttons */}
         <div className="hidden md:flex space-x-4">
-          <button className="text-gray-600 hover:text-black">Sign in</button>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-            Signup
-          </button>
+          <Link to="/signin">
+            <button className="text-gray-600 hover:text-black">Sign in</button>
+          </Link>
+          <Link to="/signup">
+            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+              Signup
+            </button>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
