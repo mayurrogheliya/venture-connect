@@ -1,18 +1,37 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <nav className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
-      <div className="max-w-7xl w-full mx-auto px-6 py-4 flex justify-between items-center">
+    <nav className="fixed top-0 left-0 w-full z-50 p-5 md:py-8">
+      <div className={`max-w-7xl w-full mx-auto px-6 py-4 flex justify-between items-center rounded-full bg-white shadow-sm transition-all duration-300 ease-in-out ${isScrolled ? 'backdrop-blur-md bg-white/70 shadow-md' : 'bg-white shadow-sm'}`}>
         {/* Logo */}
-        <h1 className="text-lg font-semibold">Venture Connect</h1>
+        <div className='flex items-center gap-5'>
+          <div className='object-fill w-10 h-10 rounded-full bg-gray-300 '>
+            {/* <img src={Rocket} alt="logo" /> */}
+          </div>
+          <h1 className="text-lg font-semibold">Venture Connect</h1>
+        </div>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-6">
+        <div className="hidden md:flex space-x-10 items-center">
           <a href="#" className="text-gray-600 hover:text-black">
             Home
           </a>
@@ -22,21 +41,20 @@ const Header = () => {
           <a href="#" className="text-gray-600 hover:text-black">
             Events
           </a>
+          <div>
+            <Link to="/signin">
+              <button className="pe-8 py-2 text-gray-600 hover:text-black">
+                Sign in
+              </button>
+            </Link>
+            <Link to="/signup">
+              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Signup
+              </button>
+            </Link>
+          </div>
         </div>
 
-        {/* Desktop Buttons */}
-        <div className="hidden md:flex space-x-4">
-          <Link to="/signin">
-            <button className="px-4 py-2 text-gray-600 hover:text-black">
-              Sign in
-            </button>
-          </Link>
-          <Link to="/signup">
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-              Signup
-            </button>
-          </Link>
-        </div>
 
         {/* Mobile Menu Button */}
         <button
@@ -49,12 +67,13 @@ const Header = () => {
 
       {/* Mobile Menu with Smooth Transition */}
       <div
-        className={`fixed top-16 left-0 w-full bg-white shadow-md flex flex-col items-center space-y-4 py-4 origin-top transform transition-all duration-300 ease-in-out md:hidden ${
-          isOpen
-            ? 'scale-y-100 opacity-100'
-            : 'scale-y-0 opacity-0 pointer-events-none'
-        }`}
+        className={`fixed top-24 w-[90%] rounded-md backdrop-blur-md bg-white/70 shadow-md flex flex-col items-center space-y-4 py-4 origin-top transform transition-all duration-300 ease-in-out md:hidden ${isOpen
+          ? 'scale-y-100 opacity-100'
+          : 'scale-y-0 opacity-0 pointer-events-none'
+          }`}
       >
+
+
         <a
           href="#"
           className="text-gray-600 hover:text-black"
