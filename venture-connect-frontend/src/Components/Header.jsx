@@ -21,8 +21,8 @@ const Header = () => {
   }, []);
 
   const scrollToSection = (id) => {
-    if (location.pathname !== "/") {
-      navigate("/", { replace: true });
+    if (location.pathname !== '/') {
+      navigate('/', { replace: true });
 
       setTimeout(() => {
         const section = document.getElementById(id);
@@ -30,21 +30,22 @@ const Header = () => {
           section.scrollIntoView({ behavior: 'smooth' });
         }
       }, 100);
-    }
-    else {
+    } else {
       const section = document.getElementById(id);
       if (section) {
         section.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }
+  };
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 p-5 md:py-8">
-      <div className={`max-w-7xl w-full mx-auto px-6 py-4 flex justify-between items-center rounded-full bg-white shadow-sm transition-all duration-300 ease-in-out ${isScrolled ? 'backdrop-blur-md bg-white/70 shadow-md' : 'bg-white shadow-sm'}`}>
+      <div
+        className={`max-w-7xl w-full mx-auto px-6 py-4 flex justify-between items-center rounded-full bg-white shadow-sm transition-all duration-300 ease-in-out ${isScrolled ? 'backdrop-blur-md bg-white/70 shadow-md' : 'bg-white shadow-sm'}`}
+      >
         {/* Logo */}
-        <div className='flex items-center gap-5'>
-          <div className='object-fill w-10 h-10 rounded-full bg-gray-300 '>
+        <div className="flex items-center gap-5">
+          <div className="object-fill w-10 h-10 rounded-full bg-gray-300 ">
             {/* <img src={Rocket} alt="logo" /> */}
           </div>
           <h1 className="text-lg font-semibold">Venture Connect</h1>
@@ -52,29 +53,50 @@ const Header = () => {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-10 items-center">
-          <button onClick={() => scrollToSection('home')} className="text-gray-600 hover:text-black">
+          <button
+            onClick={() => scrollToSection('home')}
+            className="text-gray-600 hover:text-black"
+          >
             Home
           </button>
-          <button onClick={() => scrollToSection('features')} className="text-gray-600 hover:text-black">
+          <button
+            onClick={() => scrollToSection('features')}
+            className="text-gray-600 hover:text-black"
+          >
             Features
           </button>
-          <button onClick={() => scrollToSection('events')} className="text-gray-600 hover:text-black">
+          <button
+            onClick={() => scrollToSection('events')}
+            className="text-gray-600 hover:text-black"
+          >
             Events
           </button>
           <div>
-            <Link to="/signin">
+            <Link
+              to="/signin"
+              onClick={() => {
+                setIsOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            >
               <button className="pe-8 py-2 text-gray-600 hover:text-black">
                 Sign in
               </button>
             </Link>
-            <Link to="/signup">
+
+            <Link
+              to="/signup"
+              onClick={() => {
+                setIsOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            >
               <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                 Signup
               </button>
             </Link>
           </div>
         </div>
-
 
         {/* Mobile Menu Button */}
         <button
@@ -87,18 +109,17 @@ const Header = () => {
 
       {/* Mobile Menu with Smooth Transition */}
       <div
-        className={`fixed top-24 w-[90%] rounded-md backdrop-blur-md bg-white/70 shadow-md flex flex-col items-center space-y-4 py-4 origin-top transform transition-all duration-300 ease-in-out md:hidden ${isOpen
-          ? 'scale-y-100 opacity-100'
-          : 'scale-y-0 opacity-0 pointer-events-none'
-          }`}
+        className={`fixed top-24 w-[90%] rounded-md backdrop-blur-md bg-white/70 shadow-md flex flex-col items-center space-y-4 py-4 origin-top transform transition-all duration-300 ease-in-out md:hidden ${
+          isOpen
+            ? 'scale-y-100 opacity-100'
+            : 'scale-y-0 opacity-0 pointer-events-none'
+        }`}
       >
-
-
         <button
           className="text-gray-600 hover:text-black"
           onClick={() => {
-            scrollToSection('home')
-            setIsOpen(false)
+            scrollToSection('home');
+            setIsOpen(false);
           }}
         >
           Home
@@ -106,8 +127,8 @@ const Header = () => {
         <button
           className="text-gray-600 hover:text-black"
           onClick={() => {
-            scrollToSection('features')
-            setIsOpen(false)
+            scrollToSection('features');
+            setIsOpen(false);
           }}
         >
           Features
@@ -115,19 +136,21 @@ const Header = () => {
         <button
           className="text-gray-600 hover:text-black"
           onClick={() => {
-            scrollToSection('events')
-            setIsOpen(false)
+            scrollToSection('events');
+            setIsOpen(false);
           }}
         >
           Events
         </button>
-        <Link to="/signin"
+        <Link
+          to="/signin"
           className="text-gray-600 hover:text-black"
           onClick={() => setIsOpen(false)}
         >
           Sign in
         </Link>
-        <Link to="/signup"
+        <Link
+          to="/signup"
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           onClick={() => setIsOpen(false)}
         >

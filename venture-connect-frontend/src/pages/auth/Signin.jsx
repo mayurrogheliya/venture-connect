@@ -3,8 +3,8 @@ import signupImage from '../../assets/images/signupSIdeImage.png';
 
 const Signin = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 sm:p-6">
-      <div className="bg-white shadow-lg rounded-2xl p-6 sm:p-10 flex flex-col sm:flex-row max-w-4xl w-full">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 sm:p-6 ">
+      <div className="bg-white shadow-lg rounded-2xl p-6 sm:p-10 flex flex-col sm:flex-row max-w-4xl w-full mt-[90px]">
         {/* Left Section - Form */}
         <div className="sm:w-1/2 w-full sm:pr-8 flex flex-col justify-center order-2 sm:order-1 max-w-xs sm:max-w-sm mx-auto">
           <form className="mt-6 space-y-4 sm:space-y-6">

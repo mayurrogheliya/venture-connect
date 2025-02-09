@@ -1,7 +1,7 @@
 import EventMain from '../components/EventMain/EventMain';
 import FeatureMain from '../components/FeatureMain/FeatureMain';
 import GuideStepMain from '../components/GuideStep/GuideStepMain';
-import LandingHome from '../components/LandingHome';
+import LandingHome from '../Components/LandingHome';
 
 function Landing() {
   return (
