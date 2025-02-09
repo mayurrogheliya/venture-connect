@@ -41,7 +41,7 @@ const Header = () => {
   return (
     <nav className="fixed top-0 left-0 w-full z-50 p-5 md:py-8">
       <div
-        className={`max-w-7xl w-full mx-auto px-6 py-4 flex justify-between items-center rounded-full bg-white shadow-sm transition-all duration-300 ease-in-out ${isScrolled ? 'backdrop-blur-md bg-white/70 shadow-md' : 'bg-white shadow-sm'}`}
+        className={`max-w-7xl w-full mx-auto px-6 py-4 flex justify-between items-center rounded-full border border-gray-100/75 bg-white shadow-sm transition-all duration-300 ease-in-out ${isScrolled ? 'backdrop-blur-md bg-white/70 shadow-md' : 'bg-white shadow-sm'}`}
       >
         {/* Logo */}
         <div className="flex items-center gap-5">
