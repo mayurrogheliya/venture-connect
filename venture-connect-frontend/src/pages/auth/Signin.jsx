@@ -1,6 +1,5 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import signupImage from '../assets/images/signupSIdeImage.png';
+import signupImage from '../../assets/images/signupSIdeImage.png';
 
 const Signin = () => {
   return (
