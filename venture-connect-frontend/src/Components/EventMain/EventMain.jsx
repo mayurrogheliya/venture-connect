@@ -5,7 +5,7 @@ import { faBolt } from "@fortawesome/free-solid-svg-icons"
 function EventMain() {
     return (
         <>
-            <div className="flex justify-center flex-col items-center text-center px-10 py-4 mt-24">
+            <div className="flex justify-center flex-col items-center text-center px-10 py-4 mt-24" id="events">
                 <div className="px-5 py-1 text-sm inline-block mx-auto font-normal md:text-xl border border-black rounded-full">
                     Upcoming Networking Events
                 </div>

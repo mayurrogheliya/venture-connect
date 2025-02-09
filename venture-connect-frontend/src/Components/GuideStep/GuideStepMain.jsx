@@ -29,7 +29,7 @@ function GuideStepMain() {
     ]
     return (
         <>
-            <div className="flex justify-center flex-col items-center text-center px-10 py-4 mt-24" id="features">
+            <div className="flex justify-center flex-col items-center text-center px-10 py-4 mt-24">
                 <div className="px-5 py-1 text-sm inline-block mx-auto font-normal md:text-xl border border-black rounded-full">
                     Simple. Fast. Effective
                 </div>
