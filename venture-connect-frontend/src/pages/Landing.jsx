@@ -1,12 +1,12 @@
 import EventMain from '../components/EventMain/EventMain';
 import FeatureMain from '../components/FeatureMain/FeatureMain';
 import GuideStepMain from '../components/GuideStep/GuideStepMain';
-import Home from '../Layouts/Home';
+import LandingHome from '../components/LandingHome';
 
 function Landing() {
   return (
     <div>
-      <Home />
+      <LandingHome />
       <FeatureMain />
       <GuideStepMain />
       <EventMain />
