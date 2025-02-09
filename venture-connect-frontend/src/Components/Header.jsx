@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +20,25 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const scrollToSection = (id) => {
+    if (location.pathname !== "/") {
+      navigate("/", { replace: true });
+
+      setTimeout(() => {
+        const section = document.getElementById(id);
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+    else {
+      const section = document.getElementById(id);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }
+
   return (
     <nav className="fixed top-0 left-0 w-full z-50 p-5 md:py-8">
       <div className={`max-w-7xl w-full mx-auto px-6 py-4 flex justify-between items-center rounded-full bg-white shadow-sm transition-all duration-300 ease-in-out ${isScrolled ? 'backdrop-blur-md bg-white/70 shadow-md' : 'bg-white shadow-sm'}`}>
@@ -32,15 +52,15 @@ const Header = () => {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-10 items-center">
-          <a href="#" className="text-gray-600 hover:text-black">
+          <button onClick={() => scrollToSection('home')} className="text-gray-600 hover:text-black">
             Home
-          </a>
-          <a href="#" className="text-gray-600 hover:text-black">
+          </button>
+          <button onClick={() => scrollToSection('features')} className="text-gray-600 hover:text-black">
             Features
-          </a>
-          <a href="#" className="text-gray-600 hover:text-black">
+          </button>
+          <button onClick={() => scrollToSection('events')} className="text-gray-600 hover:text-black">
             Events
-          </a>
+          </button>
           <div>
             <Link to="/signin">
               <button className="pe-8 py-2 text-gray-600 hover:text-black">
@@ -74,39 +94,45 @@ const Header = () => {
       >
 
 
-        <a
-          href="#"
+        <button
           className="text-gray-600 hover:text-black"
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            scrollToSection('home')
+            setIsOpen(false)
+          }}
         >
           Home
-        </a>
-        <a
-          href="#"
+        </button>
+        <button
           className="text-gray-600 hover:text-black"
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            scrollToSection('features')
+            setIsOpen(false)
+          }}
         >
           Features
-        </a>
-        <a
-          href="#"
+        </button>
+        <button
           className="text-gray-600 hover:text-black"
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            scrollToSection('events')
+            setIsOpen(false)
+          }}
         >
           Events
-        </a>
-        <button
+        </button>
+        <Link to="/signin"
           className="text-gray-600 hover:text-black"
           onClick={() => setIsOpen(false)}
         >
           Sign in
-        </button>
-        <button
+        </Link>
+        <Link to="/signup"
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           onClick={() => setIsOpen(false)}
         >
           Signup
-        </button>
+        </Link>
       </div>
     </nav>
   );
