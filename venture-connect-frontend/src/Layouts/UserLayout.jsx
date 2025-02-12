@@ -47,7 +47,7 @@ const UserLayout = () => {
       </div>
 
       <aside
-        className={`fixed inset-y-0 left-0 md:w-60 overflow-y-auto bg-white shadow-lg z-30 lg:relative lg:w-72 w-60 flex flex-col h-screen transform transition-transform duration-300 ${
+        className={`fixed inset-y-0 left-0 md:w-60 overflow-y-auto bg-white shadow-lg z-30 lg:relative lg:w-64 w-60 flex flex-col h-screen transform transition-transform duration-300 ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } md:translate-x-0 md:block`}
       >
@@ -151,13 +151,13 @@ const UserLayout = () => {
         />
       )}
 
-      <main className="flex-1 bg-white overflow-y-auto md:ml-60 lg:ml-0 md:mt-0">
+      <main className="flex-1 bg-neutral-50 overflow-y-auto md:ml-60 lg:ml-0 md:mt-0">
         <div className="hidden fixed h-15 shadow-sm bg-white md:flex items-center justify-end pe-7 right-0 w-full">
           <Dropdown menu={{ items }} trigger={['click']} arrow>
             <Avatar size={50} src={DefaultUser} className="cursor-pointer" />
           </Dropdown>
         </div>
-        <div className="mt-12 p-2">
+        <div className="mt-24 mb-10 px-10 p-2">
           <Outlet />
         </div>
       </main>

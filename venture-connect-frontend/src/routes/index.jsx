@@ -10,6 +10,7 @@ import Signin from '../pages/auth/Signin';
 import Signup from '../pages/auth/Signup';
 import UserLayout from '../Layouts/UserLayout';
 import ProtectedRoute from './ProtectedRoute';
+import StartupsHub from '../pages/StartupsHub';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -21,7 +22,7 @@ const router = createBrowserRouter(
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route element={<UserLayout />}>
-          <Route path="/startups-hub" element={<Landing />} />
+          <Route path="/startups-hub" element={<StartupsHub />} />
         </Route>
       </Route>
     </Route>,
