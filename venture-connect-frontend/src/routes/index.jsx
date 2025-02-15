@@ -11,6 +11,7 @@ import Signup from '../pages/auth/Signup';
 import UserLayout from '../Layouts/UserLayout';
 import ProtectedRoute from './ProtectedRoute';
 import StartupsHub from '../pages/StartupsHub';
+import InvestorNetwork from '../pages/InvestorNetwork';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,6 +24,7 @@ const router = createBrowserRouter(
       <Route element={<ProtectedRoute />}>
         <Route element={<UserLayout />}>
           <Route path="/startups-hub" element={<StartupsHub />} />
+          <Route path="/investor-network" element={<InvestorNetwork />} />
         </Route>
       </Route>
     </Route>,
