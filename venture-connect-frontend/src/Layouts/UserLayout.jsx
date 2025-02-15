@@ -84,7 +84,7 @@ const UserLayout = () => {
                 Startups Hub
               </NavLink>
               <NavLink
-                to="/"
+                to="/investor-network"
                 onClick={toggleSidebar}
                 className={({ isActive }) =>
                   `flex items-center gap-3 py-2 px-4 rounded ${
@@ -150,14 +150,16 @@ const UserLayout = () => {
           onClick={toggleSidebar}
         />
       )}
-
       <main className="flex-1 bg-neutral-50 overflow-y-auto md:ml-60 lg:ml-0 md:mt-0">
-        <div className="hidden fixed h-15 shadow-sm bg-white md:flex items-center justify-end pe-7 right-0 w-full">
+        {/* Fixed Navigation Bar */}
+        <div className="hidden md:flex fixed top-0 left-0 w-full h-15 shadow-md bg-white items-center justify-end px-6 z-10">
           <Dropdown menu={{ items }} trigger={['click']} arrow>
             <Avatar size={50} src={DefaultUser} className="cursor-pointer" />
           </Dropdown>
         </div>
-        <div className="mt-24 mb-10 px-10 p-2">
+
+        {/* Page Content */}
+        <div className="mt-20 mb-10 px-10 p-2">
           <Outlet />
         </div>
       </main>

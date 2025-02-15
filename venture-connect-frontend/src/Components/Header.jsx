@@ -76,7 +76,7 @@ const Header = () => {
               to="/signin"
               onClick={() => {
                 setIsOpen(false);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: 'instant' });
               }}
             >
               <button className="pe-8 py-2 text-gray-600 hover:text-black">
@@ -88,7 +88,7 @@ const Header = () => {
               to="/signup"
               onClick={() => {
                 setIsOpen(false);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: 'instant' });
               }}
             >
               <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
