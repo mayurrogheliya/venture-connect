@@ -159,7 +159,7 @@ const UserLayout = () => {
         </div>
 
         {/* Page Content */}
-        <div className="mt-20 mb-10 px-10 p-2">
+        <div className="md:mt-20 mt-14 mb-10 lg:px-8 md:px-7 px-5 p-2">
           <Outlet />
         </div>
       </main>
