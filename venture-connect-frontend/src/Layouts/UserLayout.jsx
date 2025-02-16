@@ -89,7 +89,7 @@ const UserLayout = () => {
                 className={({ isActive }) =>
                   `flex items-center gap-3 py-2 px-4 rounded ${
                     isActive
-                      ? 'bg-sky-700 text-white'
+                      ? 'text-blue-500'
                       : 'text-gray-700 hover:bg-gray-100'
                   } transition-colors duration-200 font-semibold`
                 }
@@ -103,7 +103,7 @@ const UserLayout = () => {
                 className={({ isActive }) =>
                   `flex items-center gap-3 py-2 px-4 rounded ${
                     isActive
-                      ? 'bg-sky-700 text-white'
+                      ? 'text-blue-500'
                       : 'text-gray-700 hover:bg-gray-100'
                   } transition-colors duration-200 font-semibold`
                 }
@@ -117,7 +117,7 @@ const UserLayout = () => {
                 className={({ isActive }) =>
                   `flex items-center gap-3 py-2 px-4 rounded ${
                     isActive
-                      ? 'bg-sky-700 text-white'
+                      ? 'text-blue-500'
                       : 'text-gray-700 hover:bg-gray-100'
                   } transition-colors duration-200 font-semibold`
                 }
@@ -131,7 +131,7 @@ const UserLayout = () => {
                 className={({ isActive }) =>
                   `flex items-center gap-3 py-2 px-4 rounded ${
                     isActive
-                      ? 'bg-sky-700 text-white'
+                      ? 'text-blue-500'
                       : 'text-gray-700 hover:bg-gray-100'
                   } transition-colors duration-200 font-semibold`
                 }
