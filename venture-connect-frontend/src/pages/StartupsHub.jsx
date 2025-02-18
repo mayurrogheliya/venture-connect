@@ -8,7 +8,7 @@ const StartupsHub = () => {
     <>
       <div className="space-y-2">
         <h1 className="text-4xl font-bold">
-          Descover <span className="text-blue-500">Right Investors</span>
+          Descover <span className="text-blue-500">Startups</span>
         </h1>
         <p className="text-lg text-gray-500 font-normal">
           Discover and connect with innovative Startups
@@ -33,16 +33,16 @@ const StartupsHub = () => {
 
       <div className="flex gap-6 items-center text-gray-600 break-words">
         <p className="text-lg">
-          <span className="text-blue-500 text-xl font-bold">200+ </span>Active
+          <span className="text-blue-500 text-xl font-bold">200+ </span>
           Opportunities
         </p>
         <p className="text-lg">
-          <span className="text-blue-500 text-xl font-bold">50K+ </span>Total
-          Investment
+          <span className="text-blue-500 text-xl font-bold">50K+ </span>
+          Investors
         </p>
         <p className="text-lg">
           <span className="text-blue-500 text-xl font-bold">1000+ </span>
-          Startups Funded
+          Startups
         </p>
       </div>
 

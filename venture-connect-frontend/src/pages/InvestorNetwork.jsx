@@ -28,32 +28,45 @@ const investors = [
 
 const InvestorNetwork = () => {
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Search & Filter Bar */}
-      <div className="flex flex-wrap items-center gap-4">
+    <div className="space-y-2">
+    <h1 className="text-4xl font-bold">
+      Discover Right{' '}
+      <span className="text-blue-500">Investors</span>
+    </h1>
+    <p className="text-lg text-gray-500 font-normal">
+    Discover investors who align with your vision and take your startup to the next level.
+    </p>
+
+
+    <div className="flex flex-wrap items-center gap-4 my-5">
         <Input
-          placeholder="Search Investors"
-          prefix={<SearchOutlined className="text-gray-500" />}
+          placeholder="Search Investors..."
+          prefix={<SearchOutlined className="text-gray-500 px-1 pe-1.5" />}
           allowClear
-          className="flex-1 rounded-lg h-10 bg-gray-100"
+          className="flex-1 min-w-md rounded-lg h-10 bg-gray-100"
         />
         <Button
           icon={<FilterOutlined className="text-gray-700" />}
-          className="rounded-full h-10 bg-white border-gray-300 font-medium min-w-[100px]"
+          className="flex-0 rounded-full h-10 bg-white border-gray-300 font-medium"
+          size="large"
         >
-          Filter
+          Filters
         </Button>
       </div>
 
-      {/* Heading Section */}
-      <div className="text-center mt-8">
-        <Title level={3} className="!text-xl sm:!text-2xl font-semibold">
-          Discover <span className="text-blue-600">Right Investors</span>
-        </Title>
-        <Text className="block text-gray-600 text-base sm:text-lg">
-          Discover investors who align with your vision and take your startup to
-          the next level.
-        </Text>
+      <div className="flex gap-6 items-center text-gray-600 break-words">
+        <p className="text-lg">
+          <span className="text-blue-500 text-xl font-bold">200+ </span>
+          Opportunities
+        </p>
+        <p className="text-lg">
+          <span className="text-blue-500 text-xl font-bold">50K+ </span>
+          Investors
+        </p>
+        <p className="text-lg">
+          <span className="text-blue-500 text-xl font-bold">1000+ </span>
+          Startups
+        </p>
       </div>
 
       {/* Investor Cards with Proper Spacing */}
