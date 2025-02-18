@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
+import logo from '../assets/images/logo2.png';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,8 +46,8 @@ const Header = () => {
       >
         {/* Logo */}
         <div className="flex items-center gap-5">
-          <div className="object-fill w-10 h-10 rounded-full bg-gray-300 ">
-            {/* <img src={Rocket} alt="logo" /> */}
+          <div className="object-fill w-10 h-12 rounded-full ">
+             <img src={logo} alt="logo"  className="w-full h-full object-cover" /> 
           </div>
           <h1 className="text-lg font-semibold">Venture Connect</h1>
         </div>
