@@ -5,7 +5,6 @@ import {
   faRocket,
   faUserGroup,
   faLightbulb,
-  faMessage,
   faBookmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
@@ -111,20 +110,7 @@ const UserLayout = () => {
                 <FontAwesomeIcon icon={faLightbulb} />
                 Opportunities
               </NavLink>
-              <NavLink
-                to="/"
-                onClick={toggleSidebar}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 py-2 px-4 rounded ${
-                    isActive
-                      ? 'text-blue-500'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  } transition-colors duration-200 font-semibold`
-                }
-              >
-                <FontAwesomeIcon icon={faMessage} />
-                Messages
-              </NavLink>
+              
               <NavLink
                 to="/"
                 onClick={toggleSidebar}
