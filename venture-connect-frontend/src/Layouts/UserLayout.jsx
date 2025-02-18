@@ -98,7 +98,7 @@ const UserLayout = () => {
                 Investor Network
               </NavLink>
               <NavLink
-                to="/"
+                to="/startup-opportunities"
                 onClick={toggleSidebar}
                 className={({ isActive }) =>
                   `flex items-center gap-3 py-2 px-4 rounded ${
