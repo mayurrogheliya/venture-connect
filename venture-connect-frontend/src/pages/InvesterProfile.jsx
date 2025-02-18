@@ -6,7 +6,6 @@ const InvestorProfile = () => {
   return (
     <div className="flex min-h-screen p-6 flex-col items-center">
       <div className="w-full max-w-5xl space-y-6 ">
-        {/* Profile Card */}
         <Card className="rounded-xl p-6 bg-white mb-6">
           <div className="flex flex-col md:flex-row items-center gap-6">
             <Avatar size={90} icon={<UserOutlined />} className="bg-blue-500" />
