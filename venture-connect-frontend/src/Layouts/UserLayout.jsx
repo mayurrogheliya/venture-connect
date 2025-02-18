@@ -36,9 +36,9 @@ const UserLayout = () => {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <div className="absolute md:hidden bg-slate-300/15 h-min w-full flex justify-end items-center px-2 py-2 shadow-sm">
+      <div className="absolute md:hidden z-30 bg-gray-50 h-min w-full flex justify-end items-center px-2 py-2 shadow-sm">
         <button
-          className="size-fit float-end z-20 bg-gray-200 py-1 px-3 rounded-md hover:ring-1 hover:ring-black"
+          className="size-fit float-end z-0 bg-gray-200 py-1 px-3 rounded-md hover:ring-1 hover:ring-black"
           onClick={toggleSidebar}
         >
           <FontAwesomeIcon icon={faBars} />
