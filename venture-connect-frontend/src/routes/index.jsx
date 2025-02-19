@@ -13,6 +13,7 @@ import ProtectedRoute from './ProtectedRoute';
 import StartupsHub from '../pages/StartupsHub';
 import InvestorNetwork from '../pages/InvestorNetwork';
 import StartupOpportunities from '../pages/StartupOpportunities';
+import BookmarkedStartups from '../pages/BookMarks';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,6 +30,10 @@ const router = createBrowserRouter(
           <Route
             path="/startup-opportunities"
             element={<StartupOpportunities />}
+          />
+          <Route
+            path="/bookmarks"
+            element={<BookmarkedStartups />}
           />
         </Route>
       </Route>
