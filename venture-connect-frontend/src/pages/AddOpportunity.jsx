@@ -40,27 +40,78 @@ const AddOpportunity = () => {
           </div>
           <div className="flex flex-col justify-center">
             <Upload beforeUpload={handleUpload} showUploadList={false}>
-              <Button icon={<UploadOutlined />}>Upload Cover Image</Button>
+              <Button
+                icon={<UploadOutlined />}
+                className="border-blue-500 text-blue-500 flex items-center gap-2 px-4 py-2 rounded-md"
+              >
+                Upload Cover Image
+              </Button>
             </Upload>
           </div>
         </div>
 
-        {/* Form Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Input placeholder="Enter Opportunity Name" />
-          <Select placeholder="Select stage">
-            <Option value="seed">Seed</Option>
-            <Option value="series-a">Series A</Option>
-          </Select>
-          <Input placeholder="Choose industry or domain" />
-          <Slider range min={0} max={1000} defaultValue={[100, 500]} />
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Opportunity Name
+            </label>
+            <Input
+              placeholder="Enter Opportunity Name"
+              className="rounded-md"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Preferred Startup Stage
+            </label>
+            <Select placeholder="Select stage" className="w-full rounded-md">
+              <Option value="seed">Seed</Option>
+              <Option value="series-a">Series A</Option>
+              <Option value="series-b">Series B</Option>
+            </Select>
+          </div>
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Investment Domain
+            </label>
+            <Input
+              placeholder="Choose industry or domain"
+              className="rounded-md"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Investment Range
+            </label>
+            <Slider
+              range
+              min={0}
+              max={1000}
+              defaultValue={[100, 500]}
+              className="mt-2"
+            />
+          </div>
         </div>
 
-        <Input.TextArea rows={4} placeholder="Enter brief description" />
+        <div className="mt-6">
+          <label className="block text-gray-700 font-medium mb-2">
+            Brief Description
+          </label>
+          <Input.TextArea
+            rows={4}
+            placeholder="Enter brief description"
+            className="rounded-md"
+          />
+        </div>
 
-        <Button type="primary" className="mt-4">
-          Add Opportunity
-        </Button>
+        <div className="mt-8 text-center">
+          <Button
+            type="primary"
+            className="bg-blue-500 px-6 py-2 rounded-md text-white"
+          >
+            Add Opportunity
+          </Button>
+        </div>
       </Card>
     </div>
   );
