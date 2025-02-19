@@ -1,8 +1,8 @@
 import { Navigate, Outlet } from 'react-router-dom';
 
 const ProtectedRoute = () => {
-  let checked = false;
-  if (checked) {
+  let isAuthenticated = false;
+  if (isAuthenticated) {
     return <Navigate to="/signin" replace />;
   }
 
