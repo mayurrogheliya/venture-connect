@@ -1,94 +1,140 @@
 import React from 'react';
-import { Card, Avatar, Button } from 'antd';
+import { Card, Avatar, Button, Tag, Statistic } from 'antd';
 import {
-  UserOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  EnvironmentOutlined,
+  CheckCircleOutlined,
+  GlobalOutlined,
+  UsergroupAddOutlined,
+  ClockCircleOutlined,
+  FundOutlined,
   LinkedinOutlined,
-  HomeOutlined,
 } from '@ant-design/icons';
+import 'antd/dist/reset.css';
 
 const InvestorProfile = () => {
   return (
-    <div className="flex min-h-screen p-6 flex-col items-center">
-      <div className="w-full max-w-5xl space-y-6 ">
+    <div className="p-6  min-h-screen flex justify-center">
+      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Profile Card */}
-        <Card className="rounded-xl p-6 bg-white mb-6">
-          <div className="flex flex-col md:flex-row items-center gap-6">
-            <Avatar size={90} icon={<UserOutlined />} className="bg-blue-500" />
-            <div className="text-center md:text-left flex-1">
-              <h2 className="text-2xl font-semibold text-gray-900">
-                Dhruv Burada
-              </h2>
-              <p className="text-gray-500 text-lg">Angel Investor</p>
-              <p className="text-gray-400">Rajkot, Gujarat, India</p>
-            </div>
-            <Button
-              type="primary"
-              icon={<LinkedinOutlined />}
-              className="rounded-lg px-4 py-2"
-            >
+        <Card className="md:col-span-1 text-center">
+          <Avatar size={100} src="https://via.placeholder.com/100" />
+          <h2 className="mt-2 text-xl font-semibold">
+            Dhruv Burada <CheckCircleOutlined className="text-blue-500" />
+          </h2>
+          <p className="text-gray-500 flex items-center justify-center gap-1">
+            <EnvironmentOutlined /> Rajkot, GUJ, India
+          </p>
+          <Tag color="blue" className="mt-2">
+            Venture Capitalist
+          </Tag>
+          <div className="mt-3">
+            <Button type="primary" icon={<LinkedinOutlined />}>
               Connect
             </Button>
           </div>
+          <div className="mt-2 flex justify-center gap-3">
+            <GlobalOutlined className="text-lg cursor-pointer" />
+          </div>
         </Card>
 
-        {/* Personal Information */}
-        <Card className="rounded-xl p-6 bg-white mb-6">
-          <h3 className="text-xl font-semibold mb-3 text-gray-800">
-            Personal Information
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Contact Information & Investment Statistics */}
+        <div className="md:col-span-2 space-y-4">
+          <Card className="p-4">
+            <h3 className="font-semibold">Contact Information</h3>
             <p>
-              <strong>First Name:</strong> Dhruv
+              <MailOutlined /> buradadhruv35@gmail.com
             </p>
             <p>
-              <strong>Last Name:</strong> Burada
+              <PhoneOutlined /> +91 8488997323
             </p>
-          </div>
-          <p className="text-gray-600 mt-2">
-            <strong>Bio:</strong> Seasoned angel investor dedicated to
-            empowering visionary founders and turning innovative ideas into
-            thriving businesses.
-          </p>
-        </Card>
+          </Card>
+          <Card className="p-4">
+            <h3 className="font-semibold">Investment Statistics</h3>
+            <div className="grid grid-cols-3 gap-4">
+              <Statistic
+                title="Total Investments"
+                value={47}
+                prefix={<FundOutlined />}
+              />
+              <Statistic
+                title="Portfolio Companies"
+                value={32}
+                prefix={<UsergroupAddOutlined />}
+              />
+              <Statistic
+                title="Years Experience"
+                value={15}
+                prefix={<ClockCircleOutlined />}
+              />
+            </div>
+          </Card>
+        </div>
 
         {/* Investment Preferences */}
-        <Card className="rounded-xl p-6 bg-white">
-          <h3 className="text-xl font-semibold mb-3 text-gray-800">
-            Investment Preferences
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <p>
-              <strong>Interested Domain:</strong> Tech
-            </p>
-            <p>
-              <strong>Investment Range:</strong> ₹10,00,000 - ₹20,00,000
-            </p>
+        <Card className="md:col-span-3">
+          <h3 className="font-semibold">Investment Preferences</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div>
+              <p className="font-semibold">Interested Domains</p>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {['AI/ML', 'SaaS', 'Fintech', 'Healthcare', 'Web3'].map(
+                  (domain) => (
+                    <Tag color="blue" key={domain}>
+                      {domain}
+                    </Tag>
+                  ),
+                )}
+              </div>
+            </div>
+            <div>
+              <p className="font-semibold">Investment Range</p>
+              <p className="mt-2">$100K - $2M</p>
+            </div>
+            <div>
+              <p className="font-semibold">Preferred Stage</p>
+              <p className="mt-2">Seed to Series A</p>
+            </div>
+            <div>
+              <p className="font-semibold">Mentorship</p>
+              <p className="mt-2">Available</p>
+            </div>
           </div>
-          <p>
-            <strong>Preferred Startup Stage:</strong> Idea
-          </p>
         </Card>
 
         {/* Previous Investments */}
-        <Card className="rounded-xl p-6 bg-white mb-6">
-          <h4 className="text-lg font-semibold mb-3 text-gray-800">
-            Previous Investments
-          </h4>
-          <div className="flex flex-col gap-3 mt-2">
-            <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
-              <HomeOutlined className="text-blue-500 text-lg" />
-              <span className="text-gray-700">
-                Gateway Group Of Company -{' '}
-                <strong className="text-black">5% Equity</strong>
-              </span>
-            </div>
-            <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
-              <HomeOutlined className="text-blue-500 text-lg" />
-              <span className="text-gray-700">
-                Starlink Solutions -{' '}
-                <strong className="text-black">15% Equity</strong>
-              </span>
-            </div>
+        <Card className="md:col-span-3">
+          <h3 className="font-semibold">Previous Investments</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+            {[
+              {
+                name: 'TechFlow AI',
+                desc: 'AI-powered workflow automation platform',
+                year: 2023,
+              },
+              {
+                name: 'HealthSync',
+                desc: 'Digital health monitoring solutions',
+                year: 2022,
+              },
+              {
+                name: 'CryptoSecure',
+                desc: 'Blockchain security infrastructure',
+                year: 2022,
+              },
+              {
+                name: 'GreenEnergy',
+                desc: 'Renewable energy solutions',
+                year: 2021,
+              },
+            ].map((inv, idx) => (
+              <Card key={idx} bordered>
+                <h4 className="font-semibold">{inv.name}</h4>
+                <p className="text-gray-500">{inv.desc}</p>
+                <Tag color="geekblue">{inv.year}</Tag>
+              </Card>
+            ))}
           </div>
         </Card>
       </div>
