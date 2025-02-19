@@ -1,118 +1,133 @@
-import React, { useState } from 'react';
-import { Upload, Button, Input, Select, Slider, Card } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import React from 'react';
+import {
+  Form,
+  Input,
+  Select,
+  Radio,
+  Button,
+  Typography,
+  Card,
+  Row,
+  Col,
+} from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 
+const { Title, Text } = Typography;
 const { Option } = Select;
 
 const AddOpportunity = () => {
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const handleUpload = (file) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setImageUrl(e.target.result);
-    };
-    reader.readAsDataURL(file);
-    return false; // Prevent auto upload
-  };
-
   return (
-    <div className="flex justify-center items-center min-h-screen p-6 ">
-      <Card className="w-full max-w-5xl p-8 rounded-lg shadow-xl bg-white">
-        <h2 className="text-3xl font-semibold text-gray-800 text-center mb-4">
-          Add a New <span className="text-blue-500">Startup Opportunity</span>
-        </h2>
-        <p className="text-gray-500 text-center mb-8">
-          Provide details about the investment opportunity
-        </p>
-
-        <div className="flex flex-col md:flex-row items-center md:items-start mb-6 gap-6">
-          <div className="w-48 h-48 rounded-lg overflow-hidden shadow-md border border-gray-300 flex justify-center items-center bg-gray-200">
-            {imageUrl ? (
-              <img
-                src={imageUrl}
-                alt="Cover Preview"
-                className="w-full h-full object-contain"
-              />
-            ) : (
-              <span className="text-gray-500">Image Preview</span>
-            )}
-          </div>
-          <div className="flex flex-col justify-center">
-            <Upload beforeUpload={handleUpload} showUploadList={false}>
-              <Button
-                icon={<UploadOutlined />}
-                className="border-blue-500 text-blue-500 flex items-center gap-2 px-4 py-2 rounded-md"
-              >
-                Upload Cover Image
-              </Button>
-            </Upload>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Opportunity Name
-            </label>
-            <Input
-              placeholder="Enter Opportunity Name"
-              className="rounded-md"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Preferred Startup Stage
-            </label>
-            <Select placeholder="Select stage" className="w-full rounded-md">
-              <Option value="seed">Seed</Option>
-              <Option value="series-a">Series A</Option>
-              <Option value="series-b">Series B</Option>
-            </Select>
-          </div>
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Investment Domain
-            </label>
-            <Input
-              placeholder="Choose industry or domain"
-              className="rounded-md"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Investment Range
-            </label>
-            <Slider
-              range
-              min={0}
-              max={1000}
-              defaultValue={[100, 500]}
-              className="mt-2"
-            />
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <label className="block text-gray-700 font-medium mb-2">
-            Brief Description
-          </label>
-          <Input.TextArea
-            rows={4}
-            placeholder="Enter brief description"
-            className="rounded-md"
-          />
-        </div>
-
-        <div className="mt-8 text-center">
-          <Button
-            type="primary"
-            className="bg-blue-500 px-6 py-2 rounded-md text-white"
+    <div
+      style={{
+        padding: '40px',
+        minHeight: '100vh',
+        // backgroundColor: '#f5f5f5',
+      }}
+    >
+      <Row gutter={[20, 20]} justify="center">
+        <Col xs={24} lg={16}>
+          {/* Left Side: Form Container */}
+          <div
+            style={{
+              padding: '30px',
+              borderRadius: '10px',
+              background: '#fff',
+              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+            }}
           >
-            Add Opportunity
-          </Button>
-        </div>
-      </Card>
+            {/* Heading */}
+            <Title level={3}>
+              Create Pitch <span style={{ color: '#1677ff' }}>Opportunity</span>
+            </Title>
+            <Text>
+              Fill in the details below to create a new pitch event for
+              startups.
+            </Text>
+
+            <Form layout="vertical" style={{ marginTop: '20px' }}>
+              {/* Pitch Name */}
+              <Form.Item label="Name of Pitch Event">
+                <Input placeholder="e.g. Tech Startup Pitch 2024" />
+              </Form.Item>
+
+              {/* Interested Domain */}
+              <Form.Item label="Interested Domain">
+                <Select placeholder="Select domain">
+                  <Option value="tech">Tech</Option>
+                  <Option value="finance">Finance</Option>
+                  <Option value="health">Health</Option>
+                </Select>
+              </Form.Item>
+
+              {/* Preferred Startup Stage */}
+              <Form.Item label="Preferred Startup Stage">
+                <Radio.Group
+                  style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}
+                >
+                  <Radio value="seed">Seed Stage</Radio>
+                  <Radio value="early">Early Stage</Radio>
+                  <Radio value="growth">Growth Stage</Radio>
+                  <Radio value="seriesA">Series A</Radio>
+                  <Radio value="seriesB">Series B and Above</Radio>
+                </Radio.Group>
+              </Form.Item>
+
+              {/* Description */}
+              <Form.Item label="Description of the Event">
+                <Input.TextArea
+                  placeholder="Describe your pitch event, requirements, and what you're looking for..."
+                  rows={4}
+                />
+              </Form.Item>
+
+              {/* Submit Button */}
+              <Form.Item>
+                <Button
+                  type="primary"
+                  style={{ backgroundColor: '#1677ff', width: '100%' }}
+                >
+                  Publish Opportunity
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
+        </Col>
+
+        <Col xs={24} lg={8}>
+          {/* Right Side: Guidelines */}
+          <Card
+            style={{
+              borderRadius: '10px',
+              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <Title level={4} style={{ marginBottom: 16 }}>
+              Guidelines
+            </Title>
+            {[
+              'Be specific about investment criteria',
+              'Clearly state the stage preferences',
+              'Include all relevant deadlines',
+              'Specify any industry restrictions',
+            ].map((item, index) => (
+              <div
+                key={index}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  marginBottom: 10,
+                }}
+              >
+                <InfoCircleOutlined
+                  style={{ color: '#1677ff', fontSize: 16 }}
+                />
+                <Text>{item}</Text>
+              </div>
+            ))}
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };
