@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Upload, Button, Card } from 'antd';
+import { Upload, Button, Input, Select, Slider, Card } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+
+const { Option } = Select;
 
 const AddOpportunity = () => {
   const [imageUrl, setImageUrl] = useState(null);
@@ -38,15 +40,27 @@ const AddOpportunity = () => {
           </div>
           <div className="flex flex-col justify-center">
             <Upload beforeUpload={handleUpload} showUploadList={false}>
-              <Button
-                icon={<UploadOutlined />}
-                className="border-blue-500 text-blue-500 flex items-center gap-2 px-4 py-2 rounded-md"
-              >
-                Upload Cover Image
-              </Button>
+              <Button icon={<UploadOutlined />}>Upload Cover Image</Button>
             </Upload>
           </div>
         </div>
+
+        {/* Form Fields */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Input placeholder="Enter Opportunity Name" />
+          <Select placeholder="Select stage">
+            <Option value="seed">Seed</Option>
+            <Option value="series-a">Series A</Option>
+          </Select>
+          <Input placeholder="Choose industry or domain" />
+          <Slider range min={0} max={1000} defaultValue={[100, 500]} />
+        </div>
+
+        <Input.TextArea rows={4} placeholder="Enter brief description" />
+
+        <Button type="primary" className="mt-4">
+          Add Opportunity
+        </Button>
       </Card>
     </div>
   );
