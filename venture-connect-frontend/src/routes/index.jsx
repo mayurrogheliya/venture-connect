@@ -14,6 +14,7 @@ import StartupsHub from '../pages/StartupsHub';
 import InvestorNetwork from '../pages/InvestorNetwork';
 import StartupOpportunities from '../pages/StartupOpportunities';
 import InvestorProfile from '../pages/InvesterProfile';
+import AddOpportunity from '../pages/AddOpportunity';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,6 +31,10 @@ const router = createBrowserRouter(
           <Route
             path="/startup-opportunities"
             element={<StartupOpportunities />}
+          />
+          <Route
+            path="/Add-Oppertunity-Investor"
+            element={<AddOpportunity />}
           />
           <Route path="/investor-profile" element={<InvestorProfile />} />
         </Route>
