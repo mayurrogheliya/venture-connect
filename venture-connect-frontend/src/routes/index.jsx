@@ -13,9 +13,11 @@ import ProtectedRoute from './ProtectedRoute';
 import StartupsHub from '../pages/StartupsHub';
 import InvestorNetwork from '../pages/InvestorNetwork';
 import StartupOpportunities from '../pages/StartupOpportunities';
+import BookmarkedStartups from '../pages/BookMarks';
 import InvestorProfile from '../pages/InvesterProfile';
 import AddOpportunity from '../pages/AddOpportunity';
 import StartupProfileForm from '../pages/StartupProfileForm';
+import JoinEvent from '../pages/JoinEvent';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +26,7 @@ const router = createBrowserRouter(
         <Route index element={<Landing />} />
         <Route path="signin" element={<Signin />} />
         <Route path="signup" element={<Signup />} />
+        <Route path="joinevent" element={<JoinEvent />} />
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route
@@ -37,6 +40,7 @@ const router = createBrowserRouter(
             path="/startup-opportunities"
             element={<StartupOpportunities />}
           />
+          <Route path="/bookmarks" element={<BookmarkedStartups />} />
           <Route
             path="/Add-Oppertunity-Investor"
             element={<AddOpportunity />}

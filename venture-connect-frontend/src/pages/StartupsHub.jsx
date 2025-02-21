@@ -1,14 +1,52 @@
 import { Button, Input } from 'antd';
-import StartupHubCard from '../components/StartupHub/StartupHubCard';
+import StartupHubCard from '../Components/StartupHub/StartupHubCard';
 import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
 
+
 const StartupsHub = () => {
-  const cards = Array(5).fill(0);
+  const startupData = [
+    {
+      name: 'TechFlow',
+      location: 'Rajkot, GUJ',
+      image: '/assets/images/companies/techflow.jpg',
+      description: 'AI-powered workflow automation platform for modern enterprises',
+      industry: 'Software & Technology',
+      funding: '$5.2M',
+      teamSize: '25-50',
+      stage: 'Seed Stage',
+      isBookmarked: false,
+      
+    },
+    {
+      name: 'CloudSecure',
+      location: 'Rajkot, GUJ',
+      description: 'Cloud security solutions for enterprises',
+      industry: 'Software & Technology',
+      image: '/assets/images/logo.png',
+      funding: '$10M',
+      teamSize: '50-100',
+      stage: 'Series A',
+      isBookmarked: false,
+    },
+    {
+      name: 'FinTrack',
+      location: 'Bangalore, IND',
+      description: 'Fintech solutions for expense tracking and analysis',
+      industry: 'Fintech',
+      image: '/assets/images/fintrack-logo.png',
+      funding: '$3M',
+      teamSize: '10-20',
+      stage: 'Pre-Seed',
+      isBookmarked: false
+    },
+  ];
+
+
   return (
     <>
       <div className="space-y-2">
         <h1 className="text-4xl font-bold">
-          Descover <span className="text-blue-500">Startups</span>
+          Discover <span className="text-blue-500">Startups</span>
         </h1>
         <p className="text-lg text-gray-500 font-normal">
           Discover and connect with innovative Startups
@@ -17,7 +55,7 @@ const StartupsHub = () => {
 
       <div className="flex flex-wrap items-center gap-4 my-5">
         <Input
-          placeholder="Search Investors..."
+          placeholder="Search Startups..."
           prefix={<SearchOutlined className="text-gray-500 px-1 pe-1.5" />}
           allowClear
           className="flex-1 min-w-md rounded-lg h-10 bg-gray-100"
@@ -47,8 +85,8 @@ const StartupsHub = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
-        {cards.map((_, index) => (
-          <StartupHubCard key={index} />
+        {startupData.map((startup, index) => (
+          <StartupHubCard key={index} {...startup} />
         ))}
       </div>
     </>
