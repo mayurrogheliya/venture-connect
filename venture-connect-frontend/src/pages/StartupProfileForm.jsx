@@ -2,6 +2,7 @@ import { Button, Form, message, Steps } from 'antd';
 import SPBasicInfo from '../components/StartupProfileSteps/SPBasicInfo';
 import { useState } from 'react';
 import SPMatrices from '../components/StartupProfileSteps/SPMetrices';
+import SPTeam from '../components/StartupProfileSteps/SPTeam';
 
 const StartupProfileForm = () => {
   const [form] = Form.useForm();
@@ -14,6 +15,10 @@ const StartupProfileForm = () => {
     {
       title: 'Metrices',
       content: <SPMatrices form={form} />,
+    },
+    {
+      title: 'Team',
+      content: <SPTeam form={form} />,
     },
   ];
 
