@@ -15,6 +15,7 @@ import InvestorNetwork from '../pages/InvestorNetwork';
 import StartupOpportunities from '../pages/StartupOpportunities';
 import InvestorProfile from '../pages/InvesterProfile';
 import AddOpportunity from '../pages/AddOpportunity';
+import StartupProfileForm from '../pages/StartupProfileForm';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,6 +26,10 @@ const router = createBrowserRouter(
         <Route path="signup" element={<Signup />} />
       </Route>
       <Route element={<ProtectedRoute />}>
+        <Route
+          path="/complete-startup-profile"
+          element={<StartupProfileForm />}
+        />
         <Route element={<UserLayout />}>
           <Route path="/startups-hub" element={<StartupsHub />} />
           <Route path="/investor-network" element={<InvestorNetwork />} />
