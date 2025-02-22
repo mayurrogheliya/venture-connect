@@ -6,7 +6,7 @@ import { IoLocationOutline } from 'react-icons/io5';
 
 const StartupHubCard = ({ name, location, image, description, industry, funding, teamSize, stage, isBookmarked }) => {
   return (
-    <div className="bg-white w-full max-w-sm p-4 rounded-2xl shadow-md space-y-4">
+    <div className="bg-white w-full max-w-sm p-4 rounded-2xl shadow-md space-y-4 mx-auto">
       <div className="flex justify-between items-start">
         {/* Startup Info */}
         <div className="flex items-center gap-3">
