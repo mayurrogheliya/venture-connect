@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Upload,ImUpload2 } from "antd";
-
+import { Upload } from "antd";
+import { ImUpload2 } from "react-icons/im";
 
 const ProfileImageUpload = () => {
   const [imageUrl, setImageUrl] = useState(null);

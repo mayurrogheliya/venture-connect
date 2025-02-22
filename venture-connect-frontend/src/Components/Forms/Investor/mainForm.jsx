@@ -5,7 +5,6 @@ import { Button,Progress } from "antd";
 
 const InvestorProfileForm = () => {
   const [step, setStep] = useState(1);
-  const [progress, setProgress] = useState(50);
 
 
   return (
@@ -39,7 +38,7 @@ const InvestorProfileForm = () => {
       {/* Navigation Buttons */}
       <div className="flex justify-end mt-6 mr-13">
         {step === 1 && (
-          <Button type="primary" size="large" onClick={() => {setStep(2);setProgress(100)} }>
+          <Button type="primary" size="large" onClick={() => {setStep(2);} }>
             Next
           </Button>
         )}
