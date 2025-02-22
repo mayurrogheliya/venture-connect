@@ -47,7 +47,7 @@ const Header = () => {
         {/* Logo */}
         <div className="flex items-center gap-5">
           <div className="object-fill w-10 h-12 rounded-full ">
-             <img src={logo} alt="logo"  className="w-full h-full object-cover" /> 
+            <img src={logo} alt="logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-lg font-semibold">Venture Connect</h1>
         </div>
@@ -56,19 +56,19 @@ const Header = () => {
         <div className="hidden md:flex space-x-10 items-center">
           <button
             onClick={() => scrollToSection('home')}
-            className="text-gray-600 hover:text-black"
+            className="text-gray-600 hover:text-black md:px-4"
           >
             Home
           </button>
           <button
             onClick={() => scrollToSection('features')}
-            className="text-gray-600 hover:text-black"
+            className="text-gray-600 hover:text-black md:px-4"
           >
             Features
           </button>
           <button
             onClick={() => scrollToSection('events')}
-            className="text-gray-600 hover:text-black"
+            className="text-gray-600 hover:text-black px-4"
           >
             Events
           </button>
@@ -117,7 +117,7 @@ const Header = () => {
         }`}
       >
         <button
-          className="text-gray-600 hover:text-black"
+          className="text-gray-600 hover:text-black py-3"
           onClick={() => {
             scrollToSection('home');
             setIsOpen(false);
@@ -126,7 +126,7 @@ const Header = () => {
           Home
         </button>
         <button
-          className="text-gray-600 hover:text-black"
+          className="text-gray-600 hover:text-black py-4"
           onClick={() => {
             scrollToSection('features');
             setIsOpen(false);
@@ -135,7 +135,7 @@ const Header = () => {
           Features
         </button>
         <button
-          className="text-gray-600 hover:text-black"
+          className="text-gray-600 hover:text-black py-4"
           onClick={() => {
             scrollToSection('events');
             setIsOpen(false);
@@ -145,14 +145,14 @@ const Header = () => {
         </button>
         <Link
           to="/signin"
-          className="text-gray-600 hover:text-black"
+          className="text-gray-600 hover:text-black py-4"
           onClick={() => setIsOpen(false)}
         >
           Sign in
         </Link>
         <Link
           to="/signup"
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="px-4 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 "
           onClick={() => setIsOpen(false)}
         >
           Signup

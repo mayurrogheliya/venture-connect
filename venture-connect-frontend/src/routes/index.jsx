@@ -16,6 +16,7 @@ import StartupOpportunities from '../pages/StartupOpportunities';
 import BookmarkedStartups from '../pages/BookMarks';
 import InvestorProfile from '../pages/InvesterProfile';
 import AddOpportunity from '../pages/AddOpportunity';
+import JoinEvent from '../pages/JoinEvent';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,18 +25,25 @@ const router = createBrowserRouter(
         <Route index element={<Landing />} />
         <Route path="signin" element={<Signin />} />
         <Route path="signup" element={<Signup />} />
+        <Route path="joinevent" element={<JoinEvent />} />
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route element={<UserLayout />}>
           <Route path="/startups-hub" element={<StartupsHub />} />
           <Route path="/investor-network" element={<InvestorNetwork />} />
-          <Route path="/startup-opportunities" element={<StartupOpportunities />} />
+          <Route
+            path="/startup-opportunities"
+            element={<StartupOpportunities />}
+          />
           <Route path="/bookmarks" element={<BookmarkedStartups />} />
-          <Route path="/Add-Oppertunity-Investor" element={<AddOpportunity />} />
+          <Route
+            path="/Add-Oppertunity-Investor"
+            element={<AddOpportunity />}
+          />
           <Route path="/investor-profile" element={<InvestorProfile />} />
         </Route>
       </Route>
-    </Route>
+    </Route>,
   ),
 );
 
