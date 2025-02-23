@@ -1,64 +1,89 @@
+import { Form, Input, Button, Select } from 'antd';
 import signupImage from '../../assets/images/signupSIdeImage.png';
 
+const { Option } = Select;
+
 const Signup = () => {
+  const onFinish = (values) => {
+    console.log('Success:', values);
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-6 ">
-      <div className="bg-white shadow-lg rounded-2xl p-8 flex flex-col md:flex-row max-w-4xl w-full mt-[90px]">
+    <div className="flex items-center justify-center min-h-screen mt-3 bg-gray-100 p-6">
+      <div className="p-8 flex flex-col md:flex-row max-w-4xl w-full mt-[90px]">
         {/* Left Section - Form */}
         <div className="md:w-1/2 w-full md:pr-6 md:order-1 order-2">
           <h2 className="text-3xl font-bold text-gray-900">
             Where <span className="text-blue-500">Innovation</span> Meets{' '}
             <span className="text-blue-600">Investment</span>
           </h2>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 mt-2 mb-2.5">
             Sign up to connect with top investors and promising startups. Take
             the first step toward growth and success!
           </p>
-          <form className="mt-6 space-y-4">
-            <div>
-              <label className="block text-gray-700">Full Name</label>
-              <input
-                type="text"
-                placeholder="Enter your full name"
-                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">Email Address</label>
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">Password</label>
-              <input
-                type="password"
-                placeholder="Enter your password"
-                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">Confirm Password</label>
-              <input
-                type="password"
-                placeholder="Enter your password"
-                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <button className="w-full bg-blue-600 text-white py-2 rounded-lg mt-4 hover:bg-blue-700 transition">
-              Signup
-            </button>
-            <button className="w-full flex items-center justify-center bg-white border py-2 rounded-lg mt-2 hover:bg-gray-100 transition">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
-                alt="Google Logo"
-                className="h-5 w-5 mr-2"
-              />
-              Continue with Google
-            </button>
-          </form>
+          <Form layout="vertical" className="mt-6 space-y-4" onFinish={onFinish}>
+            <Form.Item
+              className='font-bold'
+              label="Are you an Investor or a Startup?"
+              name="role"
+              rules={[{ required: true, message: 'Please select an option!' }]}
+            >
+              <Select placeholder="Select your role">
+                <Option value="investor">Investor</Option>
+                <Option value="startup">Startup</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              label="Email Address"
+              className='font-bold'
+              name="email"
+              rules={[
+                { required: true, message: 'Please enter your email!' },
+                { pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, message: 'Please enter a valid email address!' }
+              ]}
+            >
+              <Input placeholder="Enter your email address" />
+            </Form.Item>
+
+            <Form.Item
+              label="Password"
+              className='font-bold'
+              name="password"
+              rules={[
+                { required: true, message: 'Please enter your password!' },
+                { pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, message: 'Password must be at least 8 characters long and contain at least one letter and one number!' }
+              ]}
+            >
+              <Input.Password placeholder="Enter your password" />
+            </Form.Item>
+
+            <Form.Item
+              label="Confirm Password"
+              className='font-bold'
+              name="confirmPassword"
+              dependencies={['password']}
+              rules={[
+                { required: true, message: 'Please confirm your password!' },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('password') === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('Passwords do not match!'));
+                  },
+                }),
+              ]}
+            >
+              <Input.Password placeholder="Confirm your password" />
+            </Form.Item>
+
+            <Form.Item>
+              <Button type="primary" htmlType="submit" className="w-full">
+                Signup
+              </Button>
+            </Form.Item>
+          </Form>
         </div>
 
         {/* Right Section - Illustration */}
@@ -66,7 +91,7 @@ const Signup = () => {
           <img
             src={signupImage}
             alt="Signup Illustration"
-            className="w-full min-h-full object-cover rounded-2xl hidden sm:block"
+            className="w-full min-h-full object-cover rounded-2xl hidden sm:block sm:w-3/4 xs:w-1/2 xs:hidden"
           />
         </div>
       </div>
