@@ -1,57 +1,64 @@
+import { Form, Input, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import signupImage from '../../assets/images/signupSIdeImage.png';
 
 const Signin = () => {
+  const onFinish = (values) => {
+    console.log('Success:', values);
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 sm:p-6 ">
-      <div className="bg-white shadow-lg rounded-2xl p-6 sm:p-10 flex flex-col sm:flex-row max-w-4xl w-full mt-[90px]">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 sm:p-6">
+      <div className="p-6 sm:p-10 flex flex-col sm:flex-row max-w-4xl w-full mt-[90px]">
         {/* Left Section - Form */}
         <div className="sm:w-1/2 w-full sm:pr-8 flex flex-col justify-center order-2 sm:order-1 max-w-xs sm:max-w-sm mx-auto">
-          <form className="mt-6 space-y-4 sm:space-y-6">
-            <div>
-              <label className="block text-gray-700 font-semibold text-sm sm:text-base">
-                Email Address
-              </label>
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 mt-1 sm:mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-semibold text-sm sm:text-base">
-                Password
-              </label>
-              <input
-                type="password"
-                placeholder="Enter your password"
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 mt-1 sm:mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-              />
-            </div>
+        <h2 className="text-3xl font-bold text-gray-900 mb-10">
+          Unlock <span className="text-blue-500">connections</span>, seize <span className="text-blue-600">opportunities</span>.
+        </h2>
 
-            <button className="w-full bg-blue-600 text-white py-2 sm:py-3 rounded-lg font-semibold shadow-md hover:bg-blue-700 transition text-sm sm:text-base">
-              Sign In
-            </button>
-            <button className="w-full flex items-center justify-center bg-white border py-2 sm:py-3 rounded-lg mt-2 hover:bg-gray-100 transition font-semibold shadow-md text-sm sm:text-base">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/0/09/Google_Toolbar_logo.png"
-                alt="Google Logo"
-                className="h-4 w-4 sm:h-5 sm:w-5 mr-2"
-              />
-              Continue with Google
-            </button>
 
-            {/* Register Link */}
-            <p className="text-center text-gray-600 mt-3 sm:mt-4 font-medium text-sm sm:text-base">
-              Don't have an account?
-              <Link
-                to="/signup"
-                className="text-blue-600 hover:underline ml-1 font-semibold"
-              >
-                Register
-              </Link>
-            </p>
-          </form>
+
+          <Form layout="vertical" className="mt-6 space-y-4 sm:space-y-6" onFinish={onFinish}>
+            <Form.Item
+              label="Email Address"
+              className='font-bold'
+              name="email"
+              rules={[
+                { required: true, message: 'Please enter your email!' },
+                { pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, message: 'Please enter a valid email address!' }
+              ]}
+            >
+              <Input placeholder="Enter your email address" />
+            </Form.Item>
+
+            <Form.Item
+              label="Password"
+              className='font-bold'
+              name="password"
+              rules={[
+                { required: true, message: 'Please enter your password!' },
+                { pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, message: 'Password must be at least 8 characters long and contain at least one letter, one number, and one special character!' }
+              ]}
+            >
+              <Input.Password placeholder="Enter your password" />
+            </Form.Item>
+
+            <Form.Item>
+              <Button type="primary" htmlType="submit" className="w-full">
+                Sign In
+              </Button>
+            </Form.Item>
+          </Form>
+          
+    
+
+          {/* Register Link */}
+          <p className="text-center text-gray-600 mt-3 sm:mt-4 font-medium text-sm sm:text-base">
+            Don't have an account?
+            <Link to="/signup" className="text-blue-600 hover:underline ml-1 font-semibold">
+              Register
+            </Link>
+          </p>
         </div>
 
         {/* Right Section - Illustration */}
