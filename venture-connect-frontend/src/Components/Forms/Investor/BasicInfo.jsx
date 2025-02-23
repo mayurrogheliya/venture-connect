@@ -1,113 +1,167 @@
-import { Input,Select} from "antd";
+/* eslint-disable react/display-name */
+import { Input, Select, Form } from "antd";
 import {
   UserOutlined,
-  LinkOutlined,
-  GlobalOutlined,
-  TwitterOutlined,
-  ClockCircleOutlined,
-  PhoneOutlined,
-  MailOutlined,
   EnvironmentOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  ClockCircleOutlined,
+  GlobalOutlined,
 } from "@ant-design/icons";
-
-import ProfileImageUpload from "../Controls/ProfileImageUpload.jsx";
+import ProfileImageUpload from "../Controls/ProfileImageUpload";
+import { useState, forwardRef, useImperativeHandle } from "react";
 
 const { Option } = Select;
 
-const InvestorProfileForm = () => {
-   // Basic Info step completed
+const BasicInfoForm = forwardRef(({ onNext }, ref) => {
+  const [form] = Form.useForm();
+  const [profileImage, setProfileImage] = useState(null);
+  const [imageError, setImageError] = useState("");
+
+  // Handle profile image upload
+  const handleImageUpload = (image) => {
+    setProfileImage(image);
+    setImageError(""); 
+  };
+
+  // Expose validateForm method via ref
+  useImperativeHandle(ref, () => ({
+    validateForm: async () => {
+      try {
+        await form.validateFields();
+
+        // Validate Profile Image
+        if (!profileImage) {
+          setImageError("Profile image is required.");
+          return false;
+        }
+
+        return true;
+      } catch (error) {
+
+        return false;
+      }
+    },
+  }));
 
   return (
     <div className="px-12">
-     
+      <h2 className="text-lg font-semibold text-gray-900">Basic Information</h2>
 
-      <div className="mt-6">
-        <h2 className="text-lg font-semibold text-gray-900">Basic Information</h2>
-
-        
-        <div className="flex justify-center mt-4">
-            <ProfileImageUpload />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-          <div>
-            <label className="text-gray-700 font-medium">Full Name</label>
-            <Input prefix={<UserOutlined className="fill-white" />} placeholder="Enter your full name" />
-          </div>
-
-         
-          <div>
-            <label className="text-gray-700 font-medium">LinkedIn Profile</label>
-            <Input prefix={<LinkOutlined />} placeholder="linkedin.com/in/username" />
-          </div>
-
-          
-          <div>
-            <label className="text-gray-700 font-medium">Location</label>
-            <Input prefix={<EnvironmentOutlined />} placeholder="City, Country" />
-          </div>
-
-          
-          <div>
-            <label className="text-gray-700 font-medium">Website</label>
-            <Input prefix={<GlobalOutlined />} placeholder="www.example.com" />
-          </div>
-
-          
-          <div>
-            <label className="text-gray-700 font-medium">Type of Investor</label>
-            <Select placeholder="Select type" className="w-full">
-              <Option value="Angel Investor">Angel Investor</Option>
-              <Option value="Venture Capitalist">Venture Capitalist</Option>
-              <Option value="Private Equity Investor">Private Equity (PE) Investor</Option>
-              <Option value="Corporate Investor">Corporate Investor (CVC)</Option>
-              <Option value="Crowdfunding Investor">Crowdfunding Investor</Option>
-              <Option value="Family Office Investor">Family Office Investor</Option>
-              <Option value="Hedge Fund/Mutual Fund Investor">Hedge Fund/Mutual Fund Investor</Option>
-              <Option value="Grant Provider">Grant Provider</Option>
-              <Option value="Bank/NBFC Lender">Bank/NBFC Lender</Option>
-
-
-            </Select>
-          </div>
-
-          
-          <div>
-            <label className="text-gray-700 font-medium">Twitter Handle</label>
-            <Input prefix={<TwitterOutlined />} placeholder="@username" />
-          </div>
-
-          
-          <div>
-            <label className="text-gray-700 font-medium">Email</label>
-            <Input prefix={<MailOutlined />} placeholder="your@email.com" />
-          </div>
-
-          
-          <div>
-            <label className="text-gray-700 font-medium">Years of Experience</label>
-            <Input prefix={<ClockCircleOutlined />} placeholder="Enter years" />
-          </div>
-
-          
-          <div>
-            <label className="text-gray-700 font-medium">Phone</label>
-            <Input prefix={<PhoneOutlined />} placeholder="without country code" />
-          </div>
-
-          
-          <div>
-            <label className="text-gray-700 font-medium">Preferred Startup Stage</label>
-            <Select placeholder="Select type" className="w-full">
-              <Option value="Seed Stage">Seed Stage</Option>
-              <Option value="Series A">Series A</Option>
-            </Select>
-          </div>
-        </div>
-
+      {/* Profile Image Upload Section */}
+      <div className="flex justify-center mt-4">
+        <ProfileImageUpload onImageUpload={handleImageUpload} />
       </div>
+      {imageError && <p className="text-red-500 text-sm text-center mt-2">{imageError}</p>}
+
+      {/* Form Section */}
+      <Form
+        form={form}
+        layout="vertical"
+        className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6"
+      >
+        <Form.Item
+          label="Full Name"
+          name="fullName"
+          rules={[
+            { required: true, message: "Full Name is required" },
+            {
+              pattern: /^[A-Za-z\s]+$/,
+              message: "Full Name should contain only letters and spaces",
+            },
+          ]}
+        >
+          <Input prefix={<UserOutlined />} placeholder="Enter your full name" />
+        </Form.Item>
+
+        <Form.Item
+          label="LinkedIn Profile"
+          name="linkedin"
+          rules={[
+            { required: true, message: "LinkedIn profile is required" },
+            {
+              pattern: /^https:\/\/www\.linkedin\.com\//,
+              message: "Enter a valid LinkedIn URL",
+            },
+          ]}
+        >
+          <Input prefix={<GlobalOutlined />} placeholder="https://www.linkedin.com/in/username" />
+        </Form.Item>
+
+        <Form.Item
+          label="Location"
+          name="location"
+          rules={[
+            { required: true, message: "Location is required" },
+            { pattern: /^[A-Za-z]+,\s[A-Za-z]+$/, message: "Format: City, Country" },
+          ]}
+        >
+          <Input prefix={<EnvironmentOutlined />} placeholder="City, Country" />
+        </Form.Item>
+
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[
+            { required: true, message: "Email is required" },
+            { type: "email", message: "Enter a valid email" },
+          ]}
+        >
+          <Input prefix={<MailOutlined />} placeholder="your@email.com" />
+        </Form.Item>
+
+        <Form.Item
+          label="Type of Investor"
+          name="investorType"
+          rules={[{ required: true, message: "Investor type is required" }]}
+        >
+          <Select placeholder="Select type" className="w-full">
+            <Option value="Angel Investor">Angel Investor</Option>
+            <Option value="Venture Capitalist">Venture Capitalist</Option>
+            <Option value="Private Equity Investor">Private Equity (PE) Investor</Option>
+            <Option value="Corporate Investor">Corporate Investor (CVC)</Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          label="Years of Experience"
+          name="experience"
+          rules={[
+            { required: true, message: "Experience is required" },
+            { pattern: /^[0-9]+$/, message: "Enter a valid number" },
+          ]}
+        >
+          <Input prefix={<ClockCircleOutlined />} placeholder="Enter years" />
+        </Form.Item>
+
+        <Form.Item
+          label="Phone"
+          name="phone"
+          rules={[
+            { required: true, message: "Phone number is required" },
+            { pattern: /^[0-9]{10}$/, message: "Enter a valid 10-digit number" },
+          ]}
+        >
+          <Input prefix={<PhoneOutlined />} placeholder="without country code" />
+        </Form.Item>
+
+        <Form.Item
+          label="Preferred Startup Stage"
+          name="startup_stage"
+          rules={[{ required: true, message: "Startup Stage is required" }]}
+        >
+          <Select placeholder="Select stage" className="w-full">
+            <Option value="Ideation">Ideation</Option>
+            <Option value="Pre-Seed">Pre-Seed</Option>
+            <Option value="Seed">Seed</Option>
+            <Option value="Early">Early</Option>
+            <Option value="Growth">Growth</Option>
+            <Option value="Expansion">Expansion</Option>
+          </Select>
+        </Form.Item>
+      </Form>
     </div>
   );
-};
+});
 
-export default InvestorProfileForm;
+export default BasicInfoForm;

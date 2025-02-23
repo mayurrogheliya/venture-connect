@@ -1,15 +1,24 @@
 import { useState } from "react";
-import { Upload } from "antd";
+import { Upload, message } from "antd";
 import { ImUpload2 } from "react-icons/im";
 
-const ProfileImageUpload = () => {
+const ProfileImageUpload = ({ onImageUpload }) => {
   const [imageUrl, setImageUrl] = useState(null);
 
   const handleUpload = (info) => {
     const file = info.file;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      message.error("Only image files are allowed!");
+      onImageUpload(null); // Notify parent that image is invalid
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
-      setImageUrl(e.target.result); // Set the uploaded image preview
+      setImageUrl(e.target.result); // Set uploaded image preview
+      onImageUpload(file); // Send the image file to parent
     };
     reader.readAsDataURL(file);
   };
