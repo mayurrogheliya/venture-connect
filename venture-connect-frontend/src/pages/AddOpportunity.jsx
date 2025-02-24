@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import {
   Form,
   Input,
@@ -9,21 +9,47 @@ import {
   Card,
   Row,
   Col,
+  Slider,
+  Space,
 } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
-const { Option } = Select;
 
 const AddOpportunity = () => {
+  const interestedDomains = [
+    'Technology & Software',
+    'E-Commerce & Retail',
+    'FinTech (Financial Technology)',
+    'HealthTech & MedTech',
+    'EdTech (Education Technology)',
+    'AgriTech (Agriculture Technology)',
+    'PropTech (Real Estate Technology)',
+    'GreenTech & Sustainability',
+    'Mobility & Transportation',
+    'Entertainment & Media',
+    'HRTech & WorkTech',
+    'LegalTech',
+    'SpaceTech',
+    'FoodTech',
+    'Travel & Hospitality',
+  ];
+
+  const [investmentRange, setInvestmentRange] = useState([20000, 200000000]);
+
+  const formatInvestment = (value) => {
+    if (value >= 10000000) {
+      return `₹${(value / 10000000).toFixed(2)}Cr`;
+    } else if (value >= 100000) {
+      return `₹${(value / 100000).toFixed(2)}L`;
+    } else if (value >= 1000) {
+      return `₹${(value / 1000).toFixed(0)}K`;
+    }
+    return `₹${value}`;
+  };
+
   return (
-    <div
-      style={{
-        padding: '40px',
-        minHeight: '100vh',
-        // backgroundColor: '#f5f5f5',
-      }}
-    >
+    <div>
       <Row gutter={[20, 20]} justify="center">
         <Col xs={24} lg={16}>
           {/* Left Side: Form Container */}
@@ -46,37 +72,87 @@ const AddOpportunity = () => {
 
             <Form layout="vertical" style={{ marginTop: '20px' }}>
               {/* Pitch Name */}
-              <Form.Item label="Name of Pitch Event">
-                <Input placeholder="e.g. Tech Startup Pitch 2024" />
+              <Form.Item
+                label="Name of Pitch Event"
+                name="pitchName"
+                rules={[
+                  { required: true, message: 'This field is required' },
+                  { max: 30, message: 'Cannot exceed 30 characters' },
+                ]}
+              >
+                <Input
+                  placeholder="e.g. Tech Startup Pitch 2024"
+                  maxLength={30}
+                />
+              </Form.Item>
+
+              <Form.Item
+                label="Investment Range (₹20K - ₹20Cr+)"
+                name="investmentRange"
+              >
+                <Slider
+                  range
+                  min={20000}
+                  max={200000000}
+                  step={10000}
+                  defaultValue={investmentRange}
+                  onChange={setInvestmentRange}
+                  tooltip={{ formatter: formatInvestment }}
+                />
+                <Text>
+                  Selected Range: {formatInvestment(investmentRange[0])} -{' '}
+                  {formatInvestment(investmentRange[1])}
+                </Text>
               </Form.Item>
 
               {/* Interested Domain */}
-              <Form.Item label="Interested Domain">
-                <Select placeholder="Select domain">
-                  <Option value="tech">Tech</Option>
-                  <Option value="finance">Finance</Option>
-                  <Option value="health">Health</Option>
+              <Form.Item
+                label="Interested Domain"
+                name="domain"
+                rules={[{ required: true, message: 'Please select a domain' }]}
+              >
+                <Select placeholder="Select domain" showSearch>
+                  {interestedDomains.map((domain) => (
+                    <Select.Option key={domain} value={domain}>
+                      {domain}
+                    </Select.Option>
+                  ))}
                 </Select>
               </Form.Item>
 
               {/* Preferred Startup Stage */}
-              <Form.Item label="Preferred Startup Stage">
-                <Radio.Group
-                  style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}
-                >
-                  <Radio value="seed">Seed Stage</Radio>
-                  <Radio value="early">Early Stage</Radio>
-                  <Radio value="growth">Growth Stage</Radio>
-                  <Radio value="seriesA">Series A</Radio>
-                  <Radio value="seriesB">Series B and Above</Radio>
+              <Form.Item
+                label="Preferred Startup Stage"
+                name="stage"
+                rules={[{ required: true, message: 'Please select a stage' }]}
+              >
+                <Radio.Group>
+                  <Space direction="vertical">
+                    <Radio value="seed">Seed Stage</Radio>
+                    <Radio value="early">Early Stage</Radio>
+                    <Radio value="growth">Growth Stage</Radio>
+                    <Radio value="seriesA">Series A</Radio>
+                    <Radio value="seriesB">Series B and Above</Radio>
+                  </Space>
                 </Radio.Group>
               </Form.Item>
 
               {/* Description */}
-              <Form.Item label="Description of the Event">
+              <Form.Item
+                label="Description of the Event"
+                name="description"
+                rules={[
+                  { required: true, message: 'Description is required' },
+                  {
+                    max: 150,
+                    message: 'Must be a short one-line description (~20 words)',
+                  },
+                ]}
+              >
                 <Input.TextArea
                   placeholder="Describe your pitch event, requirements, and what you're looking for..."
-                  rows={4}
+                  rows={2}
+                  maxLength={150}
                 />
               </Form.Item>
 
@@ -84,7 +160,8 @@ const AddOpportunity = () => {
               <Form.Item>
                 <Button
                   type="primary"
-                  style={{ backgroundColor: '#1677ff', width: '100%' }}
+                  htmlType="submit"
+                  className="w-full mt-3"
                 >
                   Publish Opportunity
                 </Button>
