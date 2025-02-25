@@ -18,6 +18,7 @@ import InvestorProfile from '../pages/InvesterProfile';
 import AddOpportunity from '../pages/AddOpportunity';
 import StartupProfileForm from '../pages/StartupProfileForm';
 import JoinEvent from '../pages/JoinEvent';
+import StartupProfile from '../pages/StartupProfile';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
           path="/complete-startup-profile"
           element={<StartupProfileForm />}
         />
+        <Route path="/startup-profile" element={<StartupProfile />} />
         <Route element={<UserLayout />}>
           <Route path="/startups-hub" element={<StartupsHub />} />
           <Route path="/investor-network" element={<InvestorNetwork />} />
