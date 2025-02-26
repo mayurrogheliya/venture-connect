@@ -20,6 +20,8 @@ import StartupProfileForm from '../pages/StartupProfileForm';
 import JoinEvent from '../pages/JoinEvent';
 import StartupProfile from '../pages/StartupProfile';
 import AdminLayout from '../Layouts/AdminLayout';
+
+import InvestorOppertunity from '../pages/InvestorOppertunity';
 import UserMain from '../pages/Admin/User/UserMain';
 
 const router = createBrowserRouter(
@@ -49,10 +51,18 @@ const router = createBrowserRouter(
             path="/Add-Oppertunity-Investor"
             element={<AddOpportunity />}
           />
+          <Route path="/Investor-Opportunity" element={<InvestorOppertunity />} />
           <Route path="/investor-profile" element={<InvestorProfile />} />
         </Route>
         <Route element={<AdminLayout />}>
+          <Route
+            path="/admin"
+            element={
+              <p className="text-4xl font-medium">Welcome to admin dashboard</p>
+            }
+          />
           <Route path="/admin" element={<UserMain />} />
+
         </Route>
       </Route>
     </Route>,
