@@ -20,10 +20,11 @@ import StartupProfileForm from '../pages/StartupProfileForm';
 import JoinEvent from '../pages/JoinEvent';
 import StartupProfile from '../pages/StartupProfile';
 import AdminLayout from '../Layouts/AdminLayout';
-
-import InvestorOppertunity from '../pages/InvestorOpportunity';
+import InvestorOpportunity from '../pages/InvestorOpportunity.jsx';
+import RegStartup from '../pages/RegStartup.jsx';
 import UserMain from '../pages/Admin/User/UserMain';
 import AdminOpportunity from '../pages/Admin/Opportunity/AdminOpportunity';
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -52,12 +53,14 @@ const router = createBrowserRouter(
             path="/Add-Oppertunity-Investor"
             element={<AddOpportunity />}
           />
+          <Route path="/Investor-Opportunity" element={<InvestorOpportunity />} />
           <Route
             path="/Investor-Opportunity"
             element={<InvestorOppertunity />}
           />
           <Route path="/investor-profile" element={<InvestorProfile />} />
         </Route>
+          <Route path="/Registered-Startups" element={<RegStartup />} />
         <Route element={<AdminLayout />}>
           <Route
             path="/admin"
