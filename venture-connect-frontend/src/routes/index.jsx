@@ -21,8 +21,9 @@ import JoinEvent from '../pages/JoinEvent';
 import StartupProfile from '../pages/StartupProfile';
 import AdminLayout from '../Layouts/AdminLayout';
 
-import InvestorOppertunity from '../pages/InvestorOppertunity';
+import InvestorOppertunity from '../pages/InvestorOpportunity';
 import UserMain from '../pages/Admin/User/UserMain';
+import AdminOpportunity from '../pages/Admin/Opportunity/AdminOpportunity';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -51,7 +52,10 @@ const router = createBrowserRouter(
             path="/Add-Oppertunity-Investor"
             element={<AddOpportunity />}
           />
-          <Route path="/Investor-Opportunity" element={<InvestorOppertunity />} />
+          <Route
+            path="/Investor-Opportunity"
+            element={<InvestorOppertunity />}
+          />
           <Route path="/investor-profile" element={<InvestorProfile />} />
         </Route>
         <Route element={<AdminLayout />}>
@@ -62,8 +66,9 @@ const router = createBrowserRouter(
             }
           />
           <Route path="/admin" element={<UserMain />} />
-
+          <Route path="/admin-opportunity" element={<AdminOpportunity />} />
         </Route>
+        x
       </Route>
     </Route>,
   ),
