@@ -56,7 +56,7 @@ const router = createBrowserRouter(
           <Route path="/Investor-Opportunity" element={<InvestorOpportunity />} />
           <Route
             path="/Investor-Opportunity"
-            element={<InvestorOppertunity />}
+            element={<InvestorOpportunity />}
           />
           <Route path="/investor-profile" element={<InvestorProfile />} />
         </Route>
