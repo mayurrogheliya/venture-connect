@@ -1,10 +1,7 @@
-
-import BasicInfoForm from './Components/Forms/Investor/BasicInfo';
-import InvestorProfileForm from './Components/Forms/Investor/mainForm';
-import StartupProfile from './pages/StartupProfile';
+import AppRouters from './routes';
 function App() {
   return (
-    <StartupProfile/>  );
+    <AppRouters/>  );
 }
 
 export default App;
