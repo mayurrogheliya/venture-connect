@@ -1,237 +1,282 @@
-import { UploadOutlined } from '@ant-design/icons';
-import { faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Col, Form, Input, InputNumber, Row, Select, Upload } from 'antd';
-import { IoLocationOutline } from 'react-icons/io5';
-import { TbWorld } from 'react-icons/tb';
+import { UploadOutlined } from "@ant-design/icons";
+import { faLinkedin, faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Col, Form, Input, InputNumber, Row, Select, Upload } from "antd";
+import { IoLocationOutline } from "react-icons/io5";
+import { TbWorld } from "react-icons/tb";
+import {message } from 'antd';
 
 const SPBasicInfo = ({ form }) => {
   const { Dragger } = Upload;
+  const MAX_CHAR = 500;
+  const MAX_WORDS = 100;
+  
   const StartupStages = [
-    'Ideation',
-    'Pre-Seed ',
-    'Seed',
-    'Early',
-    'Growth',
-    'Expansion',
+    "Ideation",
+    "Pre-Seed",
+    "Seed",
+    "Early",
+    "Growth",
+    "Expansion",
   ];
 
   const IndustryNames = [
-    'Technology & Software',
-    'E-Commerce & Retail',
-    'FinTech (Financial Technology)',
-    'HealthTech & MedTech',
-    'EdTech (Education Technology)',
-    'AgriTech (Agriculture Technology)',
-    'PropTech (Real Estate Technology)',
-    'GreenTech & Sustainability',
-    'Mobility & Transportation',
-    'Entertainment & Media',
-    'HRTech & WorkTech',
-    'LegalTech',
-    'SpaceTech',
-    'FoodTech',
-    'Travel & Hospitality',
+    "Technology & Software",
+    "E-Commerce & Retail",
+    "FinTech (Financial Technology)",
+    "HealthTech & MedTech",
+    "EdTech (Education Technology)",
+    "AgriTech (Agriculture Technology)",
+    "PropTech (Real Estate Technology)",
+    "GreenTech & Sustainability",
+    "Mobility & Transportation",
+    "Entertainment & Media",
+    "HRTech & WorkTech",
+    "LegalTech",
+    "SpaceTech",
+    "FoodTech",
+    "Travel & Hospitality",
   ];
+
   return (
-    <>
-      <Form form={form} layout="vertical" requiredMark="optional">
-        <p className="text-xl font-semibold text-gray-800">Basic Information</p>
-        <div className="flex justify-between my-5 gap-5 flex-col md:flex-row flex-wrap">
-          <Dragger className="flex-1 min-h-full flex flex-col items-center justify-center p-5">
-            <p className="ant-upload-drag-icon">
-              <UploadOutlined style={{ color: 'gray', fontSize: 40 }} />
-            </p>
-            <p className="ant-upload-text">Upload your startup logo</p>
-            <p className="ant-upload-hint">PNG, JPG up to 5MB</p>
-          </Dragger>
+    <Form form={form} layout="vertical" requiredMark="optional">
+      <p className="text-xl font-semibold text-gray-800">Basic Information</p>
+      <div className="flex justify-between my-5 gap-5 flex-col md:flex-row flex-wrap">
+        {/* Upload Section */}
+        <Dragger
+        className="flex-1 min-h-full flex flex-col items-center justify-center p-5"
+        multiple={false}  // Prevents multiple file uploads
+        maxCount={1}      // Allows only one file at a time
+        beforeUpload={(file) => {
+          const isValidType = file.type === 'image/png' || file.type === 'image/jpeg';
+          const isValidSize = file.size / 1024 / 1024 < 5; // Less than 5MB
 
-          <div className="flex-1">
-            <Form.Item
-              label="Startup Name"
-              name="startupName"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter your startup name!',
-                },
-              ]}
-            >
-              <Input placeholder="Enter Startup Name" />
-            </Form.Item>
+          if (!isValidType) {
+            message.error('Only PNG or JPG files are allowed!');
+            return Upload.LIST_IGNORE; // Prevent upload
+          }
 
-            <Form.Item
-              label="Location"
-              name="location"
-              rules={[
-                { required: true, message: 'Please enter your location!' },
-              ]}
-            >
-              <Input
-                prefix={
-                  <IoLocationOutline
-                    size="16"
-                    style={{ marginRight: '5px', color: 'gray' }}
-                  />
-                }
-                placeholder="Enter Location"
-              />
-            </Form.Item>
+          if (!isValidSize) {
+            message.error('File size must be under 5MB!');
+            return Upload.LIST_IGNORE; // Prevent upload
+          }
 
-            <Form.Item
-              label="Website"
-              name="website"
-              rules={[
-                {
-                  required: true,
-                  type: 'url',
-                  message: 'Please enter a valid URL!',
-                },
-              ]}
-            >
-              <Input
-                prefix={
-                  <TbWorld
-                    size="18"
-                    style={{ marginRight: '5px', color: 'gray' }}
-                  />
-                }
-                placeholder="Enter Website URL"
-              />
-            </Form.Item>
-          </div>
+          return true; // Allow upload
+        }}
+      >
+        <p className="ant-upload-drag-icon">
+          <UploadOutlined style={{ color: 'gray', fontSize: 40 }} />
+        </p>
+        <p className="ant-upload-text">Upload your startup logo</p>
+        <p className="ant-upload-hint">PNG, JPG up to 5MB</p>
+      </Dragger>
+
+
+        {/* Basic Info Inputs */}
+        <div className="flex-1">
+          <Form.Item
+            label="Startup Name"
+            name="startupName"
+            rules={[{ required: true, message: "Please enter your startup name!" }]}
+          >
+            <Input placeholder="Enter Startup Name" />
+          </Form.Item>
+
+          <Form.Item
+            label="Location"
+            name="location"
+            rules={[{ required: true, message: "Please enter your location!" }]}
+          >
+            <Input
+              prefix={<IoLocationOutline size="16" style={{ marginRight: "5px", color: "gray" }} />}
+              placeholder="Enter Location"
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Website"
+            name="website"
+            rules={[
+              { required: true, type: "url", message: "Please enter a valid URL!" },
+            ]}
+          >
+            <Input
+              prefix={<TbWorld size="18" style={{ marginRight: "5px", color: "gray" }} />}
+              placeholder="Enter Website URL"
+            />
+          </Form.Item>
         </div>
-        {/* Company Details */}
-        <p className="text-xl font-semibold text-gray-800">Company Details</p>
-        <Row gutter={16}>
-          <Col xs={24} sm={12} md={8}>
-            <Form.Item
-              label="Stage"
-              name="stage"
-              rules={[{ required: true, message: 'Please select your stage!' }]}
-            >
-              <Select showSearch placeholder="Select stage">
-                {StartupStages.map((stg, index) => (
-                  <Select.Option key={index} value={stg}>
-                    {stg}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Col>
+      </div>
 
-          <Col xs={24} sm={12} md={8}>
-            <Form.Item
-              label="Industry"
-              name="industry"
-              rules={[
-                { required: true, message: 'Please select industry name!' },
-              ]}
-            >
-              <Select showSearch placeholder="Select industry">
-                {IndustryNames.map((ind, index) => (
-                  <Select.Option key={index} value={ind}>
-                    {ind}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Col>
+      {/* Company Details */}
+      <p className="text-xl font-semibold text-gray-800">Company Details</p>
+      <Row gutter={16}>
+        <Col xs={24} sm={12} md={8}>
+          <Form.Item
+            label="Stage"
+            name="stage"
+            rules={[{ required: true, message: "Please select your stage!" }]}
+          >
+            <Select showSearch placeholder="Select stage">
+              {StartupStages.map((stg, index) => (
+                <Select.Option key={index} value={stg}>
+                  {stg}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Col>
 
-          <Col xs={24} sm={12} md={8}>
-            <Form.Item
-              label="Team Size"
-              name="teamSize"
-              rules={[
-                {
-                  required: true,
-                  type: 'number',
-                  min: 1,
-                  message: 'Team size must be at least 1!',
-                },
-              ]}
-            >
-              <InputNumber
-                min={1}
-                placeholder="Number of employees"
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        {/* Social Profiles */}
-        <p className="text-xl font-semibold text-gray-800">Social Profiles</p>
-        <Row gutter={16}>
-          <Col xs={24} md={12}>
-            <Form.Item
-              label="LinkedIn Profile"
-              name="linkedin"
-              rules={[
-                {
-                  required: true,
-                  type: 'url',
-                  message: 'Please enter a valid URL!',
-                },
-              ]}
-            >
-              <Input
-                prefix={
-                  <FontAwesomeIcon
-                    icon={faLinkedin}
-                    size="18"
-                    style={{ marginRight: '5px', color: 'gray' }}
-                  />
+        <Col xs={24} sm={12} md={8}>
+          <Form.Item
+            label="Industry"
+            name="industry"
+            rules={[{ required: true, message: "Please select industry name!" }]}
+          >
+            <Select showSearch placeholder="Select industry">
+              {IndustryNames.map((ind, index) => (
+                <Select.Option key={index} value={ind}>
+                  {ind}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Col>
+
+        <Col xs={24} sm={12} md={8}>
+          <Form.Item
+            label="Team Size"
+            name="teamSize"
+            rules={[{ required: true, type: "number", min: 1, message: "Team size must be at least 1!" }]}
+          >
+            <InputNumber min={1} placeholder="Number of employees" style={{ width: "100%" }} />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      {/* Social Profiles */}
+      <p className="text-xl font-semibold text-gray-800">Social Profiles</p>
+      <Row gutter={16}>
+        <Col xs={24} md={12}>
+          <Form.Item
+            label="LinkedIn Profile"
+            name="linkedin"
+            rules={[
+              { required: true, message: "LinkedIn profile is required" },
+              { pattern: /^https:\/\/www\.linkedin\.com\//, message: "Enter a valid LinkedIn URL" },
+            ]}
+          >
+            <Input
+              prefix={<FontAwesomeIcon icon={faLinkedin} size="18" style={{ marginRight: "5px", color: "gray" }} />}
+              placeholder="https://www.linkedin.com/"
+            />
+          </Form.Item>
+        </Col>
+
+        <Col xs={24} md={12}>
+          <Form.Item
+            label="Twitter Handle"
+            name="twitter"
+            rules={[
+              { required: true, message: "Please enter your Twitter handle!" },
+              { pattern: /^@?(\w){4,15}$/, message: "Invalid Twitter username! Must be 4-15 chars (A-Z, 0-9, _)." },
+            ]}
+            normalize={(value) => (value && !value.startsWith("@") ? `@${value}` : value)}
+          >
+            <Input
+              prefix={<FontAwesomeIcon icon={faTwitter} size="18" style={{ marginRight: "5px", color: "gray" }} />}
+              placeholder="@yourusername"
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      {/* Overview */}
+      <p className="text-xl font-semibold text-gray-800">Overview</p>
+      <Form.Item
+        label="Company Overview"
+        name="companyOverview"
+        rules={[
+          { required: true, message: "Please enter company overview!" },
+          { max: MAX_CHAR, message: `Maximum ${MAX_CHAR} characters allowed!` },
+          {
+            validator: (_, value) => {
+              if (value) {
+                const words = value.trim().split(/\s+/).length;
+                if (words > MAX_WORDS) {
+                  return Promise.reject(`Maximum ${MAX_WORDS} words allowed!`);
                 }
-                placeholder="Enter LinkedIn Profile URL"
-              />
-            </Form.Item>
-          </Col>
+              }
+              return Promise.resolve();
+            },
+          },
+        ]}
+      >
+        <Input.TextArea placeholder="Describe your startup..." rows={4} showCount maxLength={MAX_CHAR} />
+      </Form.Item>
 
-          <Col xs={24} md={12}>
-            <Form.Item
-              label="Twitter Profile"
-              name="twitter"
-              rules={[
-                {
-                  required: true,
-                  type: 'url',
-                  message: 'Please enter a valid URL!',
-                },
-              ]}
-            >
-              <Input
-                prefix={
-                  <FontAwesomeIcon
-                    icon={faTwitter}
-                    size="18"
-                    style={{ marginRight: '5px', color: 'gray' }}
-                  />
-                }
-                placeholder="Enter Twitter Profile URL"
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        {/* Overview */}
-        <p className="text-xl font-semibold text-gray-800">Overview</p>
-        <Form.Item
-          label="Company Overview"
-          name="companyOverview"
-          rules={[
-            { required: true, message: 'Please enter company overview!' },
-          ]}
-        >
-          <Input.TextArea placeholder="Describe your startup..." rows={4} />
-        </Form.Item>
-        <Form.Item
-          label="Key Highlights"
-          name="keyHighlights"
-          rules={[{ required: true, message: 'Please enter key highlights!' }]}
-        >
-          <Input.TextArea placeholder="Enter key highlights..." rows={4} />
-        </Form.Item>
-      </Form>
-    </>
+     {/* Key Highlights */}
+<p className="text-xl font-semibold text-gray-800">Key Highlights</p>
+<Row gutter={16}>
+  <Col xs={24} sm={8}>
+    <Form.Item
+      label="Key Highlight 1"
+      name="keyHighlight1"
+      rules={[
+        {
+          required: true,
+          message: 'Please enter key highlight 1!',
+        },
+        {
+          pattern: /^(\b\w+\b\s*){1,10}$/,
+          message: 'Maximum 10 words allowed!',
+        },
+      ]}
+    >
+      <Input maxLength={100} placeholder="Enter key highlight 1..." />
+    </Form.Item>
+  </Col>
+
+  <Col xs={24} sm={8}>
+    <Form.Item
+      label="Key Highlight 2"
+      name="keyHighlight2"
+      rules={[
+        {
+          required: true,
+          message: 'Please enter key highlight 2!',
+        },
+        {
+          pattern: /^(\b\w+\b\s*){1,10}$/,
+          message: 'Maximum 10 words allowed!',
+        },
+      ]}
+    >
+      <Input maxLength={100} placeholder="Enter key highlight 2..." />
+    </Form.Item>
+  </Col>
+
+  <Col xs={24} sm={8}>
+    <Form.Item
+      label="Key Highlight 3"
+      name="keyHighlight3"
+      rules={[
+        {
+          required: true,
+          message: 'Please enter key highlight 3!',
+        },
+        {
+          pattern: /^(\b\w+\b\s*){1,10}$/,
+          message: 'Maximum 10 words allowed!',
+        },
+      ]}
+    >
+      <Input maxLength={100} placeholder="Enter key highlight 3..." />
+    </Form.Item>
+  </Col>
+</Row>
+
+    </Form>
   );
 };
 
