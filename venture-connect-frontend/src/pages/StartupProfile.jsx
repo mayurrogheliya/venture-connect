@@ -101,20 +101,12 @@ const StartupProfile = () => {
                 <p className="text-slate-950 font-bold text-lg">
                   Key Highlights
                 </p>
-                <div className="space-y-0.5">
-                  <p className="text-gray-800/75 flex items-center gap-2">
-                    <IoRocket className="text-blue-600" /> 500+ Enterprise
-                    Clients
-                  </p>
-                  <p className="text-gray-800/75 flex items-center gap-2">
-                    <IoBarChart className="text-blue-600" /> 98% Client
-                    Retention Rate
-                  </p>
-                  <p className="text-gray-800/75 flex items-center gap-2">
-                    <FaBuilding className="text-blue-600" />
-                    Global Presence in 15 Countries
-                  </p>
-                </div>
+                <ul className="list-disc list-inside text-gray-800/75 space-y-0.5 marker:text-blue-600">
+                  <li>500+ Enterprise Clients</li>
+                  <li>98% Client Retention Rate</li>
+                  <li>Global Presence in 15 Countries</li>
+                </ul>
+
               </div>
               <div>
                 <p className="text-slate-950 font-bold text-lg">

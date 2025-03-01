@@ -8,6 +8,8 @@ import {
   ClockCircleOutlined,
   GlobalOutlined,
 } from "@ant-design/icons";
+import { faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ProfileImageUpload from "../Controls/ProfileImageUpload";
 import { useState, forwardRef, useImperativeHandle } from "react";
 
@@ -45,11 +47,11 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
   }));
 
   return (
-    <div className="px-12">
+    <div className="px-10 mt-10">
       <h2 className="text-lg font-semibold text-gray-900">Basic Information</h2>
 
       {/* Profile Image Upload Section */}
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-4 mb-4">
         <ProfileImageUpload onImageUpload={handleImageUpload} />
       </div>
       {imageError && <p className="text-red-500 text-sm text-center mt-2">{imageError}</p>}
@@ -85,7 +87,11 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
             },
           ]}
         >
-          <Input prefix={<GlobalOutlined />} placeholder="https://www.linkedin.com/in/username" />
+          <Input prefix={<FontAwesomeIcon
+                              icon={faLinkedin}
+                              size="18"
+                              style={{ marginRight: '5px', color: 'gray' }}
+                            />} placeholder="https://www.linkedin.com/in/username" />
         </Form.Item>
 
         <Form.Item
@@ -100,16 +106,16 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
         </Form.Item>
 
         <Form.Item
-          label="Email"
-          name="email"
+          label="Website"
+          name="Website"
           rules={[
-            { required: true, message: "Email is required" },
-            { type: "email", message: "Enter a valid email" },
+
+           {type:"url",message: "Website is required" },
           ]}
         >
-          <Input prefix={<MailOutlined />} placeholder="your@email.com" />
+          <Input prefix={<GlobalOutlined />} placeholder="https://www.your-website.com" />
         </Form.Item>
-
+        
         <Form.Item
           label="Type of Investor"
           name="investorType"
@@ -122,6 +128,42 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
             <Option value="Corporate Investor">Corporate Investor (CVC)</Option>
           </Select>
         </Form.Item>
+
+        <Form.Item
+          label="Twitter Handle"
+          name="twitter"
+          rules={[
+            {
+              required: true,
+              message: "Please enter your Twitter handle!",
+            },
+            {
+              pattern: /^@?(\w){4,15}$/,
+              message: "Invalid Twitter username! Must be 4-15 chars (A-Z, 0-9, _).",
+            },
+          ]}
+          normalize={(value) => (value && !value.startsWith("@") ? `@${value}` : value)} // Auto-add "@" if missing
+        >
+          <Input prefix={<FontAwesomeIcon
+                              icon={faTwitter}
+                              size="18"
+                              style={{ marginRight: '5px', color: 'gray' }}
+                            />} placeholder="@yourusername" />
+        </Form.Item>
+
+
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[
+            { required: true, message: "Email is required" },
+            { type: "email", message: "Enter a valid email" },
+          ]}
+        >
+          <Input prefix={<MailOutlined />} placeholder="your@email.com" />
+        </Form.Item>
+
+        
 
         <Form.Item
           label="Years of Experience"

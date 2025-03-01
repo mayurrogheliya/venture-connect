@@ -20,19 +20,23 @@ import StartupProfileForm from '../pages/StartupProfileForm';
 import JoinEvent from '../pages/JoinEvent';
 import StartupProfile from '../pages/StartupProfile';
 import AdminLayout from '../Layouts/AdminLayout';
-
-import InvestorOpportunity from '../pages/InvestorOpportunity';
+import InvestorOpportunity from '../pages/InvestorOpportunity.jsx';
+import RegStartup from '../pages/RegStartup.jsx';
 import UserMain from '../pages/Admin/User/UserMain';
+import AdminOpportunity from '../pages/Admin/Opportunity/AdminOpportunity';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
+      {/* Public Routes */}
       <Route element={<MainLayout />}>
         <Route index element={<Landing />} />
         <Route path="signin" element={<Signin />} />
         <Route path="signup" element={<Signup />} />
         <Route path="joinevent" element={<JoinEvent />} />
       </Route>
+
+      {/* User Protected Routes */}
       <Route element={<ProtectedRoute />}>
         <Route
           path="/complete-startup-profile"
@@ -51,18 +55,18 @@ const router = createBrowserRouter(
             path="/Add-Oppertunity-Investor"
             element={<AddOpportunity />}
           />
-          <Route path="/Investor-Opportunity" element={<InvestorOpportunity />} />
+          <Route
+            path="/Investor-Opportunity"
+            element={<InvestorOpportunity />}
+          />
           <Route path="/investor-profile" element={<InvestorProfile />} />
         </Route>
-        <Route element={<AdminLayout />}>
-          <Route
-            path="/admin"
-            element={
-              <p className="text-4xl font-medium">Welcome to admin dashboard</p>
-            }
-          />
-          <Route path="/admin" element={<UserMain />} />
+        <Route path="/Registered-Startups" element={<RegStartup />} />
 
+        {/* Admin Routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="users" element={<UserMain />} />
+          <Route path="opportunities" element={<AdminOpportunity />} />
         </Route>
       </Route>
     </Route>,
