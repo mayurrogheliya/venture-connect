@@ -2,15 +2,20 @@ import { Button, Card, Col, Form, Input, Row, Upload } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { faLinkedin } from '@fortawesome/free-brands-svg-icons';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined,DeleteOutlined} from '@ant-design/icons';
 import { useState } from 'react';
 
 const SPTeam = ({ form }) => {
   const { Dragger } = Upload;
-  const [teamMembers, setTeamMembers] = useState([0, 1, 2]);
+  const [teamMembers, setTeamMembers] = useState([]);
 
   const addTeamMember = () => {
     setTeamMembers([...teamMembers, teamMembers.length]);
+  };
+
+  const handleDelete = (index) => {
+    const updatedTeamMembers = teamMembers.filter((_, i) => i !== index);
+    setTeamMembers(updatedTeamMembers);
   };
   return (
     <>
@@ -51,27 +56,18 @@ const SPTeam = ({ form }) => {
             </Form.Item>
 
             <Form.Item
-              label="LinkedIn Profile"
-              name="founderLinkedin"
-              rules={[
-                {
-                  required: true,
-                  type: 'url',
-                  message: 'Please enter a valid URL!',
-                },
-              ]}
-            >
-              <Input
-                prefix={
-                  <FontAwesomeIcon
-                    icon={faLinkedin}
-                    size="18"
-                    style={{ marginRight: '5px', color: 'gray' }}
-                  />
-                }
-                placeholder="Founder LinkedIn URL"
-              />
-            </Form.Item>
+            label="LinkedIn Profile"
+            name="linkedin"
+            rules={[
+              { required: true, message: "LinkedIn profile is required" },
+              { pattern: /^https:\/\/www\.linkedin\.com\//, message: "Enter a valid LinkedIn URL" },
+            ]}
+          >
+            <Input
+              prefix={<FontAwesomeIcon icon={faLinkedin} size="18" style={{ marginRight: "5px", color: "gray" }} />}
+              placeholder="https://www.linkedin.com/"
+            />
+          </Form.Item>
 
             <Form.Item
               label="Founder Overview"
@@ -142,6 +138,11 @@ const SPTeam = ({ form }) => {
                 >
                   <Input.TextArea placeholder="Brief bio..." rows={3} />
                 </Form.Item>
+                <Button icon={<DeleteOutlined /> } danger size="small" onClick={() => handleDelete(index)}>
+                    Delete
+                </Button>
+               
+        
               </Card>
             </Col>
           ))}

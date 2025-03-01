@@ -97,7 +97,7 @@ const SPBasicInfo = ({ form }) => {
             label="Website"
             name="website"
             rules={[
-              { required: true, type: "url", message: "Please enter a valid URL!" },
+              {type: "url", message: "Please enter a valid URL!" },
             ]}
           >
             <Input
@@ -178,7 +178,6 @@ const SPBasicInfo = ({ form }) => {
             label="Twitter Handle"
             name="twitter"
             rules={[
-              { required: true, message: "Please enter your Twitter handle!" },
               { pattern: /^@?(\w){4,15}$/, message: "Invalid Twitter username! Must be 4-15 chars (A-Z, 0-9, _)." },
             ]}
             normalize={(value) => (value && !value.startsWith("@") ? `@${value}` : value)}
