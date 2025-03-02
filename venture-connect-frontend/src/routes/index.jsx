@@ -14,7 +14,7 @@ import StartupsHub from '../pages/StartupsHub';
 import InvestorNetwork from '../pages/InvestorNetwork';
 import StartupOpportunities from '../pages/StartupOpportunities';
 import BookmarkedStartups from '../pages/BookMarks';
-import InvestorProfile from '../pages/InvesterProfile';
+import InvestorProfile from '../pages/InvestorProfile';
 import AddOpportunity from '../pages/AddOpportunity';
 import StartupProfileForm from '../pages/StartupProfileForm';
 import JoinEvent from '../pages/JoinEvent';
@@ -24,6 +24,7 @@ import InvestorOpportunity from '../pages/InvestorOpportunity.jsx';
 import RegStartup from '../pages/RegStartup.jsx';
 import UserMain from '../pages/Admin/User/UserMain';
 import AdminOpportunity from '../pages/Admin/Opportunity/AdminOpportunity';
+import EditInvestorProfile from '../pages/EditInvestorProfile.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -67,6 +68,8 @@ const router = createBrowserRouter(
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="users" element={<UserMain />} />
           <Route path="opportunities" element={<AdminOpportunity />} />
+          <Route path="edit-investor-profile" element={<EditInvestorProfile />} />
+          
         </Route>
       </Route>
     </Route>,
