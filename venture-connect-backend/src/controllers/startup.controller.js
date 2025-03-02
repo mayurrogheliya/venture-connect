@@ -1,16 +1,20 @@
 import { hashPassword } from '../../utils/passwordUtils.js';
+import { parseJSONFields } from '../../utils/requestParse.js';
 import {
   errorResponse,
   successResponse,
 } from '../../utils/responseFormatter.js';
-import * as startupService from '../services/startup.service.js';
 import {
-  startupUpdateValidationSchema,
-  startupValidationSchema,
-} from '../validation/startupValidation.js';
+  deleteImageFromCloudinary,
+  uploadImageToCloudinary,
+} from '../services/cloudinary.service.js';
+import { uploadFiles } from '../services/fileUpload.service.js';
+import * as startupService from '../services/startup.service.js';
+import { startupValidationSchema } from '../validation/startupValidation.js';
 
 export const createStartupProfile = async (req, res) => {
   try {
+    parseJSONFields(req, ['basicInfo', 'metrics', 'team', 'teamMembers']);
     await startupValidationSchema.validate(req.body, { abortEarly: false });
     const {
       user_type,
@@ -19,7 +23,7 @@ export const createStartupProfile = async (req, res) => {
       basicInfo,
       metrics,
       team,
-      teamMembers,
+      teamMembers = [],
     } = req.body;
 
     const existingUser = await startupService.getUserByEmail(email);
@@ -33,12 +37,20 @@ export const createStartupProfile = async (req, res) => {
 
     const hashedPassword = await hashPassword(password);
 
+    const uploadedImages = await uploadFiles(req.files);
+
+    const membersArray = Array.isArray(teamMembers) ? teamMembers : [];
+    const formattedTeamMembers = membersArray.map((member, index) => ({
+      ...member,
+      profile_image: uploadedImages.teamMembersImages?.[index] || null,
+    }));
+
     const newUser = await startupService.createStartup(
       { user_type, email, password: hashedPassword, isProfileCompleted: true },
-      basicInfo,
+      { ...basicInfo, startup_logo: uploadedImages.startupLogo?.[0] || null },
       metrics,
-      team,
-      teamMembers,
+      { ...team, founder_image: uploadedImages.founderImage?.[0] || null },
+      formattedTeamMembers,
     );
 
     return successResponse(
@@ -47,7 +59,6 @@ export const createStartupProfile = async (req, res) => {
       'Startup profile created successfully',
     );
   } catch (error) {
-    console.log(error);
     if (error.name === 'ValidationError') {
       return errorResponse(res, error.errors[0], 400);
     }
@@ -91,15 +102,117 @@ export const getStartup = async (req, res) => {
 
 export const updateStartupProfile = async (req, res) => {
   try {
+    parseJSONFields(req, ['basicInfo', 'metrics', 'team', 'teamMembers']);
+
     const { userId } = req.params;
     if (!userId) {
       return errorResponse(res, 'Startup ID is required', 400);
     }
 
-    const updatedStartup = await startupService.updateStartup(userId, req.body);
-    if (!updatedStartup) {
+    const existingStartup = await startupService.getStartupById(userId);
+    if (!existingStartup) {
       return errorResponse(res, 'Startup not found', 404);
     }
+
+    let uploadedImages = {
+      startupLogo: existingStartup.basicInfo?.startup_logo || null,
+      founderImage: existingStartup.team?.founder_image || null,
+      teamMembersImages: Array.isArray(existingStartup.teamMembers)
+        ? existingStartup.teamMembers.map((member) => ({
+            id: member.id,
+            profile_image: member.profile_image,
+          }))
+        : [],
+    };
+
+    if (req.files) {
+      // handle startup log file
+      if (req.files.startupLogo) {
+        if (existingStartup.basicInfo?.startup_logo) {
+          await deleteImageFromCloudinary(
+            existingStartup.basicInfo.startup_logo,
+          );
+        }
+        uploadedImages.startupLogo = await uploadImageToCloudinary(
+          req.files.startupLogo[0].path,
+        );
+      }
+
+      // handle founder image file
+      if (req.files.founderImage) {
+        if (existingStartup.team?.founder_image) {
+          await deleteImageFromCloudinary(existingStartup.team.founder_image);
+        }
+        uploadedImages.founderImage = await uploadImageToCloudinary(
+          req.files.founderImage[0].path,
+        );
+      }
+
+      // handle team member images file
+      if (req.files.teamMembersImages) {
+        const teamMembersArray = Array.isArray(req.body.teamMembers)
+          ? req.body.teamMembers
+          : [];
+        const newTeamImages = req.files.teamMembersImages.map(
+          (file, index) => ({
+            id: teamMembersArray[index]?.id || null,
+            profile_image: file.path,
+          }),
+        );
+
+        uploadedImages.teamMembersImages = await Promise.all(
+          newTeamImages.map(async (member) => {
+            const teamMembersArray = Array.isArray(existingStartup.teamMembers)
+              ? existingStartup.teamMembers
+              : [];
+
+            const existingMember = teamMembersArray.find(
+              (tm) => tm.id === member.id,
+            );
+            if (existingMember?.profile_image) {
+              await deleteImageFromCloudinary(existingMember.profile_image);
+            }
+            return {
+              id: member.id,
+              profile_image: await uploadImageToCloudinary(
+                member.profile_image,
+              ),
+            };
+          }),
+        );
+      }
+    }
+
+    const membersArray = Array.isArray(req.body.teamMembers)
+      ? req.body.teamMembers
+      : [];
+
+    const formattedTeamMembers = membersArray.map((member) => {
+      const uploadedMemberImage = uploadedImages.teamMembersImages.find(
+        (img) => img.id === member.id,
+      );
+
+      return {
+        ...member,
+        profile_image: uploadedMemberImage
+          ? uploadedMemberImage.profile_image
+          : member.profile_image || null,
+      };
+    });
+
+    const updatedStartup = await startupService.updateStartup(userId, {
+      ...req.body,
+      basicInfo: {
+        ...req.body.basicInfo,
+        startup_logo: uploadedImages.startupLogo,
+      },
+      metrics: { ...req.body.metrics },
+      team: {
+        ...req.body.team,
+        founder_image: uploadedImages.founderImage,
+      },
+      teamMembers: formattedTeamMembers,
+    });
 
     return successResponse(res, updatedStartup, 'Startup updated successfully');
   } catch (error) {
@@ -114,10 +227,28 @@ export const deleteStartup = async (req, res) => {
       return errorResponse(res, 'Startup ID is required', 400);
     }
 
-    const deleted = await startupService.deleteStartup(userId);
-    if (!deleted) {
+    const existingStartup = await startupService.getStartupById(userId);
+    if (!existingStartup) {
       return errorResponse(res, 'Startup not found', 404);
     }
+
+    if (existingStartup.basicInfo?.startup_logo) {
+      await deleteImageFromCloudinary(existingStartup.basicInfo.startup_logo);
+    }
+
+    if (existingStartup.team?.founder_image) {
+      await deleteImageFromCloudinary(existingStartup.team.founder_image);
+    }
+
+    if (Array.isArray(existingStartup.team?.teamMember)) {
+      await Promise.all(
+        existingStartup.team.teamMember
+          .filter((member) => member.profile_image)
+          .map((member) => deleteImageFromCloudinary(member.profile_image)),
+      );
+    }
+
+    await startupService.deleteStartup(userId);
 
     return successResponse(res, {}, 'Startup deleted successfully');
   } catch (error) {
