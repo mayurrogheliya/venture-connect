@@ -28,14 +28,14 @@ const AdminLayout = () => {
     <div className="flex flex-col h-screen overflow-hidden">
       {/* Header */}
       <header className="w-full h-15 shadow-sm bg-white flex items-center justify-between px-4 lg:px-8 z-10">
-        <NavLink to="/admin">
+        <NavLink to="/admin/users">
           <div className="text-xl font-semibold">
             Venture <span className="text-blue-500">Connect</span>
           </div>
         </NavLink>
         <nav className="hidden md:flex gap-8 font-semibold">
           <NavLink
-            to="/admin"
+            to="/admin/users"
             className={({ isActive }) =>
               `${
                 isActive ? ' text-blue-500' : 'text-gray-600 hover:text-black'
@@ -93,7 +93,7 @@ const AdminLayout = () => {
         className={`fixed inset-y-0 left-0 bg-white shadow-lg w-64 transform ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 md:hidden z-20 h-full flex flex-col`}
       >
         <div className="flex justify-between shadow-sm px-4 py-2 gap-3 items-center h-15">
-          <NavLink to="/admin" onClick={closeMenu}>
+          <NavLink to="/admin/users" onClick={closeMenu}>
             <p className="font-semibold">
               Venture <span className="text-blue-500">Connect</span>
             </p>
@@ -107,7 +107,7 @@ const AdminLayout = () => {
         </div>
         <nav className="flex flex-col my-4 px-4 font-semibold">
           <NavLink
-            to="/admin"
+            to="/admin/users"
             className={({ isActive }) =>
               `py-2 px-4 rounded ${
                 isActive

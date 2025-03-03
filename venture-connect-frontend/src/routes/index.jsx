@@ -1,6 +1,7 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
   Route,
   RouterProvider,
 } from 'react-router-dom';
@@ -66,10 +67,13 @@ const router = createBrowserRouter(
 
         {/* Admin Routes */}
         <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<UserMain />} />
           <Route path="opportunities" element={<AdminOpportunity />} />
-          <Route path="edit-investor-profile" element={<EditInvestorProfile />} />
-          
+          <Route
+            path="edit-investor-profile"
+            element={<EditInvestorProfile />}
+          />
         </Route>
       </Route>
     </Route>,
