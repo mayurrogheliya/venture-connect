@@ -11,9 +11,7 @@ const InvestorUser = () => {
     <>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Flex justify="space-between">
-          <Title level={2}>
-            {mode === 'table' ? 'Investor Users' : 'Add Investor User'}
-          </Title>
+          <Title level={2}>Investor Users</Title>
           <>
             {mode == 'form' && (
               <Button
