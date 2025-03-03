@@ -1,4 +1,8 @@
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 import { Button, Input, Space, Table, Tooltip } from 'antd';
 import { useState } from 'react';
 
@@ -83,7 +87,7 @@ const InvestorUserTable = () => {
             key={index}
             className="text-blue-700 mr-1 md:text-base bg-blue-100 rounded-full px-2 py-1"
           >
-            {domain.trim()}
+            {highlightText(domain.trim(), searchText)}
           </span>
         )),
     },
@@ -112,10 +116,18 @@ const InvestorUserTable = () => {
       ),
     },
   ];
+
+  const filteredData = StartupsRecords.filter((record) =>
+    ['name', 'type', 'location', 'domains'].some((key) =>
+      record[key]?.toString().toLowerCase().includes(searchText),
+    ),
+  );
+
   return (
     <>
       <Input
-        placeholder="Search..."
+        placeholder="Search Investor..."
+        prefix={<SearchOutlined style={{ color: 'gray' }} />}
         style={{ marginBottom: 16 }}
         onChange={handleSearch}
         value={searchText}
@@ -123,8 +135,8 @@ const InvestorUserTable = () => {
       <Table
         style={{ overflowX: 'auto' }}
         columns={columns}
-        dataSource={StartupsRecords}
-        rowKey="_id"
+        dataSource={filteredData}
+        rowKey="id"
         bordered={true}
         pagination={{
           pageSize: pageSize,
