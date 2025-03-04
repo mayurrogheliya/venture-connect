@@ -63,3 +63,33 @@ export const StartupUploadMiddleware = (req, res, next) => {
     next();
   });
 };
+
+const EventFileFilter = (req, file, cb) => {
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+  if (!allowedTypes.includes(file.mimetype)) {
+    return cb(new Error('Only JPEG, JPG and PNG files are allowed.'), false);
+  }
+
+  cb(null, true);
+};
+
+const EventUpload = multer({
+  storage,
+  fileFilter: EventFileFilter,
+  limits: 5 * 1024 * 1024,
+});
+
+export const EventUploadMiddleware = (req, res, next) => {
+  EventUpload(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      return errorResponse(res, `Multer error: ${err.message}`, 400);
+    } else if (err) {
+      return errorResponse(
+        res,
+        `Error during file upload: ${err.message}`,
+        400,
+      );
+    }
+    next();
+  });
+};
