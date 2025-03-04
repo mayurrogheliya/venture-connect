@@ -24,7 +24,7 @@ import AdminLayout from '../Layouts/AdminLayout';
 import InvestorOpportunity from '../pages/InvestorOpportunity.jsx';
 import RegStartup from '../pages/RegStartup.jsx';
 import UserMain from '../pages/Admin/User/UserMain';
-import AdminOpportunity from '../pages/Admin/Opportunity/AdminOpportunity';
+import AdminOpportunity from '../pages/Admin/AdminOpportunity.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
