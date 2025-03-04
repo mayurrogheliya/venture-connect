@@ -1,0 +1,71 @@
+import { uploadEventFile } from '../services/fileUpload.service.js';
+import * as EventService from '../services/event.service.js';
+import {
+  errorResponse,
+  successResponse,
+} from '../../utils/responseFormatter.js';
+import { deleteImageFromCloudinary } from '../services/cloudinary.service.js';
+
+export const createEvent = async (req, res) => {
+  try {
+    const uploadedImage = await uploadEventFile(req.file);
+    const eventData = { ...req.body, event_url: uploadedImage.url };
+    const event = await EventService.createEventService(eventData);
+    return successResponse(res, event, 'Event created successfully');
+  } catch (error) {
+    return errorResponse(res, error.message);
+  }
+};
+
+export const getAllEvents = async (req, res) => {
+  try {
+    const events = await EventService.getAllEventsService();
+    return successResponse(res, events, 'Events retrieved successfully');
+  } catch (error) {
+    return errorResponse(res, error.message);
+  }
+};
+
+export const getEventById = async (req, res) => {
+  try {
+    const event = await EventService.getEventByIdService(req.params.id);
+    if (!event) return errorResponse(res, 'Event not found', 404);
+    return successResponse(res, event, 'Event retrieved successfully');
+  } catch (error) {
+    return errorResponse(res, error.message);
+  }
+};
+
+export const updateEvent = async (req, res) => {
+  try {
+    const event = await EventService.getEventByIdService(req.params.id);
+    if (!event) return errorResponse(res, 'Event not found', 404);
+
+    if (req.file) {
+      await deleteImageFromCloudinary(event.event_url);
+      const uploadedImage = await uploadEventFile(req.file);
+      req.body.event_url = uploadedImage.url;
+    }
+
+    const updatedEvent = await EventService.updateEventService(
+      req.params.id,
+      req.body,
+    );
+    return successResponse(res, updatedEvent, 'Event updated successfully');
+  } catch (error) {
+    return errorResponse(res, error.message);
+  }
+};
+
+export const deleteEvent = async (req, res) => {
+  try {
+    const event = await EventService.getEventByIdService(req.params.id);
+    if (!event) return errorResponse(res, 'Event not found', 404);
+
+    await deleteImageFromCloudinary(event.event_url);
+    await EventService.deleteEventService(req.params.id);
+    return successResponse(res, null, 'Event deleted successfully');
+  } catch (error) {
+    return errorResponse(res, error.message);
+  }
+};
