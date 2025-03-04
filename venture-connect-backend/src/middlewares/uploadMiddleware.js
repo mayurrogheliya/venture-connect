@@ -76,8 +76,8 @@ const EventFileFilter = (req, file, cb) => {
 const EventUpload = multer({
   storage,
   fileFilter: EventFileFilter,
-  limits: 5 * 1024 * 1024,
-});
+  limits: { fileSize: 5 * 1024 * 1024 },
+}).single('event_url');
 
 export const EventUploadMiddleware = (req, res, next) => {
   EventUpload(req, res, (err) => {
@@ -90,6 +90,12 @@ export const EventUploadMiddleware = (req, res, next) => {
         400,
       );
     }
+
+    // Check if file exists before proceeding
+    if (!req.file) {
+      return errorResponse(res, 'Event image is required', 400);
+    }
+
     next();
   });
 };
