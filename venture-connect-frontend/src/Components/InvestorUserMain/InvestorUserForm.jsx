@@ -8,6 +8,7 @@ import {
   DeleteOutlined,
   PlusOutlined,
   ClockCircleOutlined,
+  EnvironmentOutlined
 } from '@ant-design/icons';
 import {
   Typography,
@@ -63,19 +64,7 @@ const formatInvestment = (value) => {
   return `₹${value}`;
 };
 
-const EditProfileImage = ({ image }) => {
-  return (
-    <div className="w-24 h-24 rounded-full overflow-hidden border border-gray-300 flex items-center justify-center">
-      {image ? (
-        <img src={image} alt="Profile" className="w-full h-full object-cover" />
-      ) : (
-        <UserOutlined className="text-gray-400 text-3xl" />
-      )}
-    </div>
-  );
-};
-
-const InvestorUserForm = () => {
+const EditInvestorProfile = () => {
   const [form] = Form.useForm();
   const [investments, setInvestments] = useState([]);
   const [investmentRange, setInvestmentRange] = useState([20000, 200000000]);
@@ -109,7 +98,7 @@ const InvestorUserForm = () => {
 
     if (!isImage) {
       message.error('Only JPG and PNG files are allowed!');
-      return false; // Prevent upload
+      return false;
     }
     const reader = new FileReader();
     reader.onload = (e) => setProfileImage(e.target.result);
@@ -121,13 +110,14 @@ const InvestorUserForm = () => {
   const handleRemoveImage = () => {
     setProfileImage(null);
   };
+
   return (
-    <div>
+    <div className="">
+      <h1 className="text-xl font-bold mb-5">Edit Profile Information</h1>
       <Form form={form} layout="vertical">
         <Card title="Basic Information" className="shadow-md rounded-lg mb-3">
           {/* Profile Picture & Upload Controls */}
           <Row gutter={8} align="middle">
-            {' '}
             <Col
               xs={24}
               md={3}
@@ -135,8 +125,8 @@ const InvestorUserForm = () => {
             >
               <EditProfileImage image={profileImage} />
             </Col>
+
             <Col xs={24} md={18} className="flex flex-col gap-2">
-              {' '}
               <p className="text-xl font-semibold">{userName}</p>
               <Upload
                 maxCount={1}
@@ -199,10 +189,20 @@ const InvestorUserForm = () => {
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
-              <Form.Item label="Location" name="location">
+              <Form.Item
+                label="Location"
+                name="location"
+                rules={[
+                  { required: true, message: 'Location is required' },
+                  {
+                    pattern: /^[A-Za-z]+,\s[A-Za-z]+$/,
+                    message: 'Format: City, Country',
+                  },
+                ]}
+              >
                 <Input
-                  placeholder="Enter Location"
-                  defaultValue="Rajkot, India"
+                  prefix={<EnvironmentOutlined />}
+                  placeholder="City, Country"
                 />
               </Form.Item>
             </Col>
@@ -411,7 +411,10 @@ const InvestorUserForm = () => {
                 <Form.Item
                   label="Interested in Providing Mentorship?"
                   name="mentorship"
-                >
+                  rules={[
+                    { required: true, message: 'Please select your mentorship prefernces' },
+                  ]}
+                  >
                   <Radio.Group>
                     <Radio value="Yes">Yes</Radio>
                     <Radio value="No">No</Radio>
@@ -443,19 +446,28 @@ const InvestorUserForm = () => {
 
           {/* Previous Investments Section */}
         </div>
-        <Card title="Previous Investments" className="shadow-md rounded-lg">
-          <Table
-            dataSource={investments}
-            pagination={false}
-            rowKey={(record, index) => index}
-            scroll={{ x: 'max-content' }}
-            columns={[
-              {
-                title: 'Year',
-                dataIndex: 'year',
-                key: 'year',
-                width: 100,
-                render: (_, record, index) => (
+        <Table
+          dataSource={investments}
+          pagination={false}
+          rowKey={(record, index) => index}
+          scroll={{ x: 'max-content' }}
+          columns={[
+            {
+              title: 'Year',
+              dataIndex: 'year',
+              key: 'year',
+              width: 100,
+              render: (_, record, index) => (
+                <Form.Item
+                  name={['investments', index, 'year']}
+                  rules={[
+                    { required: true, message: 'Year is required' },
+                    {
+                      pattern: /^\d{4}$/,
+                      message: 'Enter a valid 4-digit year',
+                    },
+                  ]}
+                >
                   <Input
                     placeholder="YYYY"
                     value={record.year}
@@ -468,15 +480,22 @@ const InvestorUserForm = () => {
                       }
                     }}
                   />
-                ),
-              },
-              {
-                title: 'Startup Name',
-                dataIndex: 'startup',
-                key: 'startup',
-                width: 200,
-                ellipsis: true,
-                render: (_, record, index) => (
+                </Form.Item>
+              ),
+            },
+            {
+              title: 'Startup Name',
+              dataIndex: 'startup',
+              key: 'startup',
+              width: 200,
+              ellipsis: true,
+              render: (_, record, index) => (
+                <Form.Item
+                  name={['investments', index, 'startup']}
+                  rules={[
+                    { required: true, message: 'Startup Name is required' },
+                  ]}
+                >
                   <Input
                     placeholder="Startup name"
                     value={record.startup}
@@ -485,17 +504,21 @@ const InvestorUserForm = () => {
                       newData[index].startup = e.target.value;
                       setInvestments(newData);
                     }}
-                    required
                   />
-                ),
-              },
-              {
-                title: 'Domain',
-                dataIndex: 'domain',
-                key: 'domain',
-                width: 150,
-                ellipsis: true,
-                render: (_, record, index) => (
+                </Form.Item>
+              ),
+            },
+            {
+              title: 'Domain',
+              dataIndex: 'domain',
+              key: 'domain',
+              width: 150,
+              ellipsis: true,
+              render: (_, record, index) => (
+                <Form.Item
+                  name={['investments', index, 'domain']}
+                  rules={[{ required: true, message: 'Domain is required' }]}
+                >
                   <Input
                     placeholder="Domain"
                     value={record.domain}
@@ -504,17 +527,23 @@ const InvestorUserForm = () => {
                       newData[index].domain = e.target.value;
                       setInvestments(newData);
                     }}
-                    required
                   />
-                ),
-              },
-              {
-                title: 'Description',
-                dataIndex: 'description',
-                key: 'description',
-                width: 250,
-                ellipsis: true,
-                render: (_, record, index) => (
+                </Form.Item>
+              ),
+            },
+            {
+              title: 'Description',
+              dataIndex: 'description',
+              key: 'description',
+              width: 250,
+              ellipsis: true,
+              render: (_, record, index) => (
+                <Form.Item
+                  name={['investments', index, 'description']}
+                  rules={[
+                    { required: true, message: 'Description is required' },
+                  ]}
+                >
                   <Input
                     placeholder="Brief description"
                     value={record.description}
@@ -527,38 +556,38 @@ const InvestorUserForm = () => {
                       }
                     }}
                   />
-                ),
-              },
-              {
-                title: 'Action',
-                key: 'action',
-                width: 80,
-                fixed: 'right',
-                render: (_, __, index) => (
-                  <Button
-                    type="text"
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={() => removeInvestmentRow(index)}
-                  />
-                ),
-              },
-            ]}
-          />
-          <Button
-            type="dashed"
-            className="mt-3"
-            icon={<PlusOutlined />}
-            onClick={addInvestmentRow}
-            disabled={investments.length >= 6}
-          >
-            Add More
-          </Button>
-        </Card>
+                </Form.Item>
+              ),
+            },
+            {
+              title: 'Action',
+              key: 'action',
+              width: 80,
+              fixed: 'right',
+              render: (_, __, index) => (
+                <Button
+                  type="text"
+                  danger
+                  icon={<DeleteOutlined />}
+                  onClick={() => removeInvestmentRow(index)}
+                />
+              ),
+            },
+          ]}
+        />
+        <Button
+          type="dashed"
+          className="mt-3"
+          icon={<PlusOutlined />}
+          onClick={addInvestmentRow}
+          disabled={investments.length >= 6}
+        >
+          Add More
+        </Button>
         <div className="flex justify-end mt-3 gap-2">
           <Button type="default">Cancel</Button>
           <Button type="primary" onClick={handleSaveChanges}>
-            Save
+            Save Changes
           </Button>
         </div>
       </Form>
@@ -566,4 +595,16 @@ const InvestorUserForm = () => {
   );
 };
 
-export default InvestorUserForm;
+export default EditInvestorProfile;
+
+const EditProfileImage = ({ image }) => {
+  return (
+    <div className="w-24 h-24 rounded-full overflow-hidden border border-gray-300 flex items-center justify-center">
+      {image ? (
+        <img src={image} alt="Profile" className="w-full h-full object-cover" />
+      ) : (
+        <UserOutlined className="text-gray-400 text-3xl" />
+      )}
+    </div>
+  );
+};
