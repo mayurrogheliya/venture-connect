@@ -25,6 +25,7 @@ import InvestorOpportunity from '../pages/InvestorOpportunity.jsx';
 import RegStartup from '../pages/RegStartup.jsx';
 import UserMain from '../pages/Admin/User/UserMain';
 import AdminOpportunity from '../pages/Admin/AdminOpportunity.jsx';
+import AdminEvents from '../pages/Admin/AdminEvents.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -69,6 +70,7 @@ const router = createBrowserRouter(
           <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<UserMain />} />
           <Route path="opportunities" element={<AdminOpportunity />} />
+          <Route path="events" element={<AdminEvents />} />
         </Route>
       </Route>
     </Route>,
