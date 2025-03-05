@@ -45,7 +45,7 @@ const AdminLayout = () => {
             Users
           </NavLink>
           <NavLink
-            to="/investor-network"
+            to="/admin/events"
             className={({ isActive }) =>
               `${
                 isActive ? ' text-blue-500' : 'text-gray-600 hover:text-black'
@@ -120,7 +120,7 @@ const AdminLayout = () => {
             Users
           </NavLink>
           <NavLink
-            to="/investor-network"
+            to="/admin/events"
             className={({ isActive }) =>
               `py-2 px-4 rounded ${
                 isActive
