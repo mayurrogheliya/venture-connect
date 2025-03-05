@@ -1,4 +1,4 @@
-import { uploadEventFile } from '../services/fileUpload.service.js';
+import { uploadSingleFile } from '../services/fileUpload.service.js';
 import * as EventService from '../services/event.service.js';
 import {
   errorResponse,
@@ -8,7 +8,7 @@ import { deleteImageFromCloudinary } from '../services/cloudinary.service.js';
 
 export const createEvent = async (req, res) => {
   try {
-    const uploadedImage = await uploadEventFile(req.file);
+    const uploadedImage = await uploadSingleFile(req.file);
     const eventData = { ...req.body, event_url: uploadedImage.url };
     const event = await EventService.createEventService(eventData);
     return successResponse(res, event, 'Event created successfully');
@@ -43,7 +43,7 @@ export const updateEvent = async (req, res) => {
 
     if (req.file) {
       await deleteImageFromCloudinary(event.event_url);
-      const uploadedImage = await uploadEventFile(req.file);
+      const uploadedImage = await uploadSingleFile(req.file);
       req.body.event_url = uploadedImage.url;
     }
 

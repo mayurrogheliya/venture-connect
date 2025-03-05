@@ -17,7 +17,7 @@ export const uploadFiles = async (files) => {
   return uploadedImages;
 };
 
-export const uploadEventFile = async (file) => {
+export const uploadSingleFile = async (file) => {
   if (!file) {
     throw new Error('No file provided for upload');
   }
