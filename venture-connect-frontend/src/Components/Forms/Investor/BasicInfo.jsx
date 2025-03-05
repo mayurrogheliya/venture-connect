@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import { Input, Select, Form } from "antd";
+import { Input, Select, Form } from 'antd';
 import {
   UserOutlined,
   EnvironmentOutlined,
@@ -7,23 +7,23 @@ import {
   PhoneOutlined,
   ClockCircleOutlined,
   GlobalOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
 import { faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import ProfileImageUpload from "../Controls/ProfileImageUpload";
-import { useState, forwardRef, useImperativeHandle } from "react";
+import ProfileImageUpload from '../Controls/ProfileImageUpload';
+import { useState, forwardRef, useImperativeHandle } from 'react';
 
 const { Option } = Select;
 
 const BasicInfoForm = forwardRef(({ onNext }, ref) => {
   const [form] = Form.useForm();
   const [profileImage, setProfileImage] = useState(null);
-  const [imageError, setImageError] = useState("");
+  const [imageError, setImageError] = useState('');
 
   // Handle profile image upload
   const handleImageUpload = (image) => {
     setProfileImage(image);
-    setImageError(""); 
+    setImageError('');
   };
 
   // Expose validateForm method via ref
@@ -34,13 +34,12 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
 
         // Validate Profile Image
         if (!profileImage) {
-          setImageError("Profile image is required.");
+          setImageError('Profile image is required.');
           return false;
         }
 
         return true;
       } catch (error) {
-
         return false;
       }
     },
@@ -54,7 +53,9 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
       <div className="flex justify-center mt-4 mb-4">
         <ProfileImageUpload onImageUpload={handleImageUpload} />
       </div>
-      {imageError && <p className="text-red-500 text-sm text-center mt-2">{imageError}</p>}
+      {imageError && (
+        <p className="text-red-500 text-sm text-center mt-2">{imageError}</p>
+      )}
 
       {/* Form Section */}
       <Form
@@ -66,10 +67,10 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
           label="Full Name"
           name="fullName"
           rules={[
-            { required: true, message: "Full Name is required" },
+            { required: true, message: 'Full Name is required' },
             {
               pattern: /^[A-Za-z\s]+$/,
-              message: "Full Name should contain only letters and spaces",
+              message: 'Full Name should contain only letters and spaces',
             },
           ]}
         >
@@ -80,26 +81,34 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
           label="LinkedIn Profile"
           name="linkedin"
           rules={[
-            { required: true, message: "LinkedIn profile is required" },
+            { required: true, message: 'LinkedIn profile is required' },
             {
               pattern: /^https:\/\/www\.linkedin\.com\//,
-              message: "Enter a valid LinkedIn URL",
+              message: 'Enter a valid LinkedIn URL',
             },
           ]}
         >
-          <Input prefix={<FontAwesomeIcon
-                              icon={faLinkedin}
-                              size="18"
-                              style={{ marginRight: '5px', color: 'gray' }}
-                            />} placeholder="https://www.linkedin.com/in/username" />
+          <Input
+            prefix={
+              <FontAwesomeIcon
+                icon={faLinkedin}
+                size="18"
+                style={{ marginRight: '5px', color: 'gray' }}
+              />
+            }
+            placeholder="https://www.linkedin.com/in/username"
+          />
         </Form.Item>
 
         <Form.Item
           label="Location"
           name="location"
           rules={[
-            { required: true, message: "Location is required" },
-            { pattern: /^[A-Za-z]+,\s[A-Za-z]+$/, message: "Format: City, Country" },
+            { required: true, message: 'Location is required' },
+            {
+              pattern: /^[A-Za-z]+,\s[A-Za-z]+$/,
+              message: 'Format: City, Country',
+            },
           ]}
         >
           <Input prefix={<EnvironmentOutlined />} placeholder="City, Country" />
@@ -108,23 +117,25 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
         <Form.Item
           label="Website"
           name="Website"
-          rules={[
-
-           {type:"url",message: "Website is required" },
-          ]}
+          rules={[{ type: 'url', message: 'Website is required' }]}
         >
-          <Input prefix={<GlobalOutlined />} placeholder="https://www.your-website.com" />
+          <Input
+            prefix={<GlobalOutlined />}
+            placeholder="https://www.your-website.com"
+          />
         </Form.Item>
-        
+
         <Form.Item
           label="Type of Investor"
           name="investorType"
-          rules={[{ required: true, message: "Investor type is required" }]}
+          rules={[{ required: true, message: 'Investor type is required' }]}
         >
           <Select placeholder="Select type" className="w-full">
             <Option value="Angel Investor">Angel Investor</Option>
             <Option value="Venture Capitalist">Venture Capitalist</Option>
-            <Option value="Private Equity Investor">Private Equity (PE) Investor</Option>
+            <Option value="Private Equity Investor">
+              Private Equity (PE) Investor
+            </Option>
             <Option value="Corporate Investor">Corporate Investor (CVC)</Option>
           </Select>
         </Form.Item>
@@ -135,42 +146,47 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
           rules={[
             {
               required: true,
-              message: "Please enter your Twitter handle!",
+              message: 'Please enter your Twitter handle!',
             },
             {
               pattern: /^@?(\w){4,15}$/,
-              message: "Invalid Twitter username! Must be 4-15 chars (A-Z, 0-9, _).",
+              message:
+                'Invalid Twitter username! Must be 4-15 chars (A-Z, 0-9, _).',
             },
           ]}
-          normalize={(value) => (value && !value.startsWith("@") ? `@${value}` : value)} // Auto-add "@" if missing
+          normalize={(value) =>
+            value && !value.startsWith('@') ? `@${value}` : value
+          } // Auto-add "@" if missing
         >
-          <Input prefix={<FontAwesomeIcon
-                              icon={faTwitter}
-                              size="18"
-                              style={{ marginRight: '5px', color: 'gray' }}
-                            />} placeholder="@yourusername" />
+          <Input
+            prefix={
+              <FontAwesomeIcon
+                icon={faTwitter}
+                size="18"
+                style={{ marginRight: '5px', color: 'gray' }}
+              />
+            }
+            placeholder="@yourusername"
+          />
         </Form.Item>
-
 
         <Form.Item
           label="Email"
           name="email"
           rules={[
-            { required: true, message: "Email is required" },
-            { type: "email", message: "Enter a valid email" },
+            { required: true, message: 'Email is required' },
+            { type: 'email', message: 'Enter a valid email' },
           ]}
         >
           <Input prefix={<MailOutlined />} placeholder="your@email.com" />
         </Form.Item>
 
-        
-
         <Form.Item
           label="Years of Experience"
           name="experience"
           rules={[
-            { required: true, message: "Experience is required" },
-            { pattern: /^[0-9]+$/, message: "Enter a valid number" },
+            { required: true, message: 'Experience is required' },
+            { pattern: /^[0-9]+$/, message: 'Enter a valid number' },
           ]}
         >
           <Input prefix={<ClockCircleOutlined />} placeholder="Enter years" />
@@ -180,17 +196,23 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
           label="Phone"
           name="phone"
           rules={[
-            { required: true, message: "Phone number is required" },
-            { pattern: /^[0-9]{10}$/, message: "Enter a valid 10-digit number" },
+            { required: true, message: 'Phone number is required' },
+            {
+              pattern: /^[0-9]{10}$/,
+              message: 'Enter a valid 10-digit number',
+            },
           ]}
         >
-          <Input prefix={<PhoneOutlined />} placeholder="without country code" />
+          <Input
+            prefix={<PhoneOutlined />}
+            placeholder="without country code"
+          />
         </Form.Item>
 
         <Form.Item
           label="Preferred Startup Stage"
           name="startup_stage"
-          rules={[{ required: true, message: "Startup Stage is required" }]}
+          rules={[{ required: true, message: 'Startup Stage is required' }]}
         >
           <Select placeholder="Select stage" className="w-full">
             <Option value="Ideation">Ideation</Option>
