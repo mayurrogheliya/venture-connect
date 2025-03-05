@@ -11,8 +11,27 @@ const eventValidationSchema = yup.object().shape({
     .min(1, 'Capacity must be at least 1')
     .required('Capacity is required'),
   description: yup.string().required('Description is required'),
-  keyhighlights: yup.string().required('Key highlights are required'),
-  whoShouldAttend: yup.string().required('Who should attend is required'),
+  keyhighlights: yup
+    .array()
+    .of(
+      yup
+        .string()
+        .trim()
+        .min(1, 'Each highlight must be at least 1 character long'),
+    )
+    .min(1, 'At least one key highlight is required')
+    .required('Key highlights are required'),
+
+  whoShouldAttend: yup
+    .array()
+    .of(
+      yup
+        .string()
+        .trim()
+        .min(1, 'Each attendee type must be at least 1 character long'),
+    )
+    .min(1, 'At least one attendee type is required')
+    .required('Who should attend is required'),
   date: yup
     .date()
     .required('Event date is required')

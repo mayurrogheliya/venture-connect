@@ -1,22 +1,7 @@
 import sequelize from '../config/database.js';
 import { DataTypes, Model } from 'sequelize';
 
-class Event extends Model {
-  getKeyHighlights() {
-    return this.keyHighlights ? this.keyhighlights.split('\n') : [];
-  }
-
-  setKeyHighlights(highlightsArray) {
-    this.keyhighlights = highlightsArray.join('\n');
-  }
-
-  getWhoShouldAttend() {
-    return this.whoShouldAttend ? this.whoShouldAttend.split('\n') : [];
-  }
-  setWhoShouldAttend(WhoShouldAttendArray) {
-    this.whoShouldAttend = WhoShouldAttendArray.join('\n');
-  }
-}
+class Event extends Model {}
 
 Event.init(
   {
@@ -54,12 +39,14 @@ Event.init(
     },
 
     keyhighlights: {
-      type: DataTypes.TEXT,
-      allowNull: true,
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: false,
+      defaultValue: [],
     },
     whoShouldAttend: {
-      type: DataTypes.TEXT,
-      allowNull: true,
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: false,
+      defaultValue: [],
     },
 
     date: {
