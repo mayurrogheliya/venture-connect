@@ -19,4 +19,10 @@ StartupTeam.hasMany(StartupTeamMember, {
 });
 StartupTeamMember.belongsTo(StartupTeam, { foreignKey: 'teamId' });
 
-export { User, StartupBasicInfo };
+export {
+  User,
+  StartupBasicInfo,
+  StartupMetrics,
+  StartupTeam,
+  StartupTeamMember,
+};
