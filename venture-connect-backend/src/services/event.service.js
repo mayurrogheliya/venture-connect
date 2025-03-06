@@ -1,10 +1,14 @@
-// Event Service Layer
 import Event from '../models/event.model.js';
 import eventValidationSchema from '../validation/eventValidation.js';
 
 export const createEventService = async (eventData) => {
   await eventValidationSchema.validate(eventData, { abortEarly: false });
-  return await Event.create(eventData);
+
+  return await Event.create({
+    ...eventData,
+    keyhighlights: eventData.keyhighlights || [],
+    whoShouldAttend: eventData.whoShouldAttend || [],
+  });
 };
 
 export const getAllEventsService = async () => {
@@ -19,7 +23,12 @@ export const updateEventService = async (eventId, eventData) => {
   const event = await Event.findByPk(eventId);
   if (!event) return null;
 
-  await event.update(eventData);
+  await event.update({
+    ...eventData,
+    keyhighlights: eventData.keyhighlights || event.keyhighlights,
+    whoShouldAttend: eventData.whoShouldAttend || event.whoShouldAttend,
+  });
+
   return event;
 };
 

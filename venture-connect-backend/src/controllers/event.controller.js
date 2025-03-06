@@ -8,8 +8,18 @@ import { deleteImageFromCloudinary } from '../services/cloudinary.service.js';
 
 export const createEvent = async (req, res) => {
   try {
-    const uploadedImage = await uploadSingleFile(req.file);
-    const eventData = { ...req.body, event_url: uploadedImage.url };
+    const uploadedImage = req.file ? await uploadSingleFile(req.file) : null;
+    const eventData = {
+      ...req.body,
+      event_url: uploadedImage ? uploadedImage.url : null,
+      keyhighlights: req.body.keyhighlights
+        ? JSON.parse(req.body.keyhighlights)
+        : [],
+      whoShouldAttend: req.body.whoShouldAttend
+        ? JSON.parse(req.body.whoShouldAttend)
+        : [],
+    };
+
     const event = await EventService.createEventService(eventData);
     return successResponse(res, event, 'Event created successfully');
   } catch (error) {
@@ -46,6 +56,13 @@ export const updateEvent = async (req, res) => {
       const uploadedImage = await uploadSingleFile(req.file);
       req.body.event_url = uploadedImage.url;
     }
+
+    req.body.keyhighlights = req.body.keyhighlights
+      ? JSON.parse(req.body.keyhighlights)
+      : event.keyhighlights;
+    req.body.whoShouldAttend = req.body.whoShouldAttend
+      ? JSON.parse(req.body.whoShouldAttend)
+      : event.whoShouldAttend;
 
     const updatedEvent = await EventService.updateEventService(
       req.params.id,
