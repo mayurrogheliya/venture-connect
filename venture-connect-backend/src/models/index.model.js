@@ -1,4 +1,5 @@
 import InvestorBasicInfo from './InvestorBasicInfo.model.js';
+import InvestorInvestmentDetails from './InvestorInvestmentDetails.model.js';
 import StartupBasicInfo from './startupBasicInfo.model.js';
 import StartupMetrics from './startupMetrics.model.js';
 import StartupTeam from './startupTeam.model.js';
@@ -26,6 +27,12 @@ User.hasOne(InvestorBasicInfo, {
 });
 InvestorBasicInfo.belongsTo(User, { foreignKey: 'investorId' });
 
+User.hasOne(InvestorInvestmentDetails, {
+  foreignKey: 'investorId',
+  as: 'investmentDetails',
+});
+InvestorInvestmentDetails.belongsTo(User, { foreignKey: 'investorId' });
+
 export {
   User,
   StartupBasicInfo,
@@ -33,4 +40,5 @@ export {
   StartupTeam,
   StartupTeamMember,
   InvestorBasicInfo,
+  InvestorInvestmentDetails,
 };
