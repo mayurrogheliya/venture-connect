@@ -1,4 +1,4 @@
-import sequelize from '../config/database';
+import sequelize from '../config/database.js';
 import { DataTypes, Model } from 'sequelize';
 class Opportunity extends Model {}
 
@@ -34,7 +34,12 @@ Opportunity.init(
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: true,
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.ENUM('active', 'inactive'),
+      allowNull: false,
+      defaultValue: 'active',
     },
   },
   {
