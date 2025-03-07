@@ -20,4 +20,26 @@ export const investorValidationSchema = yup.object({
       preffered_stage: yup.string().required('Preferred stage is required'),
     })
     .required(),
+
+  investmentDetails: yup
+    .object({
+      investmentRange: yup.string().required('Investment range is required'),
+      companyPortfolio: yup
+        .number()
+        .integer()
+        .min(0, 'Portfolio company cannot be negative')
+        .required('Portfolio company is required'),
+      totalInvestment: yup
+        .number()
+        .integer()
+        .min(0, 'Total investments cannot be negative')
+        .required('Total investments are required'),
+      interestedDomain: yup
+        .array()
+        .of(yup.string())
+        .min(1, 'At least one interested domain is required')
+        .required('Interested domains are required'),
+      mentorship: yup.boolean().required('Mentorship preference is required'),
+    })
+    .required(),
 });
