@@ -1,10 +1,18 @@
-import { InvestorBasicInfo, User } from '../models/index.model.js';
+import {
+  InvestorBasicInfo,
+  InvestorInvestmentDetails,
+  User,
+} from '../models/index.model.js';
 
 export const getUserByEmail = async (email) => {
   return await User.findOne({ where: { email, user_type: 'investor' } });
 };
 
-export const createInvestor = async (userData, investorBasicInfo) => {
+export const createInvestor = async (
+  userData,
+  investorBasicInfo,
+  investmentData,
+) => {
   const user = await User.create(userData);
 
   const IBasicInfo = await InvestorBasicInfo.create({
@@ -12,7 +20,12 @@ export const createInvestor = async (userData, investorBasicInfo) => {
     investorId: user.id,
   });
 
-  return { user, IBasicInfo };
+  const investmentDetails = await InvestorInvestmentDetails.create({
+    ...investmentData,
+    investorId: user.id,
+  });
+
+  return { user, IBasicInfo, investmentDetails };
 };
 
 export const getAllInvestors = async () => {
@@ -22,6 +35,10 @@ export const getAllInvestors = async () => {
       {
         model: InvestorBasicInfo,
         as: 'investorBasicInfo',
+      },
+      {
+        model: InvestorInvestmentDetails,
+        as: 'investmentDetails',
       },
     ],
     distinct: true,
@@ -37,12 +54,16 @@ export const getInvestorById = async (investorId) => {
         model: InvestorBasicInfo,
         as: 'investorBasicInfo',
       },
+      {
+        model: InvestorInvestmentDetails,
+        as: 'investmentDetails',
+      },
     ],
   });
 };
 
 export const updateInvestor = async (investorId, updateData) => {
-  const { investorBasicInfo } = updateData;
+  const { investorBasicInfo, investmentDetails } = updateData;
 
   const user = await User.findOne({
     where: { id: investorId, user_type: 'investor', status: true },
@@ -58,6 +79,12 @@ export const updateInvestor = async (investorId, updateData) => {
     });
   }
 
+  if (investmentDetails) {
+    await InvestorInvestmentDetails.update(investmentDetails, {
+      where: { investorId },
+    });
+  }
+
   return getInvestorById(investorId);
 };
 
@@ -68,6 +95,10 @@ export const deleteInvestor = async (investorId) => {
       {
         model: InvestorBasicInfo,
         as: 'investorBasicInfo',
+      },
+      {
+        model: InvestorInvestmentDetails,
+        as: 'investmentDetails',
       },
     ],
   });

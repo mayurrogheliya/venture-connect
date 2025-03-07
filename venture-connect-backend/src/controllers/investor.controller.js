@@ -11,10 +11,11 @@ import { investorValidationSchema } from '../validation/investorValidation.js';
 
 export const createInvestorProfile = async (req, res) => {
   try {
-    parseJSONFields(req, ['investorBasicInfo']);
+    parseJSONFields(req, ['investorBasicInfo', 'investmentDetails']);
     await investorValidationSchema.validate(req.body, { abortEarly: false });
 
-    const { user_type, email, password, investorBasicInfo } = req.body;
+    const { user_type, email, password, investorBasicInfo, investmentDetails } =
+      req.body;
 
     const existingUser = await investorService.getUserByEmail(email);
     if (existingUser) {
@@ -39,6 +40,7 @@ export const createInvestorProfile = async (req, res) => {
         ...investorBasicInfo,
         investor_image: uploadedImage ? uploadedImage.url : null,
       },
+      investmentDetails,
     );
 
     return successResponse(
@@ -84,7 +86,7 @@ export const getInvestor = async (req, res) => {
 
 export const updateInvestorProfile = async (req, res) => {
   try {
-    parseJSONFields(req, ['investorBasicInfo']);
+    parseJSONFields(req, ['investorBasicInfo', 'investmentDetails']);
     const { investorId } = req.params;
 
     if (!investorId) {
