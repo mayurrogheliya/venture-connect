@@ -106,7 +106,7 @@ const EditStartupProfile = () => {
     <Form form={form} layout="vertical" onFinish={onFinish}>
       <Row gutter={24} className="px-12 py-12">
         {/* Left Column - Basic Information */}
-        <Col span={12}>
+        <Col span={12} xs={24} md={12}>
           <Card
             title="Basic Information"
             className="shadow-md rounded-lg"
@@ -131,7 +131,7 @@ const EditStartupProfile = () => {
                   <Input placeholder="Enter startup name" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col xl={12} sm={24} xs={24} md={24}> 
                 <Form.Item
                   name="stage"
                   label="Stage"
@@ -146,7 +146,7 @@ const EditStartupProfile = () => {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col xl={12} sm={24} xs={24} md={24}>
                 <Form.Item
                   name="industry"
                   label="Industry"
@@ -254,20 +254,22 @@ const EditStartupProfile = () => {
               <Card
                 className="w-full shadow-md rounded-lg"
                 title="Leadership Team"
+                style={{ marginBottom: '10px' }}
               >
                 {team.map((member) => (
                   <Card
                     key={member.id}
-                    className="mb-4 shadow-md rounded-lg"
+                    className="mb-4  rounded-lg"
                     style={{ marginTop: '10px' }}
                   >
-                    <Row gutter={20} align="middle" className="justify-between">
+                    <Row gutter={24} align="middle" className="justify-between">
                       {/* Profile Photo Upload */}
-                      <Col span={4}>
+                      <Col lg={4} md={24} sm={24} xs={24} >
                       <Form.Item
               
                       name={`profile-${member.id}`}
                       rules={[{ required: true, message: 'Please profile image' }]}
+                      className='flex justify-center'
                       >
                       <Upload
                           showUploadList={false}
@@ -302,10 +304,10 @@ const EditStartupProfile = () => {
                                              </Col>
 
                       {/* Member Details */}
-                      <Col span={18} className="flex-row gap-3">
+                      <Col lg={18} md={24} sm={24} xs={24}  className="flex-row gap-3 flex-wrap">
                         {/* Full Name */}
                         <Form.Item
-                          name={`name_${member.id}`} // Unique name for each member
+                          name={`name_${member.id}`} 
                           rules={[
                             {
                               required: true,
@@ -333,7 +335,7 @@ const EditStartupProfile = () => {
 
                         {/* Position */}
                         <Form.Item
-                          name={`position_${member.id}`} // Unique name for each member
+                          name={`position_${member.id}`} 
                           rules={[
                             {
                               required: true,
@@ -361,7 +363,7 @@ const EditStartupProfile = () => {
 
                         {/* Brief Description */}
                         <Form.Item
-                          name={`description_${member.id}`} // Unique name for each member
+                          name={`description_${member.id}`} 
                           rules={[
                             {
                               required: true,
@@ -408,7 +410,7 @@ const EditStartupProfile = () => {
         </Col>
 
         {/* Right Column - Company Details */}
-        <Col span={12}>
+        <Col span={12} xs={24} md={12}>
           <Card
             title="Company Details"
             className="shadow-md rounded-lg"
@@ -499,7 +501,7 @@ const EditStartupProfile = () => {
 
               <Col span={24}>
                 <Row gutter={16}>
-                  <Col span={12}>
+                  <Col xl={12} sm={24} xs={24} md={24}>
                     <Form.Item
                       label="Investment Amount"
                       name="invstAmount"
@@ -527,7 +529,7 @@ const EditStartupProfile = () => {
                       />
                     </Form.Item>
                   </Col>
-                  <Col span={12}>
+                  <Col xl={12} sm={24} xs={24} md={24}>
                     <Form.Item
                       label="Equity Offered"
                       name="equityOffered"
