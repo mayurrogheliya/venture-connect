@@ -1,6 +1,8 @@
+import { errorResponse } from '../../utils/responseFormatter.js';
 import {
   InvestorBasicInfo,
   InvestorInvestmentDetails,
+  PreviousInvestment,
   User,
 } from '../models/index.model.js';
 
@@ -12,7 +14,16 @@ export const createInvestor = async (
   userData,
   investorBasicInfo,
   investmentData,
+  previousInvestments = [],
 ) => {
+  if (previousInvestments.length > 6) {
+    errorResponse(
+      res,
+      'Cannot add more than 6 previous investments. Please remove some before adding new ones.',
+      400,
+    );
+  }
+
   const user = await User.create(userData);
 
   const IBasicInfo = await InvestorBasicInfo.create({
@@ -25,7 +36,16 @@ export const createInvestor = async (
     investorId: user.id,
   });
 
-  return { user, IBasicInfo, investmentDetails };
+  const investmentRecords = await Promise.all(
+    previousInvestments.map((investmentRecord) =>
+      PreviousInvestment.create({
+        ...investmentRecord,
+        investorId: user.id,
+      }),
+    ),
+  );
+
+  return { user, IBasicInfo, investmentDetails, investmentRecords };
 };
 
 export const getAllInvestors = async () => {
@@ -39,6 +59,10 @@ export const getAllInvestors = async () => {
       {
         model: InvestorInvestmentDetails,
         as: 'investmentDetails',
+      },
+      {
+        model: PreviousInvestment,
+        as: 'previousInvestments',
       },
     ],
     distinct: true,
@@ -58,12 +82,17 @@ export const getInvestorById = async (investorId) => {
         model: InvestorInvestmentDetails,
         as: 'investmentDetails',
       },
+      {
+        model: PreviousInvestment,
+        as: 'previousInvestments',
+      },
     ],
   });
 };
 
 export const updateInvestor = async (investorId, updateData) => {
-  const { investorBasicInfo, investmentDetails } = updateData;
+  const { investorBasicInfo, investmentDetails, previousInvestments } =
+    updateData;
 
   const user = await User.findOne({
     where: { id: investorId, user_type: 'investor', status: true },
@@ -85,6 +114,30 @@ export const updateInvestor = async (investorId, updateData) => {
     });
   }
 
+  if (previousInvestments) {
+    const existingInvestments = await PreviousInvestment.count({
+      where: { investorId },
+    });
+
+    if (previousInvestments.length + existingInvestments.length > 6) {
+      errorResponse(
+        res,
+        'Cannot add more than 6 previous investments. Please remove some before adding new ones.',
+        400,
+      );
+    }
+
+    await Promise.all(
+      previousInvestments.map(async (investment) => {
+        if (investment.id) {
+          await PreviousInvestment.update(investment, {
+            where: { id: investment.id, investorId },
+          });
+        }
+      }),
+    );
+  }
+
   return getInvestorById(investorId);
 };
 
@@ -99,6 +152,10 @@ export const deleteInvestor = async (investorId) => {
       {
         model: InvestorInvestmentDetails,
         as: 'investmentDetails',
+      },
+      {
+        model: PreviousInvestment,
+        as: 'previousInvestments',
       },
     ],
   });

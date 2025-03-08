@@ -11,11 +11,21 @@ import { investorValidationSchema } from '../validation/investorValidation.js';
 
 export const createInvestorProfile = async (req, res) => {
   try {
-    parseJSONFields(req, ['investorBasicInfo', 'investmentDetails']);
+    parseJSONFields(req, [
+      'investorBasicInfo',
+      'investmentDetails',
+      'previousInvestments',
+    ]);
     await investorValidationSchema.validate(req.body, { abortEarly: false });
 
-    const { user_type, email, password, investorBasicInfo, investmentDetails } =
-      req.body;
+    const {
+      user_type,
+      email,
+      password,
+      investorBasicInfo,
+      investmentDetails,
+      previousInvestments = [],
+    } = req.body;
 
     const existingUser = await investorService.getUserByEmail(email);
     if (existingUser) {
@@ -41,6 +51,7 @@ export const createInvestorProfile = async (req, res) => {
         investor_image: uploadedImage ? uploadedImage.url : null,
       },
       investmentDetails,
+      previousInvestments,
     );
 
     return successResponse(
@@ -86,7 +97,11 @@ export const getInvestor = async (req, res) => {
 
 export const updateInvestorProfile = async (req, res) => {
   try {
-    parseJSONFields(req, ['investorBasicInfo', 'investmentDetails']);
+    parseJSONFields(req, [
+      'investorBasicInfo',
+      'investmentDetails',
+      'previousInvestments',
+    ]);
     const { investorId } = req.params;
 
     if (!investorId) {
@@ -106,6 +121,18 @@ export const updateInvestorProfile = async (req, res) => {
       req.body.investorBasicInfo.investor_image = uploadedImage.url;
     }
 
+    if (req.body.previousInvestments) {
+      const existingInvestmentCount =
+        existingInvestor.previousInvestments.length;
+      if (existingInvestmentCount + req.body.previousInvestments.length > 6) {
+        return errorResponse(
+          res,
+          'Maximum of 6 previous investments allowed',
+          400,
+        );
+      }
+    }
+
     const updatedInvestor = await investorService.updateInvestor(
       investorId,
       req.body,
@@ -117,6 +144,10 @@ export const updateInvestorProfile = async (req, res) => {
       'Investor profile updated successfully',
     );
   } catch (error) {
+    if (error.name === 'SequelizeValidationError') {
+      const messages = error.errors.map((err) => err.message);
+      return errorResponse(res, messages[0]);
+    }
     return errorResponse(res, error.message);
   }
 };
