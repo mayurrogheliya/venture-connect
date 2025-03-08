@@ -5,6 +5,10 @@ import {
   faDollarSign,
   faPercent,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  DollarOutlined,
+  PercentageOutlined,
+} from '@ant-design/icons';
 
 const SPMatrices = ({ form }) => {
   return (
@@ -272,6 +276,63 @@ const SPMatrices = ({ form }) => {
                 style={{ width: '100%' }}
               />
             </Form.Item>
+          </Col>
+
+          <Col xs={24} sm={12} md={8}>
+          <Form.Item
+                  label="Annual Revenue"
+                  name="annualRevenue"
+                  prefix={<DollarOutlined />}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter the annual revenue!',
+                    },
+                    {
+                      type: 'number',
+                      min: 0,
+                      message: 'Annual revenue must be a positive number!',
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    prefix={<DollarOutlined />}
+                    placeholder="Enter annual revenue"
+                    style={{ width: '100%' }}
+                    min={0}
+                    step={0.01} // Allows decimal values
+                  />
+                </Form.Item>
+          </Col>
+
+          <Col xs={24} sm={12} md={8}>
+          <Form.Item
+                  label="Profit Margin (%)"
+                  name="profitMargin"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter the profit margin!',
+                    },
+                    {
+                      type: 'number',
+                      min: 0,
+                      max: 100,
+                      message: 'Profit margin must be between 0% and 100%!',
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    prefix={<PercentageOutlined />}
+                    placeholder="Enter profit margin (%)"
+                    style={{ width: '100%' }}
+                    min={0}
+                    max={100}
+                    step={0.01}
+                    formatter={(value) => `${value}%`}
+                    parser={(value) => value.replace('%', '')}
+                  />
+                </Form.Item>
           </Col>
         </Row>
       </Form>
