@@ -16,3 +16,12 @@ export const uploadFiles = async (files) => {
 
   return uploadedImages;
 };
+
+export const uploadSingleFile = async (file) => {
+  if (!file) {
+    throw new Error('No file provided for upload');
+  }
+
+  const uploadUrl = await uploadImageToCloudinary(file.path);
+  return { url: uploadUrl };
+};

@@ -1,7 +1,4 @@
-import { StartupBasicInfo, User } from '../models/index.model.js';
-import StartupMetrics from '../models/startupMetrics.model.js';
-import StartupTeam from '../models/startupTeam.model.js';
-import StartupTeamMember from '../models/StartupTeamMember.model.js';
+import { StartupBasicInfo, StartupMetrics, StartupTeam, StartupTeamMember, User } from '../models/index.model.js';
 
 export const createStartup = async (
   userData,

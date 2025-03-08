@@ -63,3 +63,68 @@ export const StartupUploadMiddleware = (req, res, next) => {
     next();
   });
 };
+
+const EventFileFilter = (req, file, cb) => {
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+  if (!allowedTypes.includes(file.mimetype)) {
+    return cb(new Error('Only JPEG, JPG and PNG files are allowed.'), false);
+  }
+
+  cb(null, true);
+};
+
+const EventUpload = multer({
+  storage,
+  fileFilter: EventFileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+}).single('event_url');
+
+export const EventUploadMiddleware = (req, res, next) => {
+  EventUpload(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      return errorResponse(res, `Multer error: ${err.message}`, 400);
+    } else if (err) {
+      return errorResponse(
+        res,
+        `Error during file upload: ${err.message}`,
+        400,
+      );
+    }
+
+    // Check if file exists before proceeding
+    if (!req.file) {
+      return errorResponse(res, 'Event image is required', 400);
+    }
+    next();
+  });
+};
+
+const InvestorFileFilter = (req, file, cb) => {
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+  if (!allowedTypes.includes(file.mimetype)) {
+    return cb(new Error('Only JPEG, JPG and PNG files are allowed.'), false);
+  }
+
+  cb(null, true);
+};
+
+const InvestorUpload = multer({
+  storage,
+  fileFilter: InvestorFileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+}).single('investor_image');
+
+export const investorUploadMiddleware = (req, res, next) => {
+  InvestorUpload(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      return errorResponse(res, `Multer error: ${err.message}`, 400);
+    } else if (err) {
+      return errorResponse(
+        res,
+        `Error during file upload: ${err.message}`,
+        400,
+      );
+    }
+    next();
+  });
+};
