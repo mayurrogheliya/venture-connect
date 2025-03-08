@@ -42,4 +42,16 @@ export const investorValidationSchema = yup.object({
       mentorship: yup.boolean().required('Mentorship preference is required'),
     })
     .required(),
+
+  previousInvestments: yup
+    .array()
+    .of(
+      yup.object({
+        startupName: yup.string().required('Startup name is required'),
+        domain: yup.string().required('Domain name is required'),
+        description: yup.string().required('Description is required'),
+        year: yup.number().required('Year is required'),
+      }),
+    )
+    .required(),
 });
