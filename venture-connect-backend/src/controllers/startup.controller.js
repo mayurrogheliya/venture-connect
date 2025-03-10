@@ -1,41 +1,37 @@
-import { hashPassword } from '../../utils/passwordUtils.js';
 import { parseJSONFields } from '../../utils/requestParse.js';
 import {
   errorResponse,
   successResponse,
 } from '../../utils/responseFormatter.js';
+import Startup from '../models/startup.model.js';
 import {
   deleteImageFromCloudinary,
   uploadImageToCloudinary,
 } from '../services/cloudinary.service.js';
 import { uploadFiles } from '../services/fileUpload.service.js';
 import * as startupService from '../services/startup.service.js';
+import * as userService from '../services/user.service.js';
 import { startupValidationSchema } from '../validation/startupValidation.js';
 
 export const createStartupProfile = async (req, res) => {
   try {
     parseJSONFields(req, ['basicInfo', 'metrics', 'team', 'teamMembers']);
     await startupValidationSchema.validate(req.body, { abortEarly: false });
-    const {
-      user_type,
-      email,
-      password,
-      basicInfo,
-      metrics,
-      team,
-      teamMembers = [],
-    } = req.body;
+    const { userId, basicInfo, metrics, team, teamMembers = [] } = req.body;
 
-    const existingUser = await startupService.getUserByEmail(email);
-    if (existingUser) {
-      return errorResponse(res, 'User already exists', 400);
+    if (!userId) {
+      return errorResponse(res, 'User ID is required', 400);
     }
 
-    if (!password) {
-      return errorResponse(res, 'Password is required', 400);
+    const existingStartup = await Startup.findOne({ where: { userId } });
+    if (existingStartup) {
+      return errorResponse(res, 'User already has a startup profile', 400);
     }
 
-    const hashedPassword = await hashPassword(password);
+    const existingUser = await userService.getUserById(userId);
+    if (!existingUser) {
+      return errorResponse(res, 'User not found', 404);
+    }
 
     const uploadedImages = await uploadFiles(req.files);
 
@@ -46,7 +42,7 @@ export const createStartupProfile = async (req, res) => {
     }));
 
     const newUser = await startupService.createStartup(
-      { user_type, email, password: hashedPassword, isProfileCompleted: true },
+      userId,
       { ...basicInfo, startup_logo: uploadedImages.startupLogo?.[0] || null },
       metrics,
       { ...team, founder_image: uploadedImages.founderImage?.[0] || null },
@@ -81,12 +77,12 @@ export const getStartups = async (req, res) => {
 
 export const getStartup = async (req, res) => {
   try {
-    const { userId } = req.params;
-    if (!userId) {
+    const { startupId } = req.params;
+    if (!startupId) {
       return errorResponse(res, 'Startup ID is required', 400);
     }
 
-    const startup = await startupService.getStartupById(userId);
+    const startup = await startupService.getStartupById(startupId);
     if (!startup) {
       return errorResponse(res, 'Startup not found', 404);
     }
@@ -104,12 +100,12 @@ export const updateStartupProfile = async (req, res) => {
   try {
     parseJSONFields(req, ['basicInfo', 'metrics', 'team', 'teamMembers']);
 
-    const { userId } = req.params;
-    if (!userId) {
+    const { startupId } = req.params;
+    if (!startupId) {
       return errorResponse(res, 'Startup ID is required', 400);
     }
 
-    const existingStartup = await startupService.getStartupById(userId);
+    const existingStartup = await startupService.getStartupById(startupId);
     if (!existingStartup) {
       return errorResponse(res, 'Startup not found', 404);
     }
@@ -200,7 +196,7 @@ export const updateStartupProfile = async (req, res) => {
       };
     });
 
-    const updatedStartup = await startupService.updateStartup(userId, {
+    const updatedStartup = await startupService.updateStartup(startupId, {
       ...req.body,
       basicInfo: {
         ...req.body.basicInfo,
@@ -222,12 +218,12 @@ export const updateStartupProfile = async (req, res) => {
 
 export const deleteStartup = async (req, res) => {
   try {
-    const { userId } = req.params;
-    if (!userId) {
+    const { startupId } = req.params;
+    if (!startupId) {
       return errorResponse(res, 'Startup ID is required', 400);
     }
 
-    const existingStartup = await startupService.getStartupById(userId);
+    const existingStartup = await startupService.getStartupById(startupId);
     if (!existingStartup) {
       return errorResponse(res, 'Startup not found', 404);
     }
@@ -248,7 +244,7 @@ export const deleteStartup = async (req, res) => {
       );
     }
 
-    await startupService.deleteStartup(userId);
+    await startupService.deleteStartup(startupId);
 
     return successResponse(res, {}, 'Startup deleted successfully');
   } catch (error) {

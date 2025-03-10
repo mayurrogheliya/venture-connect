@@ -1,28 +1,30 @@
-import { StartupBasicInfo, StartupMetrics, StartupTeam, StartupTeamMember, User } from '../models/index.model.js';
+import {
+  Startup,
+  StartupBasicInfo,
+  StartupMetrics,
+  StartupTeam,
+  StartupTeamMember,
+  User,
+} from '../models/index.model.js';
 
 export const createStartup = async (
-  userData,
+  userId,
   basicInfo,
   metrics,
   team,
   teamMembers = [],
 ) => {
-  const user = await User.create(userData);
+  const startup = await Startup.create({ userId });
 
   const SBasicInfo = await StartupBasicInfo.create({
     ...basicInfo,
-    userId: user.id,
+    startupId: startup.id,
   });
-
   const SMetric = await StartupMetrics.create({
     ...metrics,
-    userId: user.id,
+    startupId: startup.id,
   });
-
-  const STeam = await StartupTeam.create({
-    ...team,
-    userId: user.id,
-  });
+  const STeam = await StartupTeam.create({ ...team, startupId: startup.id });
 
   const TeamMemberRecords = await Promise.all(
     (Array.isArray(teamMembers) ? teamMembers : []).map(async (member) => {
@@ -33,25 +35,41 @@ export const createStartup = async (
     }),
   );
 
-  return { user, SBasicInfo, SMetric, STeam, teamMembers: TeamMemberRecords };
+  await User.update({ isProfileCompleted: true }, { where: { id: userId } });
+
+  return {
+    startup,
+    SBasicInfo,
+    SMetric,
+    STeam,
+    teamMembers: TeamMemberRecords,
+  };
 };
 
 export const getAllStartup = async () => {
   const { count, rows } = await User.findAndCountAll({
     where: { user_type: 'startup' },
+    attributes: ['id', 'email', 'status', 'isProfileCompleted'],
     include: [
       {
-        model: StartupBasicInfo,
-        as: 'basicInfo',
-      },
-      {
-        model: StartupMetrics,
-        as: 'metrics',
-      },
-      {
-        model: StartupTeam,
-        as: 'team',
-        include: [{ model: StartupTeamMember, as: 'teamMember' }],
+        model: Startup,
+        as: 'startup',
+        attributes: ['id'],
+        include: [
+          {
+            model: StartupBasicInfo,
+            as: 'basicInfo',
+          },
+          {
+            model: StartupMetrics,
+            as: 'metrics',
+          },
+          {
+            model: StartupTeam,
+            as: 'team',
+            include: [{ model: StartupTeamMember, as: 'teamMember' }],
+          },
+        ],
       },
     ],
     distinct: true,
@@ -59,9 +77,9 @@ export const getAllStartup = async () => {
   return { totalStartups: count, startups: rows };
 };
 
-export const getStartupById = async (userId) => {
-  return await User.findOne({
-    where: { id: userId, user_type: 'startup', status: true },
+export const getStartupById = async (startupId) => {
+  const startup = await Startup.findOne({
+    where: { id: startupId },
     include: [
       {
         model: StartupBasicInfo,
@@ -78,31 +96,37 @@ export const getStartupById = async (userId) => {
       },
     ],
   });
+
+  if (startup.userId) {
+    return await User.findOne({ where: { id: startup.userId, status: true } });
+  }
+
+  return null;
 };
 
-export const updateStartup = async (userId, updateData) => {
+export const updateStartup = async (startupId, updateData) => {
   const { basicInfo, metrics, team, teamMembers } = updateData;
 
-  const user = await User.findOne({
-    where: { id: userId, user_type: 'startup', status: true },
+  const startup = await Startup.findOne({
+    where: { id: startupId },
   });
 
-  if (!user) {
+  if (!startup) {
     return null;
   }
 
   if (basicInfo) {
-    await StartupBasicInfo.update(basicInfo, { where: { userId } });
+    await StartupBasicInfo.update(basicInfo, { where: { startupId } });
   }
 
   if (metrics) {
-    await StartupMetrics.update(metrics, { where: { userId } });
+    await StartupMetrics.update(metrics, { where: { startupId } });
   }
 
   if (team) {
-    const startupTeam = await StartupTeam.findOne({ where: { userId } });
+    const startupTeam = await StartupTeam.findOne({ where: { startupId } });
     if (startupTeam) {
-      await StartupTeam.update(team, { where: { userId } });
+      await StartupTeam.update(team, { where: { startupId } });
       if (Array.isArray(teamMembers) && teamMembers.length > 0) {
         await Promise.all(
           teamMembers.map(async (member) => {
@@ -123,12 +147,12 @@ export const updateStartup = async (userId, updateData) => {
     }
   }
 
-  return getStartupById(userId);
+  return getStartupById(startupId);
 };
 
-export const deleteStartup = async (userId) => {
-  const user = await User.findOne({
-    where: { id: userId, user_type: 'startup', status: true },
+export const deleteStartup = async (startupId) => {
+  const startup = await Startup.findOne({
+    where: { id: startupId },
     include: [
       {
         model: StartupBasicInfo,
@@ -146,15 +170,17 @@ export const deleteStartup = async (userId) => {
     ],
   });
 
-  if (!user) return null;
+  if (!startup) return null;
 
-  await StartupBasicInfo.update({ startup_logo: null }, { where: { userId } });
+  await StartupBasicInfo.update(
+    { startup_logo: null },
+    { where: { startupId } },
+  );
+  await StartupTeam.update({ founder_image: null }, { where: { startupId } });
 
-  await StartupTeam.update({ founder_image: null }, { where: { userId } });
-
-  if (user.team?.teamMember?.length) {
+  if (startup.team?.teamMember?.length) {
     await Promise.all(
-      user.team.teamMember.map(async (member) => {
+      startup.team.teamMember.map(async (member) => {
         await StartupTeamMember.update(
           {
             profile_image: null,
@@ -165,9 +191,9 @@ export const deleteStartup = async (userId) => {
     );
   }
 
-  await user.update({
-    status: false,
-  });
+  if (startup.userId) {
+    await User.update({ status: false }, { where: { id: startup.userId } });
+  }
 
   return true;
 };
