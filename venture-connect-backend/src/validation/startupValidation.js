@@ -1,10 +1,6 @@
 import * as yup from 'yup';
 
 export const startupValidationSchema = yup.object({
-  user_type: yup.string().required('User type is required'),
-  email: yup.string().email('Invalid email').required('Email is required'),
-  password: yup.string().required('Password is required'),
-
   basicInfo: yup
     .object({
       startup_name: yup.string().required('Startup name is required'),
