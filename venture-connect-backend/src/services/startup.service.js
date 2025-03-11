@@ -78,30 +78,35 @@ export const getAllStartup = async () => {
 };
 
 export const getStartupById = async (startupId) => {
-  const startup = await Startup.findOne({
-    where: { id: startupId },
+  const user = await User.findOne({
     include: [
       {
-        model: StartupBasicInfo,
-        as: 'basicInfo',
-      },
-      {
-        model: StartupMetrics,
-        as: 'metrics',
-      },
-      {
-        model: StartupTeam,
-        as: 'team',
-        include: [{ model: StartupTeamMember, as: 'teamMember' }],
+        model: Startup,
+        as: 'startup',
+        where: { id: startupId },
+        attributes: ['id', 'userId'],
+        include: [
+          {
+            model: StartupBasicInfo,
+            as: 'basicInfo',
+          },
+          {
+            model: StartupMetrics,
+            as: 'metrics',
+          },
+          {
+            model: StartupTeam,
+            as: 'team',
+            include: [{ model: StartupTeamMember, as: 'teamMember' }],
+          },
+        ],
       },
     ],
+    where: { user_type: 'startup', status: true },
+    attributes: ['id', 'email', 'status', 'isProfileCompleted'],
   });
 
-  if (startup.userId) {
-    return await User.findOne({ where: { id: startup.userId, status: true } });
-  }
-
-  return null;
+  return user;
 };
 
 export const updateStartup = async (startupId, updateData) => {
