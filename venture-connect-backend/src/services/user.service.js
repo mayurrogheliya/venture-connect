@@ -4,6 +4,10 @@ export const createUser = async (userData) => {
   return user;
 };
 
+export const getUserByEmail = async (email) => {
+  return await User.findOne({ where: { email } });
+};
+
 export const getAllUsers = async () => {
   const { count, rows } = await User.findAndCountAll();
   return { totalUsers: count, users: rows };

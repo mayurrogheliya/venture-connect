@@ -1,7 +1,5 @@
 import { userValidateSchema } from '../validation/userValidation.js';
 import * as userService from '../services/user.service.js';
-import * as startupService from '../services/startup.service.js';
-import * as investorService from '../services/investor.service.js';
 import {
   errorResponse,
   successResponse,
@@ -11,20 +9,15 @@ import { hashPassword } from '../../utils/passwordUtils.js';
 export const registerUser = async (req, res) => {
   try {
     await userValidateSchema.validate(req.body, { abortEarly: false });
-    const { user_type, email, password } = req.body;
+    const { email, password } = req.body;
 
-    if (user_type === 'startup') {
-      const existingUser = await startupService.getUserByEmail(email);
-      if (existingUser) {
-        return errorResponse(res, 'User already exists', 400);
-      }
-    }
-
-    if (user_type === 'investor') {
-      const existingUser = await investorService.getUserByEmail(email);
-      if (existingUser) {
-        return errorResponse(res, 'User already exists', 400);
-      }
+    const existingUser = await userService.getUserByEmail(email);
+    if (existingUser) {
+      return errorResponse(
+        res,
+        'User with this email is already registered.',
+        400,
+      );
     }
 
     if (!password) {
