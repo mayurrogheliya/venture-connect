@@ -1,8 +1,5 @@
-import { parseJSONFields } from '../../utils/requestParse.js';
-import {
-  errorResponse,
-  successResponse,
-} from '../../utils/responseFormatter.js';
+import { parseJSONFields } from '../utils/requestParse.js';
+import { errorResponse, successResponse } from '../utils/responseFormatter.js';
 import Startup from '../models/startup.model.js';
 import {
   deleteImageFromCloudinary,

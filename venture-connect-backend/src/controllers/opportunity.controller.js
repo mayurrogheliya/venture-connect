@@ -1,8 +1,5 @@
 import * as opportunityService from '../services/opportunity.service.js';
-import {
-  errorResponse,
-  successResponse,
-} from '../../utils/responseFormatter.js';
+import { errorResponse, successResponse } from '../utils/responseFormatter.js';
 export const createOpportunity = async (req, res) => {
   try {
     const opportunity = await opportunityService.createOpportunityService(

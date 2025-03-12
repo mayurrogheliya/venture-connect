@@ -1,9 +1,6 @@
 import { uploadSingleFile } from '../services/fileUpload.service.js';
 import * as EventService from '../services/event.service.js';
-import {
-  errorResponse,
-  successResponse,
-} from '../../utils/responseFormatter.js';
+import { errorResponse, successResponse } from '../utils/responseFormatter.js';
 import { deleteImageFromCloudinary } from '../services/cloudinary.service.js';
 
 export const createEvent = async (req, res) => {

@@ -1,4 +1,4 @@
-import { errorResponse } from '../../utils/responseFormatter.js';
+import { errorResponse } from '../utils/responseFormatter.js';
 import {
   InvestorBasicInfo,
   InvestorInvestmentDetails,

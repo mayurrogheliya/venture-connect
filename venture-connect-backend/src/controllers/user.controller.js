@@ -1,10 +1,7 @@
 import { userValidateSchema } from '../validation/userValidation.js';
 import * as userService from '../services/user.service.js';
-import {
-  errorResponse,
-  successResponse,
-} from '../../utils/responseFormatter.js';
-import { hashPassword } from '../../utils/passwordUtils.js';
+import { errorResponse, successResponse } from '../utils/responseFormatter.js';
+import { hashPassword } from '../utils/passwordUtils.js';
 
 export const registerUser = async (req, res) => {
   try {

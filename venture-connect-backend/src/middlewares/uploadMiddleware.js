@@ -1,6 +1,6 @@
 import multer from 'multer';
 import path from 'path';
-import { errorResponse } from '../../utils/responseFormatter.js';
+import { errorResponse } from '../utils/responseFormatter.js';
 import fs from 'fs-extra';
 
 const tempDir = './public/temp';

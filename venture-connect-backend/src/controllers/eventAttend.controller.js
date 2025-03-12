@@ -5,10 +5,7 @@ import {
   updateAttendeeService,
   deleteAttendeeService,
 } from '../services/eventAttend.service.js';
-import {
-  successResponse,
-  errorResponse,
-} from '../../utils/responseFormatter.js';
+import { successResponse, errorResponse } from '../utils/responseFormatter.js';
 
 export const registerForEvent = async (req, res) => {
   try {

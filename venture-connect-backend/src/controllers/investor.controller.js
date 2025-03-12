@@ -1,9 +1,6 @@
-import { hashPassword } from '../../utils/passwordUtils.js';
-import { parseJSONFields } from '../../utils/requestParse.js';
-import {
-  errorResponse,
-  successResponse,
-} from '../../utils/responseFormatter.js';
+import { hashPassword } from '../utils/passwordUtils.js';
+import { parseJSONFields } from '../utils/requestParse.js';
+import { errorResponse, successResponse } from '../utils/responseFormatter.js';
 import { deleteImageFromCloudinary } from '../services/cloudinary.service.js';
 import { uploadSingleFile } from '../services/fileUpload.service.js';
 import * as investorService from '../services/investor.service.js';
