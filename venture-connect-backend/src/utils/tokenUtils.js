@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import { errorResponse } from './responseFormatter';
 
 const ACCESS_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET;
@@ -18,7 +17,7 @@ export const verifyAccessToken = (token) => {
   try {
     return jwt.verify(token, ACCESS_SECRET);
   } catch (error) {
-    return errorResponse(res, error.message);
+    return null;
   }
 };
 
@@ -26,6 +25,6 @@ export const verifyRefreshToken = (token) => {
   try {
     return jwt.verify(token, REFRESH_SECRET);
   } catch (error) {
-    return errorResponse(res, error.message);
+    return null;
   }
 };
