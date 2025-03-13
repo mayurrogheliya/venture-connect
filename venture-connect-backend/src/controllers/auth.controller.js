@@ -1,3 +1,4 @@
+import ms from 'ms';
 import * as userService from '../services/user.service.js';
 import { comparePassword } from '../utils/passwordUtils.js';
 import { successResponse, errorResponse } from '../utils/responseFormatter.js';
@@ -6,6 +7,9 @@ import {
   generateRefreshToken,
 } from '../utils/tokenUtils.js';
 import { loginSchema } from '../validation/authValidate.js';
+
+const ACCESS_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY;
+const REFRESH_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY;
 
 export const login = async (req, res) => {
   try {
@@ -23,12 +27,14 @@ export const login = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'Strict',
+      maxAge: ms(REFRESH_EXPIRY),
     });
 
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'Strict',
+      maxAge: ms(ACCESS_EXPIRY),
     });
 
     return successResponse(
