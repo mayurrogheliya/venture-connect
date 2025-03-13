@@ -9,14 +9,33 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { Avatar, Dropdown } from 'antd';
+import { Avatar, Dropdown, message, Spin } from 'antd';
 import DefaultUser from '../assets/images/default-user.png';
+import { useUserStore } from '../store/useUserStore';
+import { authAPI } from '../api/endpoints/auth';
 
 const UserLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen((isSidebarOpen) => !isSidebarOpen);
+  };
+
+  const { logout, loading, setLoading } = useUserStore();
+
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+      const response = await authAPI.logout();
+      message.success(response?.data?.message || 'Logged out successfully');
+    } catch (error) {
+      message.error(
+        error?.response?.data?.message || 'Logout failed. Please try again.',
+      );
+    } finally {
+      setLoading(false);
+      logout();
+    }
   };
 
   const items = [
@@ -30,7 +49,14 @@ const UserLayout = () => {
     },
     {
       key: '3',
-      label: <NavLink to="/">Logout</NavLink>,
+      label: (
+        <button
+          onClick={handleLogout}
+          className="text-red-500 w-full text-left cursor-pointer"
+        >
+          Logout
+        </button>
+      ),
     },
   ];
 
@@ -110,7 +136,7 @@ const UserLayout = () => {
                 <FontAwesomeIcon icon={faLightbulb} />
                 Opportunities
               </NavLink>
-              
+
               <NavLink
                 to="/bookmarks"
                 onClick={toggleSidebar}
@@ -146,7 +172,11 @@ const UserLayout = () => {
 
         {/* Page Content */}
         <div className="md:mt-20 mt-14 mb-10 lg:px-8 md:px-7 px-5 p-2">
-          <Outlet />
+          {loading ? (
+            <Spin tip="Loading..." size="large" fullscreen />
+          ) : (
+            <Outlet />
+          )}
         </div>
       </main>
     </div>
