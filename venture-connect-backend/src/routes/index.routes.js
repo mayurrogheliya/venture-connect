@@ -5,6 +5,7 @@ import eventAttend from './eventAttend.routes.js';
 import investorRoutes from './investor.routes.js';
 import opportRoutes from './opportunity.routes.js';
 import users from './user.routes.js';
+import authRoutes from './auth.routes.js';
 
 const router = Router();
 
@@ -15,5 +16,6 @@ router.use('/event-attendees', eventAttend);
 router.use('/investor', investorRoutes);
 router.use('/opportunity', opportRoutes);
 router.use('/users', users);
+router.use('/auth', authRoutes);
 
 export default router;
