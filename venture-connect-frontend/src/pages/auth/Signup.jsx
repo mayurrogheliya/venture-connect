@@ -18,7 +18,6 @@ const Signup = () => {
       message.success(response?.data?.message || 'Register Success');
       navigate('/signin');
     } catch (error) {
-      console.log('error1:', error);
       message.error(error?.response?.data?.message || 'Registration Failed');
     } finally {
       setLoading(false);
