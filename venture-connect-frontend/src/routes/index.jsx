@@ -2,7 +2,6 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   Navigate,
-  Outlet,
   Route,
   RouterProvider,
 } from 'react-router-dom';
@@ -29,7 +28,6 @@ import AdminOpportunity from '../pages/Admin/AdminOpportunity.jsx';
 import AdminEvents from '../pages/Admin/Events/AdminEvents.jsx';
 import CreateEvent from '../pages/Admin/Events/CreateEvent.jsx';
 import EditEvent from '../pages/Admin/Events/EditEvent.jsx';
-import AdminEvents from '../pages/Admin/AdminEvents.jsx';
 import InvestorProfileForm from '../components/Forms/Investor/mainForm.jsx';
 
 const router = createBrowserRouter(
