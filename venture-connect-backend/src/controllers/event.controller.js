@@ -52,6 +52,9 @@ export const updateEvent = async (req, res) => {
       await deleteImageFromCloudinary(event.event_url);
       const uploadedImage = await uploadSingleFile(req.file);
       req.body.event_url = uploadedImage.url;
+    } else {
+      // Retain the existing event_url if no new image is uploaded
+      req.body.event_url = event.event_url;
     }
 
     req.body.keyhighlights = req.body.keyhighlights
@@ -71,14 +74,11 @@ export const updateEvent = async (req, res) => {
   }
 };
 
-export const deleteEvent = async (req, res) => {
+export const toggleEventStatus = async (req, res) => {
   try {
-    const event = await EventService.getEventByIdService(req.params.id);
+    const event = await EventService.toggleEventStatusService(req.params.id);
     if (!event) return errorResponse(res, 'Event not found', 404);
-
-    await deleteImageFromCloudinary(event.event_url);
-    await EventService.deleteEventService(req.params.id);
-    return successResponse(res, null, 'Event deleted successfully');
+    return successResponse(res, event, 'Event status updated successfully');
   } catch (error) {
     return errorResponse(res, error.message);
   }
