@@ -65,6 +65,11 @@ Event.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    status: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
   },
   {
     sequelize,
