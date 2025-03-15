@@ -91,10 +91,6 @@ export const EventUploadMiddleware = (req, res, next) => {
       );
     }
 
-    // Check if file exists before proceeding
-    if (!req.file) {
-      return errorResponse(res, 'Event image is required', 400);
-    }
     next();
   });
 };
