@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Form,
   Input,
@@ -8,225 +8,227 @@ import {
   Select,
   Upload,
   message,
-} from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import dayjs from "dayjs"; // For date/time validation
+  Image,
+} from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
 
-const AdminEventForm = () => {
+const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+
+const AdminEventForm = ({ initialValues, onSubmit, isEdit }) => {
   const [form] = Form.useForm();
-  const [file, setFile] = useState(null);
+  const [fileList, setFileList] = useState([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
 
-  // Handle file upload
-  const handleFileChange = (info) => {
-    if (info.file.status === "uploading") {
-      return; // Do nothing while uploading
+  useEffect(() => {
+    if (initialValues) {
+      form.resetFields();
+      form.setFieldsValue({
+        ...initialValues,
+        date: initialValues.date ? dayjs(initialValues.date) : null,
+        timeFrom: initialValues.timeFrom
+          ? dayjs(initialValues.timeFrom, 'HH:mm')
+          : null,
+        timeTill: initialValues.timeTill
+          ? dayjs(initialValues.timeTill, 'HH:mm')
+          : null,
+      });
+
+      if (initialValues.event_url) {
+        setFileList([
+          {
+            uid: '-1',
+            name: 'event.png',
+            status: 'done',
+            url: initialValues.event_url,
+          },
+        ]);
+      }
+    } else {
+      form.resetFields();
     }
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully.`);
-      setFile(info.file.originFileObj); // Store file in state
-    } else if (info.file.status === "error") {
-      // Simulate a successful upload even if the backend fails
-      message.success(`${info.file.name} file uploaded successfully.`);
-      setFile(info.file.originFileObj); // Store file in state
+  }, [initialValues, form]);
+
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
     }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
   };
 
-  // Validate file before upload
   const beforeUpload = (file) => {
-    const isImage = file.type.startsWith("image/");
-    if (!isImage) {
-      message.error("You can only upload image files!");
-      return Upload.LIST_IGNORE; // Prevent upload
+    if (!file.type.startsWith('image/')) {
+      message.error('Only image files are allowed!');
+      return Upload.LIST_IGNORE;
     }
     return true;
   };
-
-  // Validate end time is after start time
-  const validateEndTime = (_, value) => {
-    const startTime = form.getFieldValue("timeFrom");
-    if (startTime && value && value.isBefore(startTime)) {
-      return Promise.reject("End time cannot be before start time!");
-    }
-    return Promise.resolve();
-  };
-
-  // Handle form submission
   const handleSubmit = async (values) => {
-    const formattedEvent = {
-      ...values,
-      keyhighlights: values.keyhighlights || [],
-      whoShouldAttend: values.whoShouldAttend || [],
-      date: values.date.format("YYYY-MM-DD"),
-      timeFrom: values.timeFrom.format("HH:mm"),
-      timeTill: values.timeTill.format("HH:mm"),
-      eventFile: file, // Include uploaded file
-    };
+    const formData = new FormData();
+    formData.append('name', values.name);
+    formData.append('subtitle', values.subtitle);
+    formData.append('city', values.city);
+    formData.append('address', values.address);
+    formData.append('capacity', values.capacity);
+    formData.append('description', values.description);
+    formData.append('date', values.date?.format('YYYY-MM-DD'));
+    formData.append('timeFrom', values.timeFrom?.format('HH:mm'));
+    formData.append('timeTill', values.timeTill?.format('HH:mm'));
 
-    console.log("Form Values:", JSON.stringify(formattedEvent, null, 2)); // Print values
+    formData.append(
+      'keyhighlights',
+      values.keyhighlights ? JSON.stringify(values.keyhighlights) : '[]',
+    );
+    formData.append(
+      'whoShouldAttend',
+      values.whoShouldAttend ? JSON.stringify(values.whoShouldAttend) : '[]',
+    );
 
-    try {
-      // Simulate API call
-      // await createEvent(formattedEvent);
-      message.success("Event created successfully!");
-      form.resetFields();
-      setFile(null);
-    } catch (error) {
-      message.error("Failed to create event.");
+    if (fileList.length > 0 && fileList[0].originFileObj) {
+      formData.append('event_url', fileList[0].originFileObj);
     }
+
+    onSubmit(formData);
   };
+
+  const uploadButton = (
+    <button style={{ border: 0, background: 'none' }} type="button">
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </button>
+  );
 
   return (
-    <div className="max-w-3xl mx-auto bg-white p-6 shadow-md rounded-xl">
-      <h2 className="text-2xl font-semibold text-center mb-6">Add Event</h2>
-      <Form form={form} layout="vertical" onFinish={handleSubmit}>
-        {/* Event Name */}
-        <Form.Item
-          name="name"
-          label="Event Name"
-          rules={[{ required: true, message: "Please enter the event name!" }]}
-        >
+    <div className="max-w-5xl mx-auto bg-white p-6 shadow-lg rounded-lg">
+      <h2 className="text-2xl font-bold text-center mb-6">
+        {isEdit ? 'Edit Event' : 'Create Event'}
+      </h2>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+        <Form.Item name="name" label="Event Name" rules={[{ required: true }]}>
           <Input placeholder="Enter event name" />
         </Form.Item>
-
-        {/* Subtitle */}
         <Form.Item
           name="subtitle"
           label="Subtitle"
-          rules={[{ required: true, message: "Please enter the subtitle!" }]}
+          rules={[{ required: true }]}
         >
-          <Input placeholder="Enter event subtitle" />
+          <Input placeholder="Enter subtitle" />
         </Form.Item>
-
-        {/* City */}
-        <Form.Item
-          name="city"
-          label="City"
-          rules={[{ required: true, message: "Please enter the city!" }]}
-        >
+        <Form.Item name="city" label="City" rules={[{ required: true }]}>
           <Input placeholder="Enter city" />
         </Form.Item>
-
-        {/* Address */}
         <Form.Item
           name="address"
           label="Address"
-          rules={[{ required: true, message: "Please enter the address!" }]}
+          rules={[{ required: true }]}
+          className="sm:col-span-2 lg:col-span-2"
         >
           <Input placeholder="Enter address" />
         </Form.Item>
-
-        {/* Capacity */}
-        <Form.Item
-          name="capacity"
-          label="Capacity"
-          rules={[
-            {
-              type: "number",
-              required: true,
-              min: 1,
-              message: "Capacity must be at least 1!",
-            },
-          ]}
-        >
-          <Input type="number" placeholder="Enter capacity" />
-        </Form.Item>
-
-        {/* Description */}
-        <Form.Item
-          name="description"
-          label="Description"
-          rules={[{ required: true, message: "Please enter the description!" }]}
-        >
-          <Input.TextArea placeholder="Enter description" />
-        </Form.Item>
-
-        {/* Key Highlights */}
-        <Form.Item
-          name="keyhighlights"
-          label="Key Highlights"
-          rules={[{ required: true, message: "Please enter key highlights!" }]}
-        >
-          <Select
-            mode="tags"
-            placeholder="Enter key highlights"
-            tokenSeparators={[","]}
-          />
-        </Form.Item>
-
-        {/* Who Should Attend */}
-        <Form.Item
-          name="whoShouldAttend"
-          label="Who Should Attend"
-          rules={[
-            { required: true, message: "Please enter who should attend!" },
-          ]}
-        >
-          <Select
-            mode="tags"
-            placeholder="Enter target audience"
-            tokenSeparators={[","]}
-          />
-        </Form.Item>
-
-        {/* Event Date */}
-        <Form.Item
-          name="date"
-          label="Event Date"
-          rules={[{ required: true, message: "Please select the event date!" }]}
-        >
+        <Form.Item name="date" label="Event Date" rules={[{ required: true }]}>
           <DatePicker className="w-full" />
         </Form.Item>
-
-        {/* Start Time */}
         <Form.Item
           name="timeFrom"
           label="Start Time"
-          rules={[{ required: true, message: "Please select the start time!" }]}
+          rules={[{ required: true }]}
         >
           <TimePicker className="w-full" format="HH:mm" />
         </Form.Item>
-
-        {/* End Time */}
         <Form.Item
           name="timeTill"
           label="End Time"
-          rules={[
-            { required: true, message: "Please select the end time!" },
-            { validator: validateEndTime },
-          ]}
+          rules={[{ required: true }]}
         >
           <TimePicker className="w-full" format="HH:mm" />
         </Form.Item>
-
-        {/* File Upload */}
         <Form.Item
-          name="eventFile"
-          label="Event File (Image)"
+          name="whoShouldAttend"
+          label="Who Should Attend"
+          rules={[{ required: true }]}
+        >
+          <Select mode="tags" tokenSeparators={[',']} />
+        </Form.Item>
+        <Form.Item
+          name="keyhighlights"
+          label="Key Highlights"
+          rules={[{ required: true }]}
+        >
+          <Select mode="tags" tokenSeparators={[',']} />
+        </Form.Item>
+        <Form.Item
+          name="capacity"
+          label="Capacity"
+          rules={[{ required: true }]}
+        >
+          <Input type="number" placeholder="Enter capacity" />
+        </Form.Item>
+        <Form.Item
+          name="description"
+          label="Description"
+          rules={[{ required: true }]}
+          className="sm:col-span-2 lg:col-span-2"
+        >
+          <Input.TextArea rows={4} placeholder="Enter event description" />
+        </Form.Item>
+        <Form.Item
+          name="event_url"
+          label="Event Image"
+          className="sm:col-span-2 lg:col-span-1"
           rules={[
             {
-              required: true,
-              message: "Please upload an image file!",
+              required: !isEdit,
+              message: 'Please upload an event image!',
             },
           ]}
         >
           <Upload
+            action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+            listType="picture-card"
+            fileList={fileList}
+            onPreview={handlePreview}
+            onChange={(info) => {
+              setFileList(info.fileList);
+              form.setFieldsValue({
+                event_url: info.fileList.length ? info.fileList : undefined,
+              });
+            }}
             beforeUpload={beforeUpload}
-            onChange={handleFileChange}
-            showUploadList={true}
-            multiple={false}
-            maxCount={1} // Allow only one file
-            onRemove={() => setFile(null)} // Clear file state when removed
+            maxCount={1}
           >
-            <Button icon={<UploadOutlined />}>Click to Upload</Button>
+            {fileList.length >= 1 ? null : uploadButton}
           </Upload>
         </Form.Item>
+        {previewImage && (
+          <Image
+            wrapperStyle={{ display: 'none' }}
+            preview={{
+              visible: previewOpen,
+              onVisibleChange: (visible) => setPreviewOpen(visible),
+              afterOpenChange: (visible) => !visible && setPreviewImage(''),
+            }}
+            src={previewImage}
+          />
+        )}
 
-        {/* Submit Button */}
-        <Form.Item>
-          <Button type="primary" htmlType="submit" className="w-full">
-            Add Event
+        <div className="sm:col-span-2 lg:col-span-3 flex justify-center">
+          <Button type="primary" htmlType="submit" className="text-lg py-2">
+            {isEdit ? 'Update Event' : 'Create Event'}
           </Button>
-        </Form.Item>
+        </div>
       </Form>
     </div>
   );
