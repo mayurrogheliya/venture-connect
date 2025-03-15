@@ -1,9 +1,9 @@
 import express from 'express';
 import {
   createEvent,
-  deleteEvent,
   getAllEvents,
   getEventById,
+  toggleEventStatus,
   updateEvent,
 } from '../controllers/event.controller.js';
 import { EventUploadMiddleware } from '../middlewares/uploadMiddleware.js';
@@ -12,5 +12,5 @@ router.post('/createevent', EventUploadMiddleware, createEvent);
 router.get('/getallevents', getAllEvents);
 router.get('/geteventbyId/:id', getEventById);
 router.put('/updateevent/:id', EventUploadMiddleware, updateEvent);
-router.delete('/deleteevent/:id', deleteEvent);
+router.put('/toggleeventstatus/:id', toggleEventStatus);
 export default router;

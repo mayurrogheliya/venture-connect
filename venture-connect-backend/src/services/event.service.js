@@ -1,3 +1,4 @@
+import sequelize from '../config/database.js';
 import Event from '../models/event.model.js';
 import eventValidationSchema from '../validation/eventValidation.js';
 
@@ -12,7 +13,25 @@ export const createEventService = async (eventData) => {
 };
 
 export const getAllEventsService = async () => {
-  return await Event.findAll();
+  try {
+    const events = await Event.findAll({
+      attributes: {
+        include: [
+          [
+            sequelize.literal(`(
+              SELECT COUNT(*) 
+              FROM "event_attendees" AS attendees 
+              WHERE attendees."eventId" = "Event"."id"
+            )`),
+            'attendeeCount',
+          ],
+        ],
+      },
+    });
+    return events;
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 export const getEventByIdService = async (eventId) => {
@@ -23,6 +42,11 @@ export const updateEventService = async (eventId, eventData) => {
   const event = await Event.findByPk(eventId);
   if (!event) return null;
 
+  // Check if event_url is missing in the update request
+  if (!eventData.event_url) {
+    throw new Error('Event image (event_url) must be updated!');
+  }
+
   await event.update({
     ...eventData,
     keyhighlights: eventData.keyhighlights || event.keyhighlights,
@@ -32,10 +56,12 @@ export const updateEventService = async (eventId, eventData) => {
   return event;
 };
 
-export const deleteEventService = async (eventId) => {
+export const toggleEventStatusService = async (eventId) => {
   const event = await Event.findByPk(eventId);
   if (!event) return null;
 
-  await event.destroy();
+  event.status = !event.status;
+  await event.save();
+
   return event;
 };
