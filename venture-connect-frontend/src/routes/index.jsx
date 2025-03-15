@@ -29,6 +29,8 @@ import AdminOpportunity from '../pages/Admin/AdminOpportunity.jsx';
 import AdminEvents from '../pages/Admin/Events/AdminEvents.jsx';
 import CreateEvent from '../pages/Admin/Events/CreateEvent.jsx';
 import EditEvent from '../pages/Admin/Events/EditEvent.jsx';
+import AdminEvents from '../pages/Admin/AdminEvents.jsx';
+import InvestorProfileForm from '../components/Forms/Investor/mainForm.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -46,6 +48,10 @@ const router = createBrowserRouter(
         <Route
           path="/complete-startup-profile"
           element={<StartupProfileForm />}
+        />
+        <Route
+          path="/complete-investor-profile"
+          element={<InvestorProfileForm />}
         />
         <Route path="/startup-profile" element={<StartupProfile />} />
         <Route element={<UserLayout />}>

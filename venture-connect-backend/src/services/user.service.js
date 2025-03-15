@@ -5,7 +5,10 @@ export const createUser = async (userData) => {
 };
 
 export const getUserByEmail = async (email) => {
-  return await User.findOne({ where: { email } });
+  return await User.findOne({
+    where: { email },
+    attributes: { exclude: ['updatedAt', 'createdAt'] },
+  });
 };
 
 export const getAllUsers = async () => {
