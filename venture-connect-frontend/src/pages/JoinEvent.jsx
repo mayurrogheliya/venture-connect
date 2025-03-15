@@ -1,31 +1,66 @@
-import React from 'react';
-import { Card, Input, Button, Checkbox } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Card, Input, Button, Checkbox, message, Spin } from 'antd';
 import {
   CalendarOutlined,
   EnvironmentOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
+import { eventsAPIs } from '../api/endpoints/event';
+import { useParams } from 'react-router-dom';
+import { formatDate, formatTime } from '../Components/EventMain/EventCard';
 
 const JoinEvent = () => {
+  const { id } = useParams();
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const fetchEventDetails = async () => {
+      if (!id) return;
+
+      try {
+        const response = await eventsAPIs.getEventById(id);
+        setEvent(response.data.data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEventDetails();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-gray-100 ">
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-center flex flex-col justify-center items-center min-h-[500px] p-8 md:p-16 lg:p-24 ">
-        <h2 className="text-xl sm:text-2xl md:text-4xl font-bold ">
-          Venture Connect Summit 2025
+    <div className="bg-gray-100">
+      {/* Banner Section */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-center flex flex-col justify-center items-center min-h-[500px] p-8 md:p-16 lg:p-24">
+        <h2 className="text-xl sm:text-2xl md:text-4xl font-bold">
+          {event?.name}
         </h2>
-        <p className="text-xs sm:text-sm md:text-lg mt-2">
-          Connect, Learn, and Grow with Industry Leaders
-        </p>
+        <p className="text-xs sm:text-sm md:text-lg mt-2">{event?.subtitle}</p>
         <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 md:gap-6 mt-2 sm:mt-4 md:mt-6 text-xs sm:text-sm md:text-lg">
           <p className="flex items-center">
-            <CalendarOutlined className="mr-2" /> March 15, 2025 | 9:00 AM -
-            5:00 PM
+            <CalendarOutlined className="mr-2" /> {formatDate(event?.date)} |{' '}
+            {formatTime(event?.timeFrom)} - {formatTime(event?.timeTill)}
           </p>
           <p className="flex items-center">
-            <EnvironmentOutlined className="mr-2" /> Ahmedabad, Gujarat
+            <EnvironmentOutlined className="mr-2" /> {event?.city},{' '}
+            {event?.address}
           </p>
         </div>
       </div>
+
+      {/* Event Details */}
       <div className="py-3">
         <div className="max-w-5xl mx-auto mt-10 p-4 md:p-6">
           <h3 className="text-xl md:text-2xl font-bold text-center">
@@ -35,57 +70,53 @@ const JoinEvent = () => {
             <Card className="text-center shadow-lg">
               <CalendarOutlined className="text-3xl text-blue-600" />
               <h3 className="text-lg font-semibold mt-3">Date & Time</h3>
-              <p>March 15, 2025</p>
-              <p>9:00 AM - 5:00 PM</p>
+              <p>{formatDate(event?.date)}</p>
+              <p>
+                {formatTime(event?.timeFrom)} - {formatTime(event?.timeTill)}
+              </p>
             </Card>
             <Card className="text-center shadow-lg">
               <EnvironmentOutlined className="text-3xl text-blue-600" />
               <h3 className="text-lg font-semibold mt-3">Location</h3>
-              <p>Grand Conference Center</p>
-              <p>Ahmedabad, GUJ</p>
+              <p>{event?.address}</p>
+              <p>{event?.city}</p>
             </Card>
             <Card className="text-center shadow-lg">
               <TeamOutlined className="text-3xl text-blue-600" />
               <h3 className="text-lg font-semibold mt-3">Capacity</h3>
-              <p>200 Attendees</p>
-              <p>Limited Seats Available</p>
+              <p>{event?.capacity} Attendees</p>
             </Card>
           </div>
         </div>
 
+        {/* About the Event */}
         <div className="max-w-5xl mx-auto bg-white p-6 md:p-8 rounded-lg shadow-md mt-10">
           <h3 className="text-xl md:text-2xl font-bold mb-4">
             About the Event
           </h3>
-          <p className="text-gray-700">
-            Join us for the premier networking event of the year, where industry
-            leaders, innovators, and professionals come together to share
-            insights, build meaningful connections, and explore new
-            opportunities in the tech sector.
-          </p>
+          <p className="text-gray-700">{event?.description}</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div>
               <h4 className="font-semibold">Key Highlights</h4>
               <ul className="list-disc pl-5 text-gray-700">
-                <li>Expert-led panel discussions</li>
-                <li>Interactive networking sessions</li>
-                <li>Industry insights and trends</li>
-                <li>Professional development opportunities</li>
+                {event?.keyhighlights?.map((highlight, index) => (
+                  <li key={index}>{highlight}</li>
+                ))}
               </ul>
             </div>
             <div>
               <h4 className="font-semibold">Who Should Attend</h4>
               <ul className="list-disc pl-5 text-gray-700">
-                <li>Tech professionals</li>
-                <li>Industry leaders</li>
-                <li>Entrepreneurs</li>
-                <li>Investors and stakeholders</li>
+                {event?.whoShouldAttend?.map((attendee, index) => (
+                  <li key={index}>{attendee}</li>
+                ))}
               </ul>
             </div>
           </div>
         </div>
 
-        <div className="max-w-2xl mx-auto bg-white  p-6 md:p-8 rounded-lg shadow-md mt-10">
+        {/* Registration Form */}
+        <div className="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-lg shadow-md mt-10">
           <h3 className="text-xl md:text-2xl font-bold text-center mb-6">
             Register Now
           </h3>
