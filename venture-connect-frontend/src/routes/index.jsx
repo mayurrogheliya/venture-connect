@@ -2,6 +2,7 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   Navigate,
+  Outlet,
   Route,
   RouterProvider,
 } from 'react-router-dom';
@@ -25,6 +26,9 @@ import InvestorOpportunity from '../pages/InvestorOpportunity.jsx';
 import RegStartup from '../pages/RegStartup.jsx';
 import UserMain from '../pages/Admin/User/UserMain';
 import AdminOpportunity from '../pages/Admin/AdminOpportunity.jsx';
+import AdminEvents from '../pages/Admin/Events/AdminEvents.jsx';
+import CreateEvent from '../pages/Admin/Events/CreateEvent.jsx';
+import EditEvent from '../pages/Admin/Events/EditEvent.jsx';
 import AdminEvents from '../pages/Admin/AdminEvents.jsx';
 import InvestorProfileForm from '../components/Forms/Investor/mainForm.jsx';
 
@@ -36,7 +40,7 @@ const router = createBrowserRouter(
         <Route index element={<Landing />} />
         <Route path="signin" element={<Signin />} />
         <Route path="signup" element={<Signup />} />
-        <Route path="joinevent" element={<JoinEvent />} />
+        <Route path="joinevent/:id" element={<JoinEvent />} />
       </Route>
 
       {/* User Protected Routes */}
@@ -76,6 +80,8 @@ const router = createBrowserRouter(
           <Route path="users" element={<UserMain />} />
           <Route path="opportunities" element={<AdminOpportunity />} />
           <Route path="events" element={<AdminEvents />} />
+          <Route path="events/create" element={<CreateEvent />} />
+          <Route path="events/edit/:id" element={<EditEvent />} />
         </Route>
       </Route>
     </Route>,
