@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 export const useUserStore = create((set) => {
   const savedToken = localStorage.getItem('accessToken');
-  const isAuthenticated = savedToken != null;
+  const isAuthenticated = savedToken !== null;
   return {
     user: null,
     loading: false,
