@@ -21,10 +21,7 @@ const EventCard = ({ event, toggleEventStatus }) => {
         <p className="text-gray-500 mt-1 font-base">{event.subTitle}</p>
         <p className="text-blue-600 flex items-center gap-2 mt-2 font-semibold">
           <FaUsers className="text-lg" />
-          <span>
-            {/* {event.attendeeCount}  */}
-            users registered
-          </span>
+          <span>{event.attendeeCount} users registered</span>
         </p>
         <div className="flex gap-2 mt-4 flex-wrap">
           <Button
