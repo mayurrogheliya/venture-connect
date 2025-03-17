@@ -226,13 +226,9 @@ const SPBasicInfo = ({ form }) => {
           required: true,
           message: 'Please enter key highlight 1!',
         },
-        {
-          pattern: /^(\b\w+\b\s*){1,10}$/,
-          message: 'Maximum 10 words allowed!',
-        },
       ]}
     >
-      <Input maxLength={100} placeholder="Enter key highlight 1..." />
+      <Input maxLength={30} placeholder="Enter key highlight 1..." />
     </Form.Item>
   </Col>
 
@@ -245,13 +241,9 @@ const SPBasicInfo = ({ form }) => {
           required: true,
           message: 'Please enter key highlight 2!',
         },
-        {
-          pattern: /^(\b\w+\b\s*){1,10}$/,
-          message: 'Maximum 10 words allowed!',
-        },
       ]}
     >
-      <Input maxLength={100} placeholder="Enter key highlight 2..." />
+      <Input maxLength={30} placeholder="Enter key highlight 2..." />
     </Form.Item>
   </Col>
 
@@ -264,13 +256,9 @@ const SPBasicInfo = ({ form }) => {
           required: true,
           message: 'Please enter key highlight 3!',
         },
-        {
-          pattern: /^(\b\w+\b\s*){1,10}$/,
-          message: 'Maximum 10 words allowed!',
-        },
       ]}
     >
-      <Input maxLength={100} placeholder="Enter key highlight 3..." />
+      <Input maxLength={30} placeholder="Enter key highlight 3..." />
     </Form.Item>
   </Col>
 </Row>
