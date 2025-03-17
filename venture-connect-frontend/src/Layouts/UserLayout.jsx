@@ -7,7 +7,7 @@ import {
   faLightbulb,
   faBookmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { Avatar, Dropdown, message, Spin } from 'antd';
 import DefaultUser from '../assets/images/default-user.png';
@@ -16,6 +16,7 @@ import { authAPI } from '../api/endpoints/auth';
 
 const UserLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { user, getUserById } = useUserStore();
 
   const toggleSidebar = () => {
     setIsSidebarOpen((isSidebarOpen) => !isSidebarOpen);
@@ -38,10 +39,26 @@ const UserLayout = () => {
     }
   };
 
+  const userId = localStorage.getItem('userId');
+
+  useEffect(() => {
+    getUserById(userId);
+  }, [userId]);
+
   const items = [
     {
       key: '1',
-      label: <NavLink to="/profile">Profile</NavLink>,
+      label: (
+        <NavLink
+          to={
+            user?.data?.user_type === 'startup'
+              ? '/startup-profile'
+              : '/investor-profile'
+          }
+        >
+          Profile
+        </NavLink>
+      ),
     },
     {
       key: '2',
