@@ -4,9 +4,33 @@ import {
   SearchOutlined,
 } from '@ant-design/icons';
 import { Button, Input, Space, Table, Tooltip } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useEventAttendStore } from '../../../store/useEventAttend';
+import { useParams } from 'react-router-dom';
+import EventAttendEdit from './EventAttendEdit';
+import { eventsAttentAPIs } from '../../../api/endpoints/eventattendees';
+import { toast } from 'react-toastify';
 
 const EventAttendees = () => {
+  const { id } = useParams();
+
+  const { fetchAttends, eventAttendees, setEditData, edit } =
+    useEventAttendStore();
+  const handleEdithandler = (record) => {
+    setEditData({ ...record, open: true });
+  };
+
+  const handlerDelete = async (eventId, id) => {
+    const response = await eventsAttentAPIs.deleteEventAttent(id);
+    if (response.status === 200) {
+      toast.success(response.data.message);
+      fetchAttends(eventId);
+    }
+  };
+
+  useEffect(() => {
+    fetchAttends(id);
+  }, [id]);
   const [searchText, setSearchText] = useState('');
   const [pageSize, setPageSize] = useState(5);
 
@@ -29,12 +53,12 @@ const EventAttendees = () => {
   const columns = [
     {
       title: 'First Name',
-      dataIndex: 'fname',
+      dataIndex: 'firstname',
       render: (text) => highlightText(text, searchText),
     },
     {
       title: 'Last Name',
-      dataIndex: 'lname',
+      dataIndex: 'lastname',
       render: (text) => highlightText(text, searchText),
     },
     {
@@ -44,17 +68,17 @@ const EventAttendees = () => {
     },
     {
       title: 'Phone',
-      dataIndex: 'phone',
+      dataIndex: 'phonenumber',
       render: (text) => highlightText(text, searchText),
     },
     {
       title: 'Company Name',
-      dataIndex: 'companyName',
+      dataIndex: 'companyname',
       render: (text) => highlightText(text, searchText),
     },
     {
       title: 'Job Title',
-      dataIndex: 'jobTitle',
+      dataIndex: 'jobtitle',
       render: (text) => highlightText(text, searchText),
     },
     {
@@ -67,7 +91,7 @@ const EventAttendees = () => {
               type="text"
               icon={<EditOutlined />}
               style={{ color: '#2ecc71' }}
-              onClick={() => console.log('Edit Entries')}
+              onClick={() => handleEdithandler(record)}
             />
           </Tooltip>
           <Tooltip title="Delete Entries">
@@ -75,7 +99,7 @@ const EventAttendees = () => {
               type="text"
               icon={<DeleteOutlined />}
               style={{ color: '#e74c3c' }}
-              onClick={() => console.log('Delete Entries')}
+              onClick={() => handlerDelete(record.eventId, record.id)}
             />
           </Tooltip>
         </Space>
@@ -83,62 +107,15 @@ const EventAttendees = () => {
     },
   ];
 
-  const data = [
-    {
-      id: 1,
-      fname: 'John',
-      lname: 'Doe',
-      email: 'john.doe@example.com',
-      phone: '123-456-7890',
-      companyName: 'TechCorp',
-      jobTitle: 'Software Engineer',
-    },
-    {
-      id: 2,
-      fname: 'Jane',
-      lname: 'Smith',
-      email: 'jane.smith@example.com',
-      phone: '987-654-3210',
-      companyName: 'InnovateX',
-      jobTitle: 'Product Manager',
-    },
-    {
-      id: 3,
-      fname: 'Alice',
-      lname: 'Johnson',
-      email: 'alice.johnson@example.com',
-      phone: '555-123-4567',
-      companyName: 'Web Solutions',
-      jobTitle: 'UI/UX Designer',
-    },
-    {
-      id: 4,
-      fname: 'Bob',
-      lname: 'Brown',
-      email: 'bob.brown@example.com',
-      phone: '777-888-9999',
-      companyName: 'NextGen AI',
-      jobTitle: 'AI Researcher',
-    },
-    {
-      id: 5,
-      fname: 'Charlie',
-      lname: 'Davis',
-      email: 'charlie.davis@example.com',
-      phone: '222-333-4444',
-      companyName: 'FinTech Hub',
-      jobTitle: 'Financial Analyst',
-    },
-  ];
-
-  const filteredData = data.filter((record) =>
-    Object.values(record).some((value) =>
-      value.toString().toLowerCase().includes(searchText.toLowerCase()),
-    ),
-  );
+  // const filteredData = data.filter((record) =>
+  //   Object.values(record).some((value) =>
+  //     value.toString().toLowerCase().includes(searchText.toLowerCase()),
+  //   ),
+  // );
 
   return (
     <>
+      {edit.open && <EventAttendEdit />}
       <Input
         placeholder="Search Attendees..."
         prefix={<SearchOutlined style={{ color: 'gray' }} />}
@@ -149,7 +126,7 @@ const EventAttendees = () => {
       <Table
         style={{ overflowX: 'auto' }}
         columns={columns}
-        dataSource={filteredData}
+        dataSource={eventAttendees}
         rowKey="id"
         bordered={true}
         pagination={{

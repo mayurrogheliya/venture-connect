@@ -35,6 +35,7 @@ const EventCard = ({ event, toggleEventStatus }) => {
             color="primary"
             variant="solid"
             icon={<FontAwesomeIcon icon={faUserGroup} />}
+            onClick={() => navigate(`/admin/events/eventattends/${event.id}`)}
           >
             View Attendees
           </Button>

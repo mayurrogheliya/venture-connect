@@ -29,6 +29,7 @@ import AdminEvents from '../pages/Admin/Events/AdminEvents.jsx';
 import CreateEvent from '../pages/Admin/Events/CreateEvent.jsx';
 import EditEvent from '../pages/Admin/Events/EditEvent.jsx';
 import InvestorProfileForm from '../components/Forms/Investor/mainForm.jsx';
+import EventAttendees from '../pages/Admin/EventAttendees/EventAttendees.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -80,6 +81,7 @@ const router = createBrowserRouter(
           <Route path="events" element={<AdminEvents />} />
           <Route path="events/create" element={<CreateEvent />} />
           <Route path="events/edit/:id" element={<EditEvent />} />
+          <Route path="events/eventattends/:id" element={<EventAttendees />} />
         </Route>
       </Route>
     </Route>,
