@@ -15,7 +15,9 @@ export const startupValidationSchema = yup.object({
       linkedin_url: yup.string().url('Invalid LinkedIn URL'),
       twitter_url: yup.string().url('Invalid Twitter URL'),
       company_overview: yup.string().required('Company overview is required'),
-      key_highlights: yup.string().required('Key highlights are required'),
+      keyHighlight1: yup.string().required('Key highlights are required'),
+      keyHighlight2: yup.string().required('Key highlights are required'),
+      keyHighlight3: yup.string().required('Key highlights are required'),
     })
     .required(),
 
@@ -42,6 +44,14 @@ export const startupValidationSchema = yup.object({
         .number()
         .positive()
         .required('Monthly burn rate is required'),
+      annualRevenue: yup
+        .number()
+        .positive()
+        .required('Annual revenue is required'),
+      profitMargin: yup
+        .number()
+        .positive()
+        .required('Profit margin is required'),
     })
     .required(),
 

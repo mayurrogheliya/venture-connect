@@ -50,7 +50,15 @@ StartupBasicInfo.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    key_highlights: {
+    keyHighlight1: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    keyHighlight2: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    keyHighlight3: {
       type: DataTypes.STRING,
       allowNull: false,
     },
