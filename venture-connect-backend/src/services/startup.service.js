@@ -77,13 +77,13 @@ export const getAllStartup = async () => {
   return { totalStartups: count, startups: rows };
 };
 
-export const getStartupById = async (startupId) => {
+export const getStartupById = async (userId) => {
   const user = await User.findOne({
     include: [
       {
         model: Startup,
         as: 'startup',
-        where: { id: startupId },
+        where: { userId },
         attributes: ['id', 'userId'],
         include: [
           {
