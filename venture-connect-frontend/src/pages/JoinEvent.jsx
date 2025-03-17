@@ -1,18 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Input, Button, Checkbox, message, Spin } from 'antd';
+import { Card, Input, Button, Checkbox, Form, message, Spin } from 'antd';
 import {
   CalendarOutlined,
   EnvironmentOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
 import { eventsAPIs } from '../api/endpoints/event';
-import { useParams } from 'react-router-dom';
-import { formatDate, formatTime } from '../Components/EventMain/EventCard';
+import { useNavigate, useParams } from 'react-router-dom';
+import { formatDate, formatTime } from '../components/EventMain/EventCard';
+import { eventsAttentAPIs } from '../api/endpoints/eventattendees';
+import { toast } from 'react-toastify';
 
 const JoinEvent = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [form] = Form.useForm();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const onFinish = async (values) => {
+    try {
+      const data = { ...values, eventId: id };
+
+      const response = await eventsAttentAPIs.addEventAttent(data);
+
+      if (response.data) {
+        toast.success(response.data.message);
+      }
+
+      form.resetFields();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -120,26 +139,66 @@ const JoinEvent = () => {
           <h3 className="text-xl md:text-2xl font-bold text-center mb-6">
             Register Now
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input placeholder="First Name *" size="large" />
-            <Input placeholder="Last Name *" size="large" />
-            <Input placeholder="Email Address *" size="large" />
-            <Input placeholder="Phone Number" size="large" />
-            <Input placeholder="Company Name" size="large" />
-            <Input placeholder="Job Title" size="large" />
-          </div>
-          <div className="mt-6">
-            <Checkbox>
-              I agree to the terms and conditions and privacy policy
-            </Checkbox>
-          </div>
-          <Button
-            type="primary"
-            size="large"
-            className="w-full mt-6 bg-blue-600 hover:bg-blue-700"
-          >
-            Complete Registration
-          </Button>
+          <Form layout="vertical" form={form} onFinish={onFinish}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Form.Item
+                name="firstname"
+                rules={[{ required: true, message: 'First name is required' }]}
+              >
+                <Input placeholder="First Name *" size="large" />
+              </Form.Item>
+              <Form.Item
+                name="lastname"
+                rules={[{ required: true, message: 'Last name is required' }]}
+              >
+                <Input placeholder="Last Name *" size="large" />
+              </Form.Item>
+              <Form.Item
+                name="email"
+                rules={[
+                  { required: true, message: 'Email is required' },
+                  { type: 'email', message: 'Enter a valid email' },
+                ]}
+              >
+                <Input placeholder="Email Address *" size="large" />
+              </Form.Item>
+              <Form.Item
+                name="phonenumber"
+                rules={[
+                  {
+                    pattern: /^[0-9]*$/,
+                    message: 'Enter a valid phone number',
+                  },
+                  { required: true, message: 'phone number is required' },
+                ]}
+              >
+                <Input placeholder="Phone Number" size="large" />
+              </Form.Item>
+              <Form.Item
+                name="companyname"
+                rules={[
+                  { required: true, message: 'Campany name is required' },
+                ]}
+              >
+                <Input placeholder="Company Name" size="large" />
+              </Form.Item>
+              <Form.Item
+                name="jobtitle"
+                rules={[{ required: true, message: 'job title is required' }]}
+              >
+                <Input placeholder="Job Title" size="large" />
+              </Form.Item>
+            </div>
+
+            <Button
+              type="primary"
+              size="large"
+              htmlType="submit"
+              className="w-full mt-6 bg-blue-600 hover:bg-blue-700"
+            >
+              Complete Registration
+            </Button>
+          </Form>
         </div>
       </div>
     </div>
