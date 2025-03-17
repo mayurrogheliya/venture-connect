@@ -29,7 +29,6 @@ EventAttend.init(
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
     phonenumber: {
       type: DataTypes.STRING,

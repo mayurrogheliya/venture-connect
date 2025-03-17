@@ -10,7 +10,11 @@ import { successResponse, errorResponse } from '../utils/responseFormatter.js';
 export const registerForEvent = async (req, res) => {
   try {
     const attendee = await registerForEventService(req.body);
-    return successResponse(res, attendee, 'Registered successfully');
+    return successResponse(
+      res,
+      attendee,
+      'Registered successfully and event detail display in  email',
+    );
   } catch (error) {
     return errorResponse(res, error.errors || error.message);
   }
@@ -18,7 +22,8 @@ export const registerForEvent = async (req, res) => {
 
 export const getAllAttendees = async (req, res) => {
   try {
-    const attendees = await getAllAttendeesService();
+    const { id: eventId } = req.params;
+    const attendees = await getAllAttendeesService(eventId);
     return successResponse(res, attendees, 'Attendees retrieved successfully');
   } catch (error) {
     return errorResponse(res, error.message);
