@@ -13,6 +13,7 @@ import {
   Space,
 } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
+import { formatAmount } from '../utils/formatUtils';
 
 const { Title, Text } = Typography;
 
@@ -36,17 +37,6 @@ const AddOpportunity = () => {
   ];
 
   const [investmentRange, setInvestmentRange] = useState([20000, 200000000]);
-
-  const formatInvestment = (value) => {
-    if (value >= 10000000) {
-      return `₹${(value / 10000000).toFixed(2)}Cr`;
-    } else if (value >= 100000) {
-      return `₹${(value / 100000).toFixed(2)}L`;
-    } else if (value >= 1000) {
-      return `₹${(value / 1000).toFixed(0)}K`;
-    }
-    return `₹${value}`;
-  };
 
   return (
     <div>
@@ -97,11 +87,11 @@ const AddOpportunity = () => {
                   step={10000}
                   defaultValue={investmentRange}
                   onChange={setInvestmentRange}
-                  tooltip={{ formatter: formatInvestment }}
+                  tooltip={{ formatter: formatAmount }}
                 />
                 <Text>
-                  Selected Range: {formatInvestment(investmentRange[0])} -{' '}
-                  {formatInvestment(investmentRange[1])}
+                  Selected Range: {formatAmount(investmentRange[0])} -{' '}
+                  {formatAmount(investmentRange[1])}
                 </Text>
               </Form.Item>
 
