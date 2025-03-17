@@ -46,6 +46,14 @@ StartupMetrics.init(
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
+    annualRevenue: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+    },
+    profitMargin: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+    },
   },
   {
     sequelize,
