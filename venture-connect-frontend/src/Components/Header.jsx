@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/images/logo2.png';
+import { useUserStore } from '../store/useUserStore';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+
+  const { isAuthenticated } = useUserStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,31 +75,33 @@ const Header = () => {
           >
             Events
           </button>
-          <div>
-            <Link
-              to="/signin"
-              onClick={() => {
-                setIsOpen(false);
-                window.scrollTo({ top: 0, behavior: 'instant' });
-              }}
-            >
-              <button className="pe-8 py-2 text-gray-600 hover:text-black">
-                Sign in
-              </button>
-            </Link>
+          {!isAuthenticated && (
+            <div>
+              <Link
+                to="/signin"
+                onClick={() => {
+                  setIsOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'instant' });
+                }}
+              >
+                <button className="pe-8 py-2 text-gray-600 hover:text-black">
+                  Sign in
+                </button>
+              </Link>
 
-            <Link
-              to="/signup"
-              onClick={() => {
-                setIsOpen(false);
-                window.scrollTo({ top: 0, behavior: 'instant' });
-              }}
-            >
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                Signup
-              </button>
-            </Link>
-          </div>
+              <Link
+                to="/signup"
+                onClick={() => {
+                  setIsOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'instant' });
+                }}
+              >
+                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                  Signup
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
