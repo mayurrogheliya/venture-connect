@@ -21,33 +21,35 @@ export const multipartRequest = axios.create({
   withCredentials: true,
 });
 
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error),
-);
+const attachAuthInterceptor = (instance) => {
+  instance.interceptors.request.use(
+    (config) => {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
+      return config;
+    },
+    (error) => Promise.reject(error),
+  );
 
-api.interceptors.response.use(
-  (response) => response,
+  instance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      const { logout } = useUserStore.getState();
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status == 403)
+      ) {
+        logout();
+      }
 
-  (error) => {
-    console.log(error);
+      return Promise.reject(error);
+    },
+  );
+};
 
-    const { logout } = useUserStore.getState();
-    if (
-      error.response &&
-      (error.response.status === 401 || error.response.status == 403)
-    ) {
-      logout();
-    }
-
-    return Promise.reject(error);
-  },
-);
+attachAuthInterceptor(api);
+attachAuthInterceptor(multipartRequest);
 
 export default api;
