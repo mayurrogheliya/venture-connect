@@ -35,7 +35,6 @@ const Signin = () => {
     try {
       setLoading(true);
       const response = await authAPI.login(values);
-      console.log(response);
       const { user, accessToken } = response.data;
       login(user, accessToken);
       message.success(response?.message || 'Login Success');

@@ -6,14 +6,15 @@ import investorRoutes from './investor.routes.js';
 import opportRoutes from './opportunity.routes.js';
 import users from './user.routes.js';
 import authRoutes from './auth.routes.js';
+import { authMiddleware } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
-router.use('/startup', startupRoutes);
+router.use('/startup', authMiddleware, startupRoutes);
 router.use('/event', eventRoutes);
 router.use('/event-attendees', eventAttend);
 
-router.use('/investor', investorRoutes);
+router.use('/investor', authMiddleware, investorRoutes);
 router.use('/opportunity', opportRoutes);
 router.use('/users', users);
 router.use('/auth', authRoutes);
