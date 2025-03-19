@@ -3,9 +3,11 @@ import { usersAPI } from '../api/endpoints/users';
 import { message } from 'antd';
 export const useUserStore = create((set, get) => {
   const savedToken = localStorage.getItem('accessToken');
+  const userId = localStorage.getItem('userId');
   const isAuthenticated = savedToken !== null;
   return {
     user: null,
+    userId: userId,
     loading: false,
     accessToken: savedToken,
     isAuthenticated,

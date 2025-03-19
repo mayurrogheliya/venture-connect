@@ -5,10 +5,7 @@ import {
   faDollarSign,
   faPercent,
 } from '@fortawesome/free-solid-svg-icons';
-import {
-  DollarOutlined,
-  PercentageOutlined,
-} from '@ant-design/icons';
+import { DollarOutlined, PercentageOutlined } from '@ant-design/icons';
 
 const SPMatrices = ({ form }) => {
   return (
@@ -20,7 +17,7 @@ const SPMatrices = ({ form }) => {
           <Col xs={24} sm={12} md={8}>
             <Form.Item
               label="Monthly Recurring Revenue (MRR)"
-              name="mrr"
+              name={['metrics', 'mrr']}
               rules={[
                 {
                   required: true,
@@ -49,7 +46,7 @@ const SPMatrices = ({ form }) => {
           <Col xs={24} sm={12} md={8}>
             <Form.Item
               label="Year-over-Year Growth"
-              name="yoy"
+              name={['metrics', 'yoy']}
               rules={[
                 {
                   required: true,
@@ -76,7 +73,7 @@ const SPMatrices = ({ form }) => {
           <Col xs={24} sm={12} md={8}>
             <Form.Item
               label="Amount Raised"
-              name="amountRaised"
+              name={['metrics', 'total_funding']}
               rules={[
                 {
                   required: true,
@@ -108,7 +105,7 @@ const SPMatrices = ({ form }) => {
           <Col xs={24} sm={12} md={8}>
             <Form.Item
               label="Current Valuation"
-              name="crntValuation"
+              name={['metrics', 'current_valuation']}
               rules={[
                 {
                   required: true,
@@ -137,7 +134,7 @@ const SPMatrices = ({ form }) => {
           <Col xs={24} sm={12} md={8}>
             <Form.Item
               label="Investment Amount"
-              name="invstAmount"
+              name={['metrics', 'investment_amount']}
               rules={[
                 {
                   required: true,
@@ -165,7 +162,7 @@ const SPMatrices = ({ form }) => {
           <Col xs={24} sm={12} md={8}>
             <Form.Item
               label="Equity Offered"
-              name="equityOffered"
+              name={['metrics', 'equity_offered']}
               rules={[
                 {
                   required: true,
@@ -196,7 +193,7 @@ const SPMatrices = ({ form }) => {
           <Col xs={24} sm={12} md={8}>
             <Form.Item
               label="Customer Acquisition Cost"
-              name="cac"
+              name={['metrics', 'cac']}
               rules={[
                 {
                   required: true,
@@ -225,7 +222,7 @@ const SPMatrices = ({ form }) => {
           <Col xs={24} sm={12} md={8}>
             <Form.Item
               label="Customer Lifetime Value"
-              name="clv"
+              name={['metrics', 'ltv']}
               rules={[
                 {
                   required: true,
@@ -253,7 +250,7 @@ const SPMatrices = ({ form }) => {
           <Col xs={24} sm={12} md={8}>
             <Form.Item
               label="Monthly Burn Rate"
-              name="mbr"
+              name={['metrics', 'monthly_burn_rate']}
               rules={[
                 {
                   required: true,
@@ -279,60 +276,60 @@ const SPMatrices = ({ form }) => {
           </Col>
 
           <Col xs={24} sm={12} md={8}>
-          <Form.Item
-                  label="Annual Revenue"
-                  name="annualRevenue"
-                  prefix={<DollarOutlined />}
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please enter the annual revenue!',
-                    },
-                    {
-                      type: 'number',
-                      min: 0,
-                      message: 'Annual revenue must be a positive number!',
-                    },
-                  ]}
-                >
-                  <InputNumber
-                    prefix={<DollarOutlined />}
-                    placeholder="Enter annual revenue"
-                    style={{ width: '100%' }}
-                    min={0}
-                    step={0.01} // Allows decimal values
-                  />
-                </Form.Item>
+            <Form.Item
+              label="Annual Revenue"
+              name={['metrics', 'annualRevenue']}
+              prefix={<DollarOutlined />}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter the annual revenue!',
+                },
+                {
+                  type: 'number',
+                  min: 0,
+                  message: 'Annual revenue must be a positive number!',
+                },
+              ]}
+            >
+              <InputNumber
+                prefix={<DollarOutlined />}
+                placeholder="Enter annual revenue"
+                style={{ width: '100%' }}
+                min={0}
+                step={0.01} // Allows decimal values
+              />
+            </Form.Item>
           </Col>
 
           <Col xs={24} sm={12} md={8}>
-          <Form.Item
-                  label="Profit Margin (%)"
-                  name="profitMargin"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please enter the profit margin!',
-                    },
-                    {
-                      type: 'number',
-                      min: 0,
-                      max: 100,
-                      message: 'Profit margin must be between 0% and 100%!',
-                    },
-                  ]}
-                >
-                  <InputNumber
-                    prefix={<PercentageOutlined />}
-                    placeholder="Enter profit margin (%)"
-                    style={{ width: '100%' }}
-                    min={0}
-                    max={100}
-                    step={0.01}
-                    formatter={(value) => `${value}%`}
-                    parser={(value) => value.replace('%', '')}
-                  />
-                </Form.Item>
+            <Form.Item
+              label="Profit Margin (%)"
+              name={['metrics', 'profitMargin']}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter the profit margin!',
+                },
+                {
+                  type: 'number',
+                  min: 0,
+                  max: 100,
+                  message: 'Profit margin must be between 0% and 100%!',
+                },
+              ]}
+            >
+              <InputNumber
+                prefix={<PercentageOutlined />}
+                placeholder="Enter profit margin (%)"
+                style={{ width: '100%' }}
+                min={0}
+                max={100}
+                step={0.01}
+                formatter={(value) => `${value}%`}
+                parser={(value) => value.replace('%', '')}
+              />
+            </Form.Item>
           </Col>
         </Row>
       </Form>
