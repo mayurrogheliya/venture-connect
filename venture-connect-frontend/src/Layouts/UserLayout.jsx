@@ -13,10 +13,10 @@ import { Avatar, Dropdown, message, Spin } from 'antd';
 import DefaultUser from '../assets/images/default-user.png';
 import { useUserStore } from '../store/useUserStore';
 import { authAPI } from '../api/endpoints/auth';
+import { useStartupProfileStore } from '../store/useStartupProfileStore';
 
 const UserLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { user, getUserById } = useUserStore();
 
   const toggleSidebar = () => {
     setIsSidebarOpen((isSidebarOpen) => !isSidebarOpen);
@@ -38,12 +38,20 @@ const UserLayout = () => {
       logout();
     }
   };
-
+  const { getStartupProfile, startupProfile } = useStartupProfileStore();
   const userId = localStorage.getItem('userId');
-
+  const { user, getUserById } = useUserStore();
   useEffect(() => {
-    getUserById(userId);
-  }, [userId]);
+    const fetchData = async () => {
+      setLoading(true);
+      await getUserById(userId);
+      await getStartupProfile(userId);
+      setLoading(false);
+    };
+    fetchData();
+  }, [getStartupProfile, userId]);
+
+  const { basicInfo } = startupProfile || {};
 
   const items = [
     {
@@ -183,7 +191,13 @@ const UserLayout = () => {
         {/* Fixed Navigation Bar */}
         <div className="hidden md:flex fixed top-0 left-0 w-full h-15 shadow-md bg-white items-center justify-end px-6 z-10">
           <Dropdown menu={{ items }} trigger={['click']} arrow>
-            <Avatar size={50} src={DefaultUser} className="cursor-pointer" />
+            <Avatar
+              size={50}
+              src={
+                basicInfo?.startup_logo ? basicInfo.startup_logo : DefaultUser
+              }
+              className="cursor-pointer"
+            />
           </Dropdown>
         </div>
 
