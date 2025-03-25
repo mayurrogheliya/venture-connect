@@ -109,12 +109,14 @@ export const getStartupById = async (userId) => {
   return user;
 };
 
-export const updateStartup = async (startupId, updateData) => {
+export const updateStartup = async (userId, updateData) => {
   const { basicInfo, metrics, team, teamMembers } = updateData;
 
   const startup = await Startup.findOne({
-    where: { id: startupId },
+    where: { userId },
   });
+
+  const startupId = startup.id;
 
   if (!startup) {
     return null;
@@ -152,7 +154,7 @@ export const updateStartup = async (startupId, updateData) => {
     }
   }
 
-  return getStartupById(startupId);
+  return getStartupById(userId);
 };
 
 export const deleteStartup = async (startupId) => {

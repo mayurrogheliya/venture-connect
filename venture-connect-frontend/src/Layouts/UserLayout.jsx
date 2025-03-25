@@ -60,8 +60,8 @@ const UserLayout = () => {
         <NavLink
           to={
             user?.data?.user_type === 'startup'
-              ? '/startup-profile'
-              : '/investor-profile'
+              ? `/startup-profile/${userId}`
+              : `/investor-profile/${userId}`
           }
         >
           Profile

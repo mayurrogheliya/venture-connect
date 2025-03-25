@@ -10,12 +10,12 @@ router.post(
   startupController.createStartupProfile,
 );
 router.get('/getStartups', startupController.getStartups);
-router.get('/getStartup/:startupId', startupController.getStartup);
+router.get('/getStartup/:userId', startupController.getStartup);
 router.put(
-  '/updateStartup/:startupId',
+  '/updateStartup/:userId',
   StartupUploadMiddleware,
   startupController.updateStartupProfile,
 );
-router.delete('/deleteStartup/:startupId', startupController.deleteStartup);
+router.delete('/deleteStartup/:userId', startupController.deleteStartup);
 
 export default router;
