@@ -1,46 +1,22 @@
-import { Button, Input } from 'antd';
+import { Button, Flex, Input, Spin } from 'antd';
 import StartupHubCard from '../Components/StartupHub/StartupHubCard';
 import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
-
+import { useEffect } from 'react';
+import { useStartupProfileStore } from '../store/useStartupProfileStore';
 
 const StartupsHub = () => {
-  const startupData = [
-    {
-      name: 'TechFlow',
-      location: 'Rajkot, GUJ',
-      image: '/assets/images/companies/techflow.jpg',
-      description: 'AI-powered workflow automation platform for modern enterprises',
-      industry: 'Software & Technology',
-      funding: '$5.2M',
-      teamSize: '25-50',
-      stage: 'Seed Stage',
-      isBookmarked: false,
-      
-    },
-    {
-      name: 'CloudSecure',
-      location: 'Rajkot, GUJ',
-      description: 'Cloud security solutions for enterprises',
-      industry: 'Software & Technology',
-      image: '/assets/images/companies/logo.png',
-      funding: '$10M',
-      teamSize: '50-100',
-      stage: 'Series A',
-      isBookmarked: false,
-    },
-    {
-      name: 'FinTrack',
-      location: 'Bangalore, IND',
-      description: 'Fintech solutions for expense tracking and analysis',
-      industry: 'Fintech',
-      image: '/assets/images/companies/fintrack-logo.png',
-      funding: '$3M',
-      teamSize: '10-20',
-      stage: 'Pre-Seed',
-      isBookmarked: false
-    },
-  ];
+  const { getAllStartupProfiles, startupAllProfile, setLoading, loading } =
+    useStartupProfileStore();
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      await getAllStartupProfiles();
+      setLoading(false);
+    };
+    fetchData();
+  }, [getAllStartupProfiles]);
 
+  console.log('ALLSP: ', startupAllProfile);
 
   return (
     <>
@@ -84,11 +60,23 @@ const StartupsHub = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
-        {startupData.map((startup, index) => (
-          <StartupHubCard key={index} {...startup} />
-        ))}
-      </div>
+      {loading ? (
+        <Flex gap="middle" vertical>
+          <Spin tip="Loading..." size="large" />
+        </Flex>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
+          {console.log('sp: ', startupAllProfile)}
+          {Array.isArray(startupAllProfile) &&
+            startupAllProfile?.map((items, index) => (
+              <StartupHubCard
+                key={index}
+                startup={items?.startup}
+                userId={items?.id}
+              />
+            ))}
+        </div>
+      )}
     </>
   );
 };
