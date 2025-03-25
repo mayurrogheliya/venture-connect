@@ -52,7 +52,7 @@ const router = createBrowserRouter(
           path="/complete-investor-profile"
           element={<InvestorProfileForm />}
         />
-        <Route path="/startup-profile" element={<StartupProfile />} />
+        <Route path="/startup-profile/:id" element={<StartupProfile />} />
         <Route element={<UserLayout />}>
           <Route path="/startups-hub" element={<StartupsHub />} />
           <Route path="/investor-network" element={<InvestorNetwork />} />

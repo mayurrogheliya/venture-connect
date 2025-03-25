@@ -9,26 +9,24 @@ import { faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { IoStatsChart } from 'react-icons/io5';
 import { MdOutlineTrendingUp } from 'react-icons/md';
 import { FaUsers } from 'react-icons/fa';
-import { Card, Progress, Spin } from 'antd';
+import { Card, Flex, Progress, Spin } from 'antd';
 import { useEffect } from 'react';
 import { useStartupProfileStore } from '../store/useStartupProfileStore';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { formatAmount } from '../utils/formatUtils';
-import { useUserStore } from '../store/useUserStore';
 const StartupProfile = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { getStartupProfile, startupProfile, setLoading, loading } =
     useStartupProfileStore();
-  const { userId } = useUserStore();
-  console.log(userId);
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      await getStartupProfile(userId);
+      await getStartupProfile(id);
       setLoading(false);
     };
     fetchData();
-  }, [getStartupProfile, userId]);
+  }, [getStartupProfile, id]);
 
   const { basicInfo, metrics, team } = startupProfile || {};
 
@@ -54,7 +52,9 @@ const StartupProfile = () => {
       </div>
 
       {loading ? (
-        <Spin tip="Loading..." size="large" fullscreen />
+        <Flex gap="middle" vertical>
+          <Spin tip="Loading..." size="large" />
+        </Flex>
       ) : (
         <div className="md:pt-10 md:pb-5 md:px-12 pt-5 pb-3 px-5">
           <div className="flex gap-x-10 gap-y-2 items-center border-b pb-5 border-gray-100 flex-wrap">
