@@ -74,12 +74,12 @@ export const getStartups = async (req, res) => {
 
 export const getStartup = async (req, res) => {
   try {
-    const { startupId } = req.params;
-    if (!startupId) {
-      return errorResponse(res, 'Startup ID is required', 400);
+    const { userId } = req.params;
+    if (!userId) {
+      return errorResponse(res, 'User ID is required', 400);
     }
 
-    const startup = await startupService.getStartupById(startupId);
+    const startup = await startupService.getStartupById(userId);
     if (!startup) {
       return errorResponse(res, 'Startup not found', 404);
     }
@@ -97,21 +97,23 @@ export const updateStartupProfile = async (req, res) => {
   try {
     parseJSONFields(req, ['basicInfo', 'metrics', 'team', 'teamMembers']);
 
-    const { startupId } = req.params;
-    if (!startupId) {
-      return errorResponse(res, 'Startup ID is required', 400);
+    const { userId } = req.params;
+    if (!userId) {
+      return errorResponse(res, 'User ID is required', 400);
     }
 
-    const existingStartup = await startupService.getStartupById(startupId);
+    const existingStartup = await startupService.getStartupById(userId);
     if (!existingStartup) {
-      return errorResponse(res, 'Startup not found', 404);
+      return errorResponse(res, 'User not found', 404);
     }
 
     let uploadedImages = {
-      startupLogo: existingStartup.basicInfo?.startup_logo || null,
-      founderImage: existingStartup.team?.founder_image || null,
-      teamMembersImages: Array.isArray(existingStartup.teamMembers)
-        ? existingStartup.teamMembers.map((member) => ({
+      startupLogo: existingStartup.startup.basicInfo?.startup_logo || null,
+      founderImage: existingStartup.startup.team?.founder_image || null,
+      teamMembersImages: Array.isArray(
+        existingStartup.startup?.team?.teamMember,
+      )
+        ? existingStartup.startup?.team?.teamMember.map((member) => ({
             id: member.id,
             profile_image: member.profile_image,
           }))
@@ -121,9 +123,9 @@ export const updateStartupProfile = async (req, res) => {
     if (req.files) {
       // handle startup log file
       if (req.files.startupLogo) {
-        if (existingStartup.basicInfo?.startup_logo) {
+        if (existingStartup.startup.basicInfo?.startup_logo) {
           await deleteImageFromCloudinary(
-            existingStartup.basicInfo.startup_logo,
+            existingStartup.startup.basicInfo.startup_logo,
           );
         }
         uploadedImages.startupLogo = await uploadImageToCloudinary(
@@ -133,8 +135,10 @@ export const updateStartupProfile = async (req, res) => {
 
       // handle founder image file
       if (req.files.founderImage) {
-        if (existingStartup.team?.founder_image) {
-          await deleteImageFromCloudinary(existingStartup.team.founder_image);
+        if (existingStartup.startup.team?.founder_image) {
+          await deleteImageFromCloudinary(
+            existingStartup.startup.team.founder_image,
+          );
         }
         uploadedImages.founderImage = await uploadImageToCloudinary(
           req.files.founderImage[0].path,
@@ -155,8 +159,10 @@ export const updateStartupProfile = async (req, res) => {
 
         uploadedImages.teamMembersImages = await Promise.all(
           newTeamImages.map(async (member) => {
-            const teamMembersArray = Array.isArray(existingStartup.teamMembers)
-              ? existingStartup.teamMembers
+            const teamMembersArray = Array.isArray(
+              existingStartup.startup.team.teamMember,
+            )
+              ? existingStartup.startup.team.teamMember
               : [];
 
             const existingMember = teamMembersArray.find(
@@ -193,7 +199,7 @@ export const updateStartupProfile = async (req, res) => {
       };
     });
 
-    const updatedStartup = await startupService.updateStartup(startupId, {
+    const updatedStartup = await startupService.updateStartup(userId, {
       ...req.body,
       basicInfo: {
         ...req.body.basicInfo,
