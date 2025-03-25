@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import techImage from '/assets/images/companies/logo.png';
 import {
+  faChevronLeft,
   faGlobe,
   faIndianRupee,
   faLocationDot,
@@ -12,10 +12,11 @@ import { FaUsers } from 'react-icons/fa';
 import { Card, Progress, Spin } from 'antd';
 import { useEffect } from 'react';
 import { useStartupProfileStore } from '../store/useStartupProfileStore';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { formatAmount } from '../utils/formatUtils';
 import { useUserStore } from '../store/useUserStore';
 const StartupProfile = () => {
+  const navigate = useNavigate();
   const { getStartupProfile, startupProfile, setLoading, loading } =
     useStartupProfileStore();
   const { userId } = useUserStore();
@@ -42,18 +43,26 @@ const StartupProfile = () => {
 
   return (
     <>
+      <div
+        className="md:py-5 py-3 md:px-15 px-5 border-b border-gray-200 bg-gray-50 cursor-pointer"
+        onClick={() => navigate('/startups-hub')}
+      >
+        <p>
+          <FontAwesomeIcon icon={faChevronLeft} className="pe-5" />
+          Return to Dashboard
+        </p>
+      </div>
+
       {loading ? (
         <Spin tip="Loading..." size="large" fullscreen />
       ) : (
         <div className="md:pt-10 md:pb-5 md:px-12 pt-5 pb-3 px-5">
           <div className="flex gap-x-10 gap-y-2 items-center border-b pb-5 border-gray-100 flex-wrap">
-            {basicInfo?.startup_logo && (
-              <img
-                src={basicInfo.startup_logo}
-                alt={techImage}
-                className="w-16 h-16 rounded-md object-cover"
-              />
-            )}
+            <img
+              src={basicInfo?.startup_logo}
+              alt={basicInfo?.startup_name}
+              className="w-16 h-16 rounded-md object-cover"
+            />
             <div className="space-y-2">
               <div className="flex gap-x-5 gap-y-1 items-center flex-wrap">
                 {basicInfo?.startup_name && (
@@ -206,7 +215,7 @@ const StartupProfile = () => {
               <div className="flex flex-col md:flex-row gap-5 md:gap-10 items-center">
                 <img
                   src={team?.founder_image}
-                  alt="Dhruv Burada"
+                  alt={team?.founder_name}
                   className="w-16 h-16 rounded-md object-cover"
                 />
                 <div className="text-center md:text-left space-y-0.5">
