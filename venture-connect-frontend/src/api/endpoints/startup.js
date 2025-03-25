@@ -11,8 +11,14 @@ export const startupAPI = {
     return response.data;
   },
 
+  getAllStartupProfiles: async () => {
+    const response = await multipartRequest.get('/startup/getStartups');
+    return response.data;
+  },
+
   updateStartupProfile: (startupId, data) =>
     multipartRequest.put(`/startup/updateStartup/${startupId}`, data),
+
   deleteStartupProfile: (startupId) =>
     multipartRequest.delete(`/startup/deleteStartup/${startupId}`),
 };
