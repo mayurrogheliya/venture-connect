@@ -85,7 +85,7 @@ const Header = () => {
                 }}
               >
                 <button className="pe-8 py-2 text-gray-600 hover:text-black">
-                  Sign in
+                  Sign In
                 </button>
               </Link>
 
@@ -97,7 +97,7 @@ const Header = () => {
                 }}
               >
                 <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                  Signup
+                  Sign Up
                 </button>
               </Link>
             </div>
@@ -148,20 +148,24 @@ const Header = () => {
         >
           Events
         </button>
-        <Link
-          to="/signin"
-          className="text-gray-600 hover:text-black py-4"
-          onClick={() => setIsOpen(false)}
-        >
-          Sign in
-        </Link>
-        <Link
-          to="/signup"
-          className="px-4 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 "
-          onClick={() => setIsOpen(false)}
-        >
-          Signup
-        </Link>
+        {!isAuthenticated && (
+          <div className="flex flex-col items-center">
+            <Link
+              to="/signin"
+              className="text-gray-600 hover:text-black py-4"
+              onClick={() => setIsOpen(false)}
+            >
+              Sign In
+            </Link>
+            <Link
+              to="/signup"
+              className="px-4 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 "
+              onClick={() => setIsOpen(false)}
+            >
+              Sign Up
+            </Link>
+          </div>
+        )}
       </div>
     </nav>
   );
