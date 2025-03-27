@@ -1,12 +1,12 @@
 import { EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Flex, Space, Typography } from 'antd';
-import { useState } from 'react';
 import StartupUserForm from '../../../components/StartupUserMain/StartupUserForm';
 import StartupUserTable from '../../../components/StartupUserMain/StartupUserTable';
+import { useStartupProfileStore } from '../../../store/useStartupProfileStore';
 
 const { Title } = Typography;
 const StartupUser = () => {
-  const [mode, setMode] = useState('table');
+  const { mode, setMode, setEditingStartupProfile } = useStartupProfileStore();
   return (
     <>
       <Space direction="vertical" style={{ width: '100%' }}>
@@ -22,6 +22,7 @@ const StartupUser = () => {
                 icon={<EyeOutlined />}
                 onClick={() => {
                   setMode('table');
+                  setEditingStartupProfile(null);
                 }}
               >
                 {'View'}
@@ -34,6 +35,7 @@ const StartupUser = () => {
                 icon={<PlusOutlined />}
                 onClick={() => {
                   setMode('form');
+                  setEditingStartupProfile(null);
                 }}
               >
                 {'Add'}
