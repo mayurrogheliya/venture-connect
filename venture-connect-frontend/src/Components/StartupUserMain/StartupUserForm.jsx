@@ -78,14 +78,18 @@ const EditStartupProfile = () => {
 
       console.log('formattedValues: ', formattedValues);
       if (editingStartupProfile) {
-        await startupAPI.updateStartupProfile(
+        const response = await startupAPI.updateStartupProfile(
           editingStartupProfile.userId,
           formattedValues,
         );
-        message.success('Startup profile updated successfully');
+        message.success(
+          response?.data?.message || 'Startup profile updated successfully',
+        );
       } else {
-        await startupAPI.createStartupProfile(formattedValues);
-        message.success('Transaction created successfully');
+        const response = await startupAPI.createStartupProfile(formattedValues);
+        message.success(
+          response?.data?.message || 'Transaction created successfully',
+        );
       }
       setMode('table');
       setEditingStartupProfile(null);
@@ -96,8 +100,6 @@ const EditStartupProfile = () => {
       setLoading(false);
     }
   };
-
-  console.log('edfp: ', editingStartupProfile);
 
   const StartupStages = [
     'Ideation',
