@@ -3,10 +3,20 @@ import {
   EditOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import { Button, Flex, Input, Space, Spin, Table, Tooltip } from 'antd';
+import {
+  Button,
+  Flex,
+  Input,
+  message,
+  Space,
+  Spin,
+  Table,
+  Tooltip,
+} from 'antd';
 import { useEffect, useState } from 'react';
 import { useStartupProfileStore } from '../../store/useStartupProfileStore';
 import { formatAmount } from '../../utils/formatUtils';
+import { startupAPI } from '../../api/endpoints/startup';
 
 const StartupUserTable = () => {
   const {
@@ -54,6 +64,7 @@ const StartupUserTable = () => {
     Array.isArray(startupAllProfile) &&
     startupAllProfile?.map((item) => ({
       id: item?.id,
+      startupId: item?.startup?.id,
       startup_name: item?.startup?.basicInfo?.startup_name,
       industry: item?.startup?.basicInfo?.industry,
       team_size: formatAmount(item?.startup?.basicInfo?.team_size),
@@ -61,6 +72,19 @@ const StartupUserTable = () => {
         item?.startup?.metrics?.current_valuation,
       ),
     }));
+
+  const handleDelete = async (startupId) => {
+    try {
+      const response = await startupAPI.deleteStartupProfile(startupId);
+      message.success(response?.data?.message || 'Deleted startup profile');
+      getAllStartupProfiles();
+    } catch (error) {
+      console.error('Error deleting startup profile:', error);
+      message.error(
+        error?.response?.message || 'Error deleting startup profile',
+      );
+    }
+  };
 
   const columns = [
     {
@@ -105,7 +129,6 @@ const StartupUserTable = () => {
                     userId: fullProfile.id,
                   });
                   setMode('form');
-                  console.log('Full Startup Profile:', fullProfile.startup);
                 } else {
                   console.error('Startup profile not found');
                 }
@@ -117,7 +140,9 @@ const StartupUserTable = () => {
               type="text"
               icon={<DeleteOutlined />}
               style={{ color: '#e74c3c' }}
-              onClick={() => console.log('Delete Startup')}
+              onClick={() => {
+                handleDelete(record?.startupId);
+              }}
             />
           </Tooltip>
         </Space>
