@@ -1,3 +1,4 @@
+import Investor from './investor.model.js';
 import InvestorBasicInfo from './InvestorBasicInfo.model.js';
 import InvestorInvestmentDetails from './InvestorInvestmentDetails.model.js';
 import PreviousInvestment from './previousInvestment.mode.js';
@@ -10,6 +11,9 @@ import User from './user.model.js';
 
 User.hasOne(Startup, { foreignKey: 'userId', as: 'startup' });
 Startup.belongsTo(User, { foreignKey: 'userId' });
+
+User.hasOne(Investor, { foreignKey: 'userId', as: 'investor' });
+Investor.belongsTo(User, { foreignKey: 'userId' });
 
 Startup.hasOne(StartupBasicInfo, { foreignKey: 'startupId', as: 'basicInfo' });
 StartupBasicInfo.belongsTo(Startup, { foreignKey: 'startupId' });
@@ -26,23 +30,23 @@ StartupTeam.hasMany(StartupTeamMember, {
 });
 StartupTeamMember.belongsTo(StartupTeam, { foreignKey: 'teamId' });
 
-User.hasOne(InvestorBasicInfo, {
+Investor.hasOne(InvestorBasicInfo, {
   foreignKey: 'investorId',
   as: 'investorBasicInfo',
 });
-InvestorBasicInfo.belongsTo(User, { foreignKey: 'investorId' });
+InvestorBasicInfo.belongsTo(Investor, { foreignKey: 'investorId' });
 
-User.hasOne(InvestorInvestmentDetails, {
+Investor.hasOne(InvestorInvestmentDetails, {
   foreignKey: 'investorId',
   as: 'investmentDetails',
 });
-InvestorInvestmentDetails.belongsTo(User, { foreignKey: 'investorId' });
+InvestorInvestmentDetails.belongsTo(Investor, { foreignKey: 'investorId' });
 
-User.hasMany(PreviousInvestment, {
+Investor.hasMany(PreviousInvestment, {
   foreignKey: 'investorId',
   as: 'previousInvestments',
 });
-PreviousInvestment.belongsTo(User, { foreignKey: 'investorId' });
+PreviousInvestment.belongsTo(Investor, { foreignKey: 'investorId' });
 
 export {
   User,
@@ -51,6 +55,7 @@ export {
   StartupMetrics,
   StartupTeam,
   StartupTeamMember,
+  Investor,
   InvestorBasicInfo,
   InvestorInvestmentDetails,
   PreviousInvestment,

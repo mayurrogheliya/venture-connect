@@ -1,5 +1,6 @@
 import { errorResponse } from '../utils/responseFormatter.js';
 import {
+  Investor,
   InvestorBasicInfo,
   InvestorInvestmentDetails,
   PreviousInvestment,
@@ -11,7 +12,7 @@ export const getUserByEmail = async (email) => {
 };
 
 export const createInvestor = async (
-  userData,
+  userId,
   investorBasicInfo,
   investmentData,
   previousInvestments = [],
@@ -24,45 +25,57 @@ export const createInvestor = async (
     );
   }
 
-  const user = await User.create(userData);
+  const investor = await Investor.create({ userId });
 
   const IBasicInfo = await InvestorBasicInfo.create({
     ...investorBasicInfo,
-    investorId: user.id,
+    investorId: investor.id,
   });
 
   const investmentDetails = await InvestorInvestmentDetails.create({
     ...investmentData,
-    investorId: user.id,
+    investorId: investor.id,
   });
 
   const investmentRecords = await Promise.all(
-    previousInvestments.map((investmentRecord) =>
-      PreviousInvestment.create({
-        ...investmentRecord,
-        investorId: user.id,
-      }),
+    (Array.isArray(previousInvestments) ? previousInvestments : []).map(
+      async (investmentRecord) => {
+        return await PreviousInvestment.create({
+          ...investmentRecord,
+          investorId: investor.id,
+        });
+      },
     ),
   );
 
-  return { user, IBasicInfo, investmentDetails, investmentRecords };
+  await User.update({ isProfileCompleted: true }, { where: { id: userId } });
+
+  return { investor, IBasicInfo, investmentDetails, investmentRecords };
 };
 
 export const getAllInvestors = async () => {
   const { count, rows } = await User.findAndCountAll({
     where: { user_type: 'investor' },
+    attributes: ['id', 'email', 'status', 'isProfileCompleted'],
     include: [
       {
-        model: InvestorBasicInfo,
-        as: 'investorBasicInfo',
-      },
-      {
-        model: InvestorInvestmentDetails,
-        as: 'investmentDetails',
-      },
-      {
-        model: PreviousInvestment,
-        as: 'previousInvestments',
+        model: Investor,
+        as: 'investor',
+        attributes: ['id'],
+        include: [
+          {
+            model: InvestorBasicInfo,
+            as: 'investorBasicInfo',
+          },
+          {
+            model: InvestorInvestmentDetails,
+            as: 'investmentDetails',
+          },
+          {
+            model: PreviousInvestment,
+            as: 'previousInvestments',
+          },
+        ],
       },
     ],
     distinct: true,
@@ -70,35 +83,45 @@ export const getAllInvestors = async () => {
   return { totalInvestors: count, investors: rows };
 };
 
-export const getInvestorById = async (investorId) => {
-  return await User.findOne({
-    where: { id: investorId, user_type: 'investor', status: 'true' },
+export const getInvestorById = async (userId) => {
+  const user = await User.findOne({
     include: [
       {
-        model: InvestorBasicInfo,
-        as: 'investorBasicInfo',
-      },
-      {
-        model: InvestorInvestmentDetails,
-        as: 'investmentDetails',
-      },
-      {
-        model: PreviousInvestment,
-        as: 'previousInvestments',
+        model: Investor,
+        as: 'investor',
+        where: { userId },
+        attributes: ['id', 'userId'],
+        include: [
+          {
+            model: InvestorBasicInfo,
+            as: 'investorBasicInfo',
+          },
+          {
+            model: InvestorInvestmentDetails,
+            as: 'investmentDetails',
+          },
+          {
+            model: PreviousInvestment,
+            as: 'previousInvestments',
+          },
+        ],
       },
     ],
+    where: { user_type: 'investor', status: true },
+    attributes: ['id', 'email', 'status', 'isProfileCompleted'],
   });
+  return user;
 };
 
-export const updateInvestor = async (investorId, updateData) => {
+export const updateInvestor = async (userId, updateData) => {
   const { investorBasicInfo, investmentDetails, previousInvestments } =
     updateData;
 
-  const user = await User.findOne({
-    where: { id: investorId, user_type: 'investor', status: true },
-  });
+  const investor = await Investor.findOne({ where: { userId } });
 
-  if (!user) {
+  const investorId = investor.id;
+
+  if (!investor) {
     return null;
   }
 
@@ -109,6 +132,12 @@ export const updateInvestor = async (investorId, updateData) => {
   }
 
   if (investmentDetails) {
+    investmentDetails.interestedDomain = Array.isArray(
+      investmentDetails.interestedDomain,
+    )
+      ? investmentDetails.interestedDomain
+      : [];
+
     await InvestorInvestmentDetails.update(investmentDetails, {
       where: { investorId },
     });
@@ -127,23 +156,27 @@ export const updateInvestor = async (investorId, updateData) => {
       );
     }
 
-    await Promise.all(
-      previousInvestments.map(async (investment) => {
-        if (investment.id) {
-          await PreviousInvestment.update(investment, {
-            where: { id: investment.id, investorId },
-          });
-        }
-      }),
-    );
+    if (Array.isArray(previousInvestments) && previousInvestments.length > 0) {
+      await Promise.all(
+        previousInvestments.map(async (investment) => {
+          if (!investment.id) return;
+          const existingInvestment = await PreviousInvestment.findByPk(
+            investment.id,
+          );
+          if (existingInvestment) {
+            await existingInvestment.update({ ...investment });
+          }
+        }),
+      );
+    }
   }
 
-  return getInvestorById(investorId);
+  return getInvestorById(userId);
 };
 
 export const deleteInvestor = async (investorId) => {
-  const user = await User.findOne({
-    where: { id: investorId, user_type: 'investor', status: 'true' },
+  const investor = await Investor.findOne({
+    where: { id: investorId },
     include: [
       {
         model: InvestorBasicInfo,
@@ -160,7 +193,7 @@ export const deleteInvestor = async (investorId) => {
     ],
   });
 
-  if (!user) {
+  if (!investor) {
     return null;
   }
 
@@ -169,6 +202,9 @@ export const deleteInvestor = async (investorId) => {
     { where: { investorId } },
   );
 
-  await user.update({ status: 'false' });
-  return getInvestorById(investorId);
+  if (investor.userId) {
+    await User.update({ status: false }, { where: { id: investor.userId } });
+  }
+
+  return true;
 };

@@ -226,7 +226,13 @@ export const deleteStartup = async (req, res) => {
       return errorResponse(res, 'Startup ID is required', 400);
     }
 
-    const existingStartup = await startupService.getStartupById(startupId);
+    const startupData = await Startup.findOne({ where: { id: startupId } });
+    if (!startupData) {
+      return errorResponse(res, 'Startup not found', 404);
+    }
+    const userId = startupData.userId;
+
+    const existingStartup = await startupService.getStartupById(userId);
     if (!existingStartup) {
       return errorResponse(res, 'Startup not found', 404);
     }

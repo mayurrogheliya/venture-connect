@@ -1,10 +1,6 @@
 import * as yup from 'yup';
 
 export const investorValidationSchema = yup.object({
-  user_type: yup.string().required('User type is required'),
-  email: yup.string().email('Invalid email').required('Email is required'),
-  password: yup.string().required('Password is required'),
-
   investorBasicInfo: yup
     .object({
       name: yup.string().required('Investor name is required'),
@@ -53,5 +49,8 @@ export const investorValidationSchema = yup.object({
         year: yup.number().required('Year is required'),
       }),
     )
-    .required(),
+    .max(
+      6,
+      'Cannot add more than 6 previous investments. Please remove some before adding new ones.',
+    ),
 });

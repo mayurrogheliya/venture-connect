@@ -16,6 +16,6 @@ router.put(
   StartupUploadMiddleware,
   startupController.updateStartupProfile,
 );
-router.delete('/deleteStartup/:userId', startupController.deleteStartup);
+router.delete('/deleteStartup/:startupId', startupController.deleteStartup);
 
 export default router;
