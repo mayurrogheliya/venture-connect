@@ -1,10 +1,14 @@
-import { hashPassword } from '../utils/passwordUtils.js';
 import { parseJSONFields } from '../utils/requestParse.js';
 import { errorResponse, successResponse } from '../utils/responseFormatter.js';
-import { deleteImageFromCloudinary } from '../services/cloudinary.service.js';
+import {
+  deleteImageFromCloudinary,
+  uploadImageToCloudinary,
+} from '../services/cloudinary.service.js';
 import { uploadSingleFile } from '../services/fileUpload.service.js';
 import * as investorService from '../services/investor.service.js';
 import { investorValidationSchema } from '../validation/investorValidation.js';
+import Investor from '../models/investor.model.js';
+import * as userService from '../services/user.service.js';
 
 export const createInvestorProfile = async (req, res) => {
   try {
@@ -16,39 +20,46 @@ export const createInvestorProfile = async (req, res) => {
     await investorValidationSchema.validate(req.body, { abortEarly: false });
 
     const {
-      user_type,
-      email,
-      password,
+      userId,
       investorBasicInfo,
       investmentDetails,
       previousInvestments = [],
     } = req.body;
 
-    const existingUser = await investorService.getUserByEmail(email);
-    if (existingUser) {
-      return errorResponse(res, 'User already exists', 400);
+    console.log('req.body', req.body);
+
+    if (!userId) {
+      return errorResponse(res, 'User ID is required', 400);
     }
 
-    if (!password) {
-      return errorResponse(res, 'Password is required', 400);
+    const existingUser = await userService.getUserById(userId);
+    if (!existingUser) {
+      return errorResponse(res, 'User not found', 404);
     }
 
-    const hashedPassword = await hashPassword(password);
+    const existingInvestor = await Investor.findOne({ where: { userId } });
+    if (existingInvestor) {
+      return errorResponse(res, 'User already has a investor profile', 400);
+    }
 
     const uploadedImage = await uploadSingleFile(req.file);
+
+    const investmentsArray = Array.isArray(previousInvestments)
+      ? previousInvestments
+      : [];
+
+    const formattedInvestments = investmentsArray.map((investment, index) => ({
+      ...investment,
+    }));
+
     const newInvestor = await investorService.createInvestor(
-      {
-        user_type,
-        email,
-        password: hashedPassword,
-        isProfileCompleted: true,
-      },
+      userId,
       {
         ...investorBasicInfo,
         investor_image: uploadedImage ? uploadedImage.url : null,
       },
       investmentDetails,
-      previousInvestments,
+      formattedInvestments,
     );
 
     return successResponse(
@@ -80,11 +91,11 @@ export const getInvestors = async (req, res) => {
 
 export const getInvestor = async (req, res) => {
   try {
-    const { investorId } = req.params;
-    if (!investorId) {
-      return errorResponse(res, 'Investor ID is required', 400);
+    const { userId } = req.params;
+    if (!userId) {
+      return errorResponse(res, 'User ID is required', 400);
     }
-    const investor = await investorService.getInvestorById(investorId);
+    const investor = await investorService.getInvestorById(userId);
     if (!investor) return errorResponse(res, 'Investor not found', 404);
     return successResponse(res, investor, 'Investor retrieved successfully');
   } catch (error) {
@@ -99,26 +110,45 @@ export const updateInvestorProfile = async (req, res) => {
       'investmentDetails',
       'previousInvestments',
     ]);
-    const { investorId } = req.params;
+    const { userId } = req.params;
 
-    if (!investorId) {
-      return errorResponse(res, 'Investor ID is required', 400);
+    if (!userId) {
+      return errorResponse(res, 'User ID is required', 400);
     }
 
-    const existingInvestor = await investorService.getInvestorById(investorId);
+    const existingInvestor = await investorService.getInvestorById(userId);
     if (!existingInvestor) {
-      return errorResponse(res, 'Investor not found', 404);
+      return errorResponse(res, 'User not found', 404);
     }
+
+    let uploadedImage = {
+      investor_image:
+        existingInvestor.investor?.investorBasicInfo?.investor_image || null,
+    };
 
     if (req.file) {
-      await deleteImageFromCloudinary(
-        existingInvestor.investorBasicInfo.investor_image,
+      const currentImage =
+        existingInvestor.investor?.investorBasicInfo?.investor_image;
+      if (currentImage) {
+        await deleteImageFromCloudinary(currentImage);
+      }
+      uploadedImage.investor_image = await uploadImageToCloudinary(
+        req.file.path,
       );
-      const uploadedImage = await uploadSingleFile(req.file);
-      req.body.investorBasicInfo.investor_image = uploadedImage.url;
     }
 
-    if (req.body.previousInvestments) {
+    if (req.body.investmentDetails) {
+      const existingDomains =
+        existingInvestor.investor?.investmentDetails?.interestedDomain || [];
+      req.body.investmentDetails.interestedDomain =
+        req.body.investmentDetails.interestedDomain !== undefined
+          ? Array.isArray(req.body.investmentDetails.interestedDomain)
+            ? req.body.investmentDetails.interestedDomain
+            : []
+          : existingDomains;
+    }
+
+    if (existingInvestor.previousInvestments) {
       const existingInvestmentCount =
         existingInvestor.previousInvestments.length;
       if (existingInvestmentCount + req.body.previousInvestments.length > 6) {
@@ -130,10 +160,18 @@ export const updateInvestorProfile = async (req, res) => {
       }
     }
 
-    const updatedInvestor = await investorService.updateInvestor(
-      investorId,
-      req.body,
-    );
+    const prevInvestmentsArray = Array.isArray(req.body.previousInvestments)
+      ? req.body.previousInvestments
+      : [];
+
+    const updatedInvestor = await investorService.updateInvestor(userId, {
+      ...req.body,
+      investorBasicInfo: {
+        ...req.body.investorBasicInfo,
+        investor_image: uploadedImage.investor_image,
+      },
+      previousInvestments: prevInvestmentsArray,
+    });
 
     return successResponse(
       res,
@@ -157,17 +195,25 @@ export const deleteInvestorProfile = async (req, res) => {
       return errorResponse(res, 'Investor ID is required', 400);
     }
 
-    const existingInvestor = await investorService.getInvestorById(investorId);
+    const investorData = await Investor.findOne({ where: { id: investorId } });
+    if (!investorData) {
+      return errorResponse(res, 'Investor not found', 404);
+    }
+    const userId = investorData.userId;
+
+    const existingInvestor = await investorService.getInvestorById(userId);
     if (!existingInvestor) {
       return errorResponse(res, 'Investor not found', 404);
     }
 
-    await deleteImageFromCloudinary(
-      existingInvestor.investorBasicInfo.investor_image,
-    );
+    if (existingInvestor.investorBasicInfo?.investor_image) {
+      await deleteImageFromCloudinary(
+        existingInvestor.investorBasicInfo.investor_image,
+      );
+    }
 
     await investorService.deleteInvestor(investorId);
-    return successResponse(res, null, 'Investor profile deleted successfully');
+    return successResponse(res, {}, 'Investor profile deleted successfully');
   } catch (error) {
     return errorResponse(res, error.message);
   }

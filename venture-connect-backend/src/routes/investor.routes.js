@@ -10,9 +10,9 @@ router.post(
   investoreController.createInvestorProfile,
 );
 router.get('/getInvestors', investoreController.getInvestors);
-router.get('/getInvestor/:investorId', investoreController.getInvestor);
+router.get('/getInvestor/:userId', investoreController.getInvestor);
 router.put(
-  '/updateInvestor/:investorId',
+  '/updateInvestor/:userId',
   investorUploadMiddleware,
   investoreController.updateInvestorProfile,
 );
