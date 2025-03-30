@@ -48,7 +48,7 @@ export const createStartup = async (
 
 export const getAllStartup = async () => {
   const { count, rows } = await User.findAndCountAll({
-    where: { user_type: 'startup' },
+    where: { user_type: 'startup', status: true },
     attributes: ['id', 'email', 'status', 'isProfileCompleted'],
     include: [
       {
