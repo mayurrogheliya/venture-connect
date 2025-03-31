@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Form,
   Input,
@@ -13,11 +13,10 @@ import {
   Space,
 } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { formatAmount } from '../utils/formatUtils';
+import { formatAmount } from '../../utils/formatUtils';
 
 const { Title, Text } = Typography;
-
-const AddOpportunity = () => {
+const OpportunityForm = ({ initialData, onSubmit, isEdit }) => {
   const interestedDomains = [
     'Technology & Software',
     'E-Commerce & Retail',
@@ -36,13 +35,40 @@ const AddOpportunity = () => {
     'Travel & Hospitality',
   ];
 
+  const [form] = Form.useForm();
   const [investmentRange, setInvestmentRange] = useState([20000, 200000000]);
+
+  useEffect(() => {
+    if (isEdit && initialData) {
+      form.setFieldsValue({
+        ...initialData,
+        investmentRange: [initialData.mininvestment, initialData.maxinvestment],
+      });
+
+      setInvestmentRange([
+        initialData.mininvestment,
+        initialData.maxinvestment,
+      ]);
+    }
+  }, [initialData, isEdit, form]);
+
+  const handleSubmit = (values) => {
+    const data = {
+      name: values.name,
+      domain: values.domain,
+      mininvestment: investmentRange[0],
+      maxinvestment: investmentRange[1],
+      startupstage: values.startupstage,
+      description: values.description,
+    };
+
+    onSubmit(data);
+  };
 
   return (
     <div>
       <Row gutter={[20, 20]} justify="center">
         <Col xs={24} lg={16}>
-          {/* Left Side: Form Container */}
           <div
             style={{
               padding: '30px',
@@ -51,20 +77,25 @@ const AddOpportunity = () => {
               boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
             }}
           >
-            {/* Heading */}
             <Title level={3}>
-              Create Pitch <span style={{ color: '#1677ff' }}>Opportunity</span>
+              {isEdit ? 'Edit' : 'Create'} Pitch{' '}
+              <span style={{ color: '#1677ff' }}>Opportunity</span>
             </Title>
             <Text>
-              Fill in the details below to create a new pitch event for
-              startups.
+              {isEdit
+                ? 'Modify the details of your pitch event.'
+                : 'Fill in the details below to create a new pitch event for startups.'}
             </Text>
 
-            <Form layout="vertical" style={{ marginTop: '20px' }}>
-              {/* Pitch Name */}
+            <Form
+              form={form}
+              layout="vertical"
+              onFinish={handleSubmit}
+              style={{ marginTop: '20px' }}
+            >
               <Form.Item
                 label="Name of Pitch Event"
-                name="pitchName"
+                name="name"
                 rules={[
                   { required: true, message: 'This field is required' },
                   { max: 30, message: 'Cannot exceed 30 characters' },
@@ -75,27 +106,27 @@ const AddOpportunity = () => {
                   maxLength={30}
                 />
               </Form.Item>
-
               <Form.Item
                 label="Investment Range (₹20K - ₹20Cr+)"
                 name="investmentRange"
               >
-                <Slider
-                  range
-                  min={20000}
-                  max={200000000}
-                  step={10000}
-                  defaultValue={investmentRange}
-                  onChange={setInvestmentRange}
-                  tooltip={{ formatter: formatAmount }}
-                />
-                <Text>
-                  Selected Range: {formatAmount(investmentRange[0])} -{' '}
-                  {formatAmount(investmentRange[1])}
-                </Text>
+                <div>
+                  <Slider
+                    range
+                    min={20000}
+                    max={200000000}
+                    step={10000}
+                    value={investmentRange}
+                    onChange={setInvestmentRange}
+                    tooltip={{ formatter: formatAmount }}
+                  />
+                  <Text>
+                    Selected Range: {formatAmount(investmentRange[0])} -{' '}
+                    {formatAmount(investmentRange[1])}
+                  </Text>
+                </div>
               </Form.Item>
 
-              {/* Interested Domain */}
               <Form.Item
                 label="Interested Domain"
                 name="domain"
@@ -110,10 +141,9 @@ const AddOpportunity = () => {
                 </Select>
               </Form.Item>
 
-              {/* Preferred Startup Stage */}
               <Form.Item
                 label="Preferred Startup Stage"
-                name="stage"
+                name="startupstage"
                 rules={[{ required: true, message: 'Please select a stage' }]}
               >
                 <Radio.Group>
@@ -127,7 +157,6 @@ const AddOpportunity = () => {
                 </Radio.Group>
               </Form.Item>
 
-              {/* Description */}
               <Form.Item
                 label="Description of the Event"
                 name="description"
@@ -140,20 +169,19 @@ const AddOpportunity = () => {
                 ]}
               >
                 <Input.TextArea
-                  placeholder="Describe your pitch event, requirements, and what you're looking for..."
+                  placeholder="Describe your pitch event..."
                   rows={2}
                   maxLength={150}
                 />
               </Form.Item>
 
-              {/* Submit Button */}
               <Form.Item>
                 <Button
                   type="primary"
                   htmlType="submit"
                   className="w-full mt-3"
                 >
-                  Publish Opportunity
+                  {isEdit ? 'Update Opportunity' : 'Publish Opportunity'}
                 </Button>
               </Form.Item>
             </Form>
@@ -161,7 +189,6 @@ const AddOpportunity = () => {
         </Col>
 
         <Col xs={24} lg={8}>
-          {/* Right Side: Guidelines */}
           <Card
             style={{
               borderRadius: '10px',
@@ -199,4 +226,4 @@ const AddOpportunity = () => {
   );
 };
 
-export default AddOpportunity;
+export default OpportunityForm;

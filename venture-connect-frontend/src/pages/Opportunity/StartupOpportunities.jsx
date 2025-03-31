@@ -1,9 +1,16 @@
 import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input } from 'antd';
-import OppStartupCard from '../components/Opportunities/OppStartupCard';
+import { Button, Input, Spin } from 'antd';
+import OppStartupCard from '../../components/Opportunities/OppStartupCard';
+import { useOpportunites } from '../../store/useOpportunites';
+import { useEffect } from 'react';
 
 const StartupOpportunities = () => {
-  const cards = Array(4).fill(0);
+  const { getStartUpOpportunities, startupopportunities, loading } =
+    useOpportunites();
+
+  useEffect(() => {
+    getStartUpOpportunities();
+  }, []);
   return (
     <>
       <div className="space-y-2">
@@ -49,9 +56,15 @@ const StartupOpportunities = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
-        {cards.map((_, index) => (
-          <OppStartupCard key={index} />
-        ))}
+        {loading ? (
+          <div className="flex justify-center items-center min-h-screen">
+            <Spin size="large" /> {/* Ant Design Loading Spinner */}
+          </div>
+        ) : (
+          startupopportunities.map((data, index) => (
+            <OppStartupCard data={data} key={index} />
+          ))
+        )}
       </div>
     </>
   );
