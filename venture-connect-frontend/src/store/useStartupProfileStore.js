@@ -30,7 +30,6 @@ export const useStartupProfileStore = create((set, get) => ({
   getAllStartupProfiles: async () => {
     try {
       const response = await startupAPI.getAllStartupProfiles();
-      console.log('my res', response);
       if (response?.data) {
         get().setStartupAllProfile(response?.data?.startups);
       }

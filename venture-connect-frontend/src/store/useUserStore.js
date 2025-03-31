@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { usersAPI } from '../api/endpoints/users';
 import { message } from 'antd';
-export const useUserStore = create((set, get) => {
+export const useUserStore = create((set) => {
   const savedToken = localStorage.getItem('accessToken');
   const userId = localStorage.getItem('userId');
   const isAuthenticated = savedToken !== null;
@@ -26,7 +26,9 @@ export const useUserStore = create((set, get) => {
     getUserById: async (userId) => {
       try {
         const response = await usersAPI.getUser(userId);
-        get().setUser(response?.data);
+        const userData = response?.data;
+        set({ user: userData });
+        return userData;
       } catch (error) {
         console.log(error);
         message.error(error?.response?.data?.message);
