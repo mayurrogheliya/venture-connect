@@ -31,6 +31,7 @@ import EventAttendees from '../pages/Admin/EventAttendees/EventAttendees.jsx';
 import AdminOpportunity from '../pages/Admin/AdminOpportunity.jsx';
 import EditOpportunity from '../pages/Opportunity/EditOpportunity.jsx';
 import CreateOpportunity from '../pages/Opportunity/CreateOpportunity.jsx';
+import StartupRegister from '../pages/Opportunity/StartupRegister.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -58,6 +59,7 @@ const router = createBrowserRouter(
         <Route element={<UserLayout />}>
           <Route path="/startups-hub" element={<StartupsHub />} />
           <Route path="/investor-network" element={<InvestorNetwork />} />
+          <Route path="/register-startup/:id" element={<StartupRegister />} />
           <Route
             path="/startup-opportunities"
             element={<StartupOpportunities />}
