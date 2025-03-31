@@ -1,6 +1,8 @@
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import UserImage from '../../assets/images/default-user.png';
+import { registerStartupAPIs } from '../../api/endpoints/startupregister';
+import { toast } from 'react-toastify';
 
 const OppStartupCard = ({ data }) => {
   const investorImage =
@@ -8,7 +10,15 @@ const OppStartupCard = ({ data }) => {
   const investorName = data.user?.investorBasicInfo?.name || 'mayur';
   const investorType =
     data.user?.investorBasicInfo?.investor_type || 'angel investor';
-
+  const handleApply = async () => {
+    try {
+      await registerStartupAPIs.registerStartup(data.id);
+      toast.success('Successfully registered!');
+    } catch (error) {
+      console.error('Error registering for the opportunity:', error);
+      toast.error('Error registering for the opportunity.');
+    }
+  };
   return (
     <>
       <div className="bg-white w-full xl:p-5 p-3 rounded-2xl shadow-sm mx-auto space-y-4">
@@ -45,7 +55,10 @@ const OppStartupCard = ({ data }) => {
               <p className="text-gray-500">{investorType}</p>
             </div>
           </div>
-          <button className="text-blue-500 hover:text-blue-600 font-medium transition cursor-pointer">
+          <button
+            className="text-blue-500 hover:text-blue-600 font-medium transition cursor-pointer"
+            onClick={handleApply}
+          >
             Apply Now <FontAwesomeIcon icon={faArrowRight} />
           </button>
         </div>
