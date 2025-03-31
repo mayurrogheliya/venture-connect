@@ -69,6 +69,9 @@ const OppInvestorCard = ({ opportunity }) => {
           variant="outlined"
           color="primary"
           icon={<EyeFilled />}
+          onClick={() => navigate(`/register-startup/${opportunity.id}`)}
+          opportunity
+          ID
           className="border-blue-500 border-2 text-blue-500 hover:bg-blue-500 hover:text-white transition"
         >
           View
