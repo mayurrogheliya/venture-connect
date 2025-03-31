@@ -14,6 +14,7 @@ import DefaultUser from '../assets/images/default-user.png';
 import { useUserStore } from '../store/useUserStore';
 import { authAPI } from '../api/endpoints/auth';
 import { useStartupProfileStore } from '../store/useStartupProfileStore';
+import { useInvestorProfileStore } from '../store/useInvestorProfileStore';
 
 const UserLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -39,19 +40,29 @@ const UserLayout = () => {
     }
   };
   const { getStartupProfile, startupProfile } = useStartupProfileStore();
+  const { getInvestorProfile, investorProfile } = useInvestorProfileStore();
   const userId = localStorage.getItem('userId');
   const { user, getUserById } = useUserStore();
   useEffect(() => {
     const fetchData = async () => {
+      if (!userId) return;
       setLoading(true);
-      await getUserById(userId);
-      await getStartupProfile(userId);
+
+      const userData = await getUserById(userId);
+
+      if (userData?.data?.user_type === 'startup') {
+        await getStartupProfile(userId);
+      } else if (userData?.data?.user_type === 'investor') {
+        await getInvestorProfile(userId);
+      }
+
       setLoading(false);
     };
     fetchData();
-  }, [getStartupProfile, userId]);
+  }, [getStartupProfile, getInvestorProfile, getUserById, userId]);
 
-  const { basicInfo } = startupProfile || {};
+  const { basicInfo: startupBasicInfo } = startupProfile || {};
+  const { investorBasicInfo } = investorProfile || {};
 
   const items = [
     {
@@ -194,7 +205,9 @@ const UserLayout = () => {
             <Avatar
               size={50}
               src={
-                basicInfo?.startup_logo ? basicInfo.startup_logo : DefaultUser
+                user?.data?.user_type === 'startup'
+                  ? startupBasicInfo?.startup_logo || DefaultUser
+                  : investorBasicInfo?.investor_image || DefaultUser
               }
               className="cursor-pointer"
             />
