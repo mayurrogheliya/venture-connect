@@ -6,6 +6,7 @@ import investorRoutes from './investor.routes.js';
 import opportRoutes from './opportunity.routes.js';
 import users from './user.routes.js';
 import authRoutes from './auth.routes.js';
+import registerStartupRoutes from './registerStartup.routes.js';
 import { authMiddleware } from '../middlewares/authMiddleware.js';
 
 const router = Router();
@@ -18,5 +19,6 @@ router.use('/investor', authMiddleware, investorRoutes);
 router.use('/opportunity', opportRoutes);
 router.use('/users', users);
 router.use('/auth', authRoutes);
+router.use('/registerstartup', registerStartupRoutes);
 
 export default router;
