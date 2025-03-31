@@ -53,6 +53,7 @@ const router = createBrowserRouter(
           element={<InvestorProfileForm />}
         />
         <Route path="/startup-profile/:id" element={<StartupProfile />} />
+        <Route path="/investor-profile/:id" element={<InvestorProfile />} />
         <Route element={<UserLayout />}>
           <Route path="/startups-hub" element={<StartupsHub />} />
           <Route path="/investor-network" element={<InvestorNetwork />} />
@@ -69,7 +70,6 @@ const router = createBrowserRouter(
             path="/Investor-Opportunity"
             element={<InvestorOpportunity />}
           />
-          <Route path="/investor-profile" element={<InvestorProfile />} />
         </Route>
         <Route path="/Registered-Startups" element={<RegStartup />} />
 
