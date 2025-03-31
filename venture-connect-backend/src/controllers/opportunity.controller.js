@@ -1,9 +1,13 @@
 import * as opportunityService from '../services/opportunity.service.js';
 import { errorResponse, successResponse } from '../utils/responseFormatter.js';
+
 export const createOpportunity = async (req, res) => {
   try {
+    // console.log(req.body, 'user', req.user);
+    const userId = req.user.userId;
     const opportunity = await opportunityService.createOpportunityService(
       req.body,
+      userId,
     );
 
     return successResponse(
@@ -18,7 +22,9 @@ export const createOpportunity = async (req, res) => {
 
 export const getAllOpportunity = async (req, res) => {
   try {
-    const opportunities = await opportunityService.getAllOpportunitiesService();
+    const userId = req.user.userId;
+    const opportunities =
+      await opportunityService.getOpportunitiesByUserIdService(userId);
 
     return successResponse(
       res,
@@ -32,8 +38,10 @@ export const getAllOpportunity = async (req, res) => {
 
 export const getOpportunityById = async (req, res) => {
   try {
+    const userId = req.user.userId;
     const opportunity = await opportunityService.getOpportunityByIdService(
       req.params.id,
+      userId,
     );
 
     if (!opportunity) return errorResponse(res, 'Opportunity not found', 404);
@@ -49,11 +57,14 @@ export const getOpportunityById = async (req, res) => {
 
 export const updateOpportunity = async (req, res) => {
   try {
+    const userId = req.user.userId;
     const opportunity = await opportunityService.updateOpportunityService(
       req.params.id,
       req.body,
+      userId,
     );
-    if (!opportunity) return errorResponse(res, 'Opportunity not found', 404);
+    if (!opportunity)
+      return errorResponse(res, 'Opportunity not found or Unauthorized', 404);
     return successResponse(
       res,
       opportunity,
@@ -66,14 +77,32 @@ export const updateOpportunity = async (req, res) => {
 
 export const deleteOpportunity = async (req, res) => {
   try {
+    const userId = req.user.userId;
     const opportunity = await opportunityService.deleteOpportunityService(
       req.params.id,
+      userId,
     );
-    if (!opportunity) return errorResponse(res, 'Opportunity not found', 404);
+    if (!opportunity)
+      return errorResponse(res, 'Opportunity not found or Unauthorized', 404);
     return successResponse(
       res,
       opportunity,
       'Opportunity deleted successfully',
+    );
+  } catch (error) {
+    return errorResponse(res, error.message);
+  }
+};
+
+export const getAllOpportunitiesWithoutUserId = async (req, res) => {
+  try {
+    const opportunities =
+      await opportunityService.getAllOpportunitiesWithoutUserIdService();
+
+    return successResponse(
+      res,
+      opportunities,
+      'All opportunities retrieved successfully',
     );
   } catch (error) {
     return errorResponse(res, error.message);
