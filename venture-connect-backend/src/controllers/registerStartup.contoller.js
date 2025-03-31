@@ -5,9 +5,6 @@ export const registerStartup = async (req, res) => {
   const { opportunityId } = req.body;
   const userId = req.user.userId; // Changed from startupId to userId
 
-  console.log('Received User ID:', userId);
-  console.log('Received Opportunity ID:', opportunityId);
-
   if (!userId || !opportunityId) {
     return errorResponse(res, 'User ID and Opportunity ID are required', 400);
   }
@@ -57,24 +54,32 @@ export const getAllRegisteredStartups = async (req, res) => {
 
 export const deleteRegisteredStartup = async (req, res) => {
   const { id } = req.params;
-  const userId = req.user.userId;
-  const opportunityId = req.body.opportunityId;
-  if (!id) {
-    return errorResponse(res, 'ID is required', 400);
+  const { userId, opportunityId } = req.body;
+
+  if (!id || !userId || !opportunityId) {
+    return errorResponse(
+      res,
+      'ID, User ID, and Opportunity ID are required',
+      400,
+    );
   }
+
   try {
-    const result = await registerStartupService.deleteRegisterStartupService(
+    const result = await registerStartupService.deleteRegisteredStartupService(
       id,
       userId,
       opportunityId,
     );
-    if (result) {
-      return successResponse(
-        res,
-        null,
-        'Registered startup successfully deleted',
-      );
+
+    if (result.message) {
+      return successResponse(res, result.message, 200);
     }
+
+    return successResponse(
+      res,
+      'Startup registration status updated to false successfully.',
+      200,
+    );
   } catch (error) {
     return errorResponse(res, error.message, 500);
   }
