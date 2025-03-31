@@ -2,6 +2,7 @@ import Opportunity from '../models/opportunity.model.js';
 import opportunityValidationSchema from '../validation/opportunityValidation.js';
 import InvestorBasicInfo from '../models/InvestorBasicInfo.model.js';
 import User from '../models/user.model.js';
+import Investor from '../models/investor.model.js';
 
 export const createOpportunityService = async (opportunityData, userId) => {
   await opportunityValidationSchema.validate(opportunityData, {
@@ -60,9 +61,15 @@ export const getAllOpportunitiesWithoutUserIdService = async () => {
         as: 'user',
         include: [
           {
-            model: InvestorBasicInfo,
-            as: 'investorBasicInfo',
-            attributes: ['investor_image', 'name', 'investor_type'],
+            model: Investor,
+            as: 'investor', // First include the Investor model
+            include: [
+              {
+                model: InvestorBasicInfo,
+                as: 'investorBasicInfo', // Then include the InvestorBasicInfo model
+                attributes: ['investor_image', 'name', 'investor_type'],
+              },
+            ],
           },
         ],
       },
