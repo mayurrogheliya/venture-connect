@@ -9,7 +9,7 @@ import StartupMetrics from '../models/startupMetrics.model.js';
 export const getAllRegisteredStartupsService = async (opportunityId) => {
   try {
     const registeredStartups = await registerStartup.findAll({
-      where: { opportunityId },
+      where: { opportunityId, status: true },
       include: [
         {
           model: User,
@@ -78,15 +78,31 @@ export const registerStartupService = async (userId, opportunityId) => {
   }
 };
 
-export const deleteRegisterStartupService = async (
+export const deleteRegisteredStartupService = async (
   id,
   userId,
   opportunityId,
 ) => {
-  const startup = await registerStartup.findOne({
-    where: { id, userId, opportunityId },
-  });
-  if (!startup) return null;
-  await startup.update({ status: false });
-  return true;
+  try {
+    const result = await registerStartup.findOne({
+      where: { id, userId, opportunityId, status: true }, // Ensure it exists and is active
+    });
+
+    if (!result) {
+      return {
+        message:
+          'No active registration found for the provided ID, User ID, and Opportunity ID.',
+      };
+    }
+
+    result.status = false; // Soft delete by updating status to false
+    await result.save();
+
+    return {
+      message: 'Startup registration status updated to false successfully.',
+      registration: result, // Return the updated record for confirmation
+    };
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
