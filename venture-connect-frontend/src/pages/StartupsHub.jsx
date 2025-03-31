@@ -16,8 +16,6 @@ const StartupsHub = () => {
     fetchData();
   }, [getAllStartupProfiles]);
 
-  console.log('ALLSP: ', startupAllProfile);
-
   return (
     <>
       <div className="space-y-2">
@@ -66,7 +64,6 @@ const StartupsHub = () => {
         </Flex>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
-          {console.log('sp: ', startupAllProfile)}
           {Array.isArray(startupAllProfile) &&
             startupAllProfile?.map((items, index) => (
               <StartupHubCard
