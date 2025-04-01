@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import UserImage from '../../assets/images/default-user.png';
 import { registerStartupAPIs } from '../../api/endpoints/startupregister';
 import { toast } from 'react-toastify';
+import { formatAmount } from '../../utils/formatUtils';
 
 const OppStartupCard = ({ data }) => {
   const investorImage =
@@ -26,7 +27,8 @@ const OppStartupCard = ({ data }) => {
           <div className="flex w-full justify-between items-center text-lg font-bold gap-3">
             <h3>{data.name}</h3>
             <h3 className="text-blue-500">
-              ${data.mininvestment} - ${data.maxinvestment}
+              {formatAmount(data.mininvestment)} -
+              {formatAmount(data.maxinvestment)}
             </h3>
           </div>
           <div className="flex items-center gap-2 text-xs mt-1 flex-wrap">
