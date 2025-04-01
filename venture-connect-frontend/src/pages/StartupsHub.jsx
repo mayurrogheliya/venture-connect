@@ -1,16 +1,18 @@
-import { Button, Flex, Input, Spin } from 'antd';
+import { Button, Empty, Flex, Input, Spin } from 'antd';
 import StartupHubCard from '../Components/StartupHub/StartupHubCard';
 import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { useStartupProfileStore } from '../store/useStartupProfileStore';
+import { useUserStore } from '../store/useUserStore';
 
 const StartupsHub = () => {
   const { getAllStartupProfiles, startupAllProfile, setLoading, loading } =
     useStartupProfileStore();
+  const { userId } = useUserStore();
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      await getAllStartupProfiles();
+      await getAllStartupProfiles(userId);
       setLoading(false);
     };
     fetchData();
@@ -64,14 +66,21 @@ const StartupsHub = () => {
         </Flex>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
-          {Array.isArray(startupAllProfile) &&
+          {Array.isArray(startupAllProfile) && startupAllProfile.length > 0 ? (
             startupAllProfile?.map((items, index) => (
               <StartupHubCard
                 key={index}
                 startup={items?.startup}
                 userId={items?.id}
               />
-            ))}
+            ))
+          ) : (
+            <Empty
+              description="No startups found"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              className="flex flex-col items-center justify-center py-12"
+            />
+          )}
         </div>
       )}
     </>

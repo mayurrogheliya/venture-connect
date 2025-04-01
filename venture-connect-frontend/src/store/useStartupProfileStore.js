@@ -27,11 +27,14 @@ export const useStartupProfileStore = create((set, get) => ({
     }
   },
 
-  getAllStartupProfiles: async () => {
+  getAllStartupProfiles: async (userId) => {
     try {
       const response = await startupAPI.getAllStartupProfiles();
       if (response?.data) {
-        get().setStartupAllProfile(response?.data?.startups);
+        const startups = response?.data?.startups || [];
+        get().setStartupAllProfile(
+          startups.filter((startup) => startup.id !== userId),
+        );
       }
     } catch (error) {
       message.error(error?.response?.data?.message);

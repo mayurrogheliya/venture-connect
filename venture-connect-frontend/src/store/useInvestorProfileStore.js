@@ -33,7 +33,6 @@ export const useInvestorProfileStore = create((set, get) => ({
       console.log('all investor response', response);
       if (response?.data) {
         const investors = response?.data?.investors || [];
-        console.log('allInvestor profiles', investors);
         get().setInvestorAllProfile(
           investors.filter((investor) => investor.id !== userId),
         );
