@@ -1,16 +1,33 @@
-import { useState } from "react";
-import { Form, Input, Button, Slider, Radio, message, Select } from "antd";
+import { useState,useEffect } from "react";
+import { Form, Input, Button, Slider, Radio, message, Select ,Typography} from "antd";
 import { BankOutlined, DeleteOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faIndianRupeeSign } from "@fortawesome/free-solid-svg-icons";
+import { formatAmount } from "../../../utils/formatUtils";
 
 const { Option } = Select;
-
+const {Text } = Typography;
 const domains = ["Technology", "Healthcare", "Fintech", "E-commerce", "AI/ML", "SaaS", "Clean Tech", "EdTech", "Others"];
 
-const InvestmentDetailsForm = () => {
+const InvestmentDetailsForm = (initialData,isEdit) => {
   const [form] = Form.useForm();
   const [investments, setInvestments] = useState([{ year: "", startupName: "", domain: "", description: "" }]);
+  const [investmentRange, setInvestmentRange] = useState([20000, 200000000]);
+
+
+  useEffect(() => {
+      if (isEdit && initialData) {
+        form.setFieldsValue({
+          ...initialData,
+          investmentRange: [initialData.mininvestment, initialData.maxinvestment],
+        });
+  
+        setInvestmentRange([
+          initialData.mininvestment,
+          initialData.maxinvestment,
+        ]);
+      }
+    }, [initialData, isEdit, form]);
 
   const addInvestment = () => {
     setInvestments([...investments, { year: "", startupName: "", domain: "", description: "" }]);
@@ -32,9 +49,27 @@ const InvestmentDetailsForm = () => {
       <h2 className="text-lg font-semibold text-gray-900">Investment Details</h2>
 
 
-      <Form.Item label="Investment Range (₹20K - ₹20Cr+)" name="investmentRange">
-        <Slider range min={20000} max={200000000} defaultValue={[20000, 200000000]} />
-      </Form.Item>
+      <Form.Item
+                      label="Investment Range (₹20K - ₹20Cr+)"
+                      name="investmentRange"
+                    >
+                      <div>
+                        <Slider
+                          range
+                          min={20000}
+                          max={200000000}
+                          step={10000}
+                          value={investmentRange}
+                          onChange={setInvestmentRange}
+                          tooltip={{ formatter: formatAmount }}
+                        />
+                        <Text>
+                          Selected Range: {formatAmount(investmentRange[0])} -{' '}
+                          {formatAmount(investmentRange[1])}
+                        </Text>
+                      </div>
+                    </Form.Item>
+      
 
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
