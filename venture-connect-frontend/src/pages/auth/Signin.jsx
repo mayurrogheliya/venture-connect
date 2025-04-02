@@ -101,13 +101,7 @@ const Signin = () => {
                 className="font-bold"
                 name="password"
                 rules={[
-                  { required: true, message: 'Please enter your password!' },
-                  {
-                    pattern:
-                      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                    message:
-                      'Password must be at least 8 characters long and contain at least one letter, one number, and one special character!',
-                  },
+                  { required: true, message: 'Please enter your password!' }
                 ]}
               >
                 <Input.Password placeholder="Enter your password" />
