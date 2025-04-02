@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import { Input, Select, Form } from 'antd';
 import {
   UserOutlined,
@@ -11,7 +10,9 @@ import {
 import { faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ProfileImageUpload from '../Controls/ProfileImageUpload';
-import { useState, forwardRef, useImperativeHandle } from 'react';
+import { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
+import { useUserStore } from '../../../store/useUserStore';
+import PropTypes from 'prop-types';
 
 const { Option } = Select;
 
@@ -19,6 +20,27 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
   const [form] = Form.useForm();
   const [profileImage, setProfileImage] = useState(null);
   const [imageError, setImageError] = useState('');
+  let userEmail = '';
+
+  const { getUserById } = useUserStore();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userId = localStorage.getItem('userId');
+      if (userId) {
+        try {
+          let userData = await getUserById(userId);
+          if (userData) {
+            form.setFieldsValue({ email: userData.data.email }); // Set email field
+          }
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [getUserById, form]);
 
   // Handle profile image upload
   const handleImageUpload = (image) => {
@@ -62,6 +84,7 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
         form={form}
         layout="vertical"
         className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6"
+        initialValues={{ email: userEmail || '' }}
       >
         <Form.Item
           label="Full Name"
@@ -178,7 +201,7 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
             { type: 'email', message: 'Enter a valid email' },
           ]}
         >
-          <Input prefix={<MailOutlined />} placeholder="your@email.com" />
+          <Input prefix={<MailOutlined />} placeholder="your@email.com" disabled />
         </Form.Item>
 
         <Form.Item
@@ -227,5 +250,13 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
     </div>
   );
 });
+
+// Add display name for better debugging
+BasicInfoForm.displayName = 'BasicInfoForm';
+
+// Prop validation
+BasicInfoForm.propTypes = {
+  onNext: PropTypes.func,
+};
 
 export default BasicInfoForm;
