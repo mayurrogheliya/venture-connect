@@ -1,3 +1,4 @@
+import Bookmark from './bookmark.model.js';
 import Investor from './investor.model.js';
 import InvestorBasicInfo from './InvestorBasicInfo.model.js';
 import InvestorInvestmentDetails from './InvestorInvestmentDetails.model.js';
@@ -48,6 +49,11 @@ Investor.hasMany(PreviousInvestment, {
 });
 PreviousInvestment.belongsTo(Investor, { foreignKey: 'investorId' });
 
+User.hasMany(Bookmark, { foreignKey: 'userId', as: 'bookmarks' });
+Bookmark.belongsTo(User, { foreignKey: 'userId' });
+Startup.hasMany(Bookmark, { foreignKey: 'startupId', as: 'startup' });
+Bookmark.belongsTo(Startup, { foreignKey: 'startupId', as: 'startup' });
+
 export {
   User,
   Startup,
@@ -59,4 +65,5 @@ export {
   InvestorBasicInfo,
   InvestorInvestmentDetails,
   PreviousInvestment,
+  Bookmark,
 };
