@@ -12,6 +12,7 @@ const sequelize = new Sequelize(
     host: config.database.host,
     dialect: 'postgres',
     port: config.database.port,
+    ssl:true
   },
 );
 
