@@ -10,68 +10,122 @@ import {
 import { faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ProfileImageUpload from '../Controls/ProfileImageUpload';
-import { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
+import { forwardRef, useImperativeHandle, useEffect } from 'react';
 import { useUserStore } from '../../../store/useUserStore';
+import { useInvestorFormStore } from '../../../store/useInvestorFormStore';
 import PropTypes from 'prop-types';
 
 const { Option } = Select;
 
-const BasicInfoForm = forwardRef(({ onNext }, ref) => {
+const BasicInfoForm = forwardRef((props, ref) => {
   const [form] = Form.useForm();
-  const [profileImage, setProfileImage] = useState(null);
-  const [imageError, setImageError] = useState('');
-  let userEmail = '';
+  const {
+    basicInfo,
+    profileImage,
+    setBasicInfoField,
+    setProfileImage,
+    setImageError,
+    imageError
+  } = useInvestorFormStore();
 
   const { getUserById } = useUserStore();
+
+  // Initialize form with default values
+  useEffect(() => {
+    console.log('BasicInfo - Initializing form with default values');
+    form.setFieldsValue({
+      investorType: 'Angel Investor',
+      startupStage: 'Seed',
+      experience: '5'
+    });
+  }, [form]);
 
   useEffect(() => {
     const fetchUserData = async () => {
       const userId = localStorage.getItem('userId');
       if (userId) {
         try {
-          let userData = await getUserById(userId);
-          if (userData) {
-            form.setFieldsValue({ email: userData.data.email }); // Set email field
-          }
+          const userData = await getUserById(userId);
+          const initialValues = {
+            ...basicInfo,
+            website: basicInfo.website || '',
+            investorType: basicInfo.investorType || 'Angel Investor',
+            startupStage: basicInfo.startupStage || 'Seed',
+            email: userData?.data?.email || '',
+          };
+          console.log('BasicInfo - Setting initial values:', initialValues);
+          form.setFieldsValue(initialValues);
         } catch (error) {
-          console.error("Failed to fetch user data:", error);
+          console.error('Failed to fetch user data:', error);
         }
       }
     };
-
     fetchUserData();
-  }, [getUserById, form]);
+  }, [getUserById, form, basicInfo]);
 
-  // Handle profile image upload
   const handleImageUpload = (image) => {
     setProfileImage(image);
     setImageError('');
   };
 
-  // Expose validateForm method via ref
+  const handleValuesChange = (changedValues) => {
+    Object.entries(changedValues).forEach(([key, value]) => {
+      setBasicInfoField(key, value);
+    });
+  };
+
+  // Expose methods via ref
   useImperativeHandle(ref, () => ({
     validateForm: async () => {
       try {
-        await form.validateFields();
-
-        // Validate Profile Image
+        console.log('BasicInfo - Starting validation');
+        const values = await form.validateFields();
+        console.log('BasicInfo - Form values after validation:', values);
+        
+        // Ensure required fields are present
+        const formData = {
+          ...values,
+          investorType: values.investorType || 'Angel Investor',
+          startupStage: values.startupStage || 'Seed',
+          experience: values.experience || '5'
+        };
+        console.log('BasicInfo - Form data after defaults:', formData);
+        
+        // Update store with validated values
+        Object.entries(formData).forEach(([key, value]) => {
+          setBasicInfoField(key, value);
+        });
+        
         if (!profileImage) {
-          setImageError('Profile image is required.');
+          console.log('BasicInfo - Profile image missing');
+          setImageError('Profile image is required');
           return false;
         }
-
+        console.log('BasicInfo - Validation successful');
         return true;
       } catch (error) {
+        console.error('BasicInfo - Validation failed:', error);
         return false;
       }
     },
+    getFormData: () => {
+      const values = form.getFieldsValue();
+      console.log('BasicInfo - Getting form data:', values);
+      const formData = {
+        ...values,
+        investorType: values.investorType || 'Angel Investor',
+        startupStage: values.startupStage || 'Seed',
+        experience: values.experience || '5'
+      };
+      console.log('BasicInfo - Returning form data with defaults:', formData);
+      return formData;
+    }
   }));
 
   return (
     <div className="px-10 mt-10">
       <h2 className="text-lg font-semibold text-gray-900">Basic Information</h2>
 
-      {/* Profile Image Upload Section */}
       <div className="flex justify-center mt-4 mb-4">
         <ProfileImageUpload onImageUpload={handleImageUpload} />
       </div>
@@ -79,12 +133,16 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
         <p className="text-red-500 text-sm text-center mt-2">{imageError}</p>
       )}
 
-      {/* Form Section */}
       <Form
         form={form}
         layout="vertical"
         className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6"
-        initialValues={{ email: userEmail || '' }}
+        onValuesChange={handleValuesChange}
+        initialValues={{
+          ...basicInfo,
+          investorType: basicInfo.investorType || 'Angel Investor',
+          startupStage: basicInfo.startupStage || 'Seed'
+        }}
       >
         <Form.Item
           label="Full Name"
@@ -97,7 +155,10 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
             },
           ]}
         >
-          <Input prefix={<UserOutlined />} placeholder="Enter your full name" />
+          <Input
+            prefix={<UserOutlined />}
+            placeholder="Enter your full name"
+          />
         </Form.Item>
 
         <Form.Item
@@ -139,8 +200,8 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
 
         <Form.Item
           label="Website"
-          name="Website"
-          rules={[{ type: 'url', message: 'Website is required' }]}
+          name="website"
+          rules={[{ type: 'url', message: 'Please enter a valid URL' }]}
         >
           <Input
             prefix={<GlobalOutlined />}
@@ -179,7 +240,7 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
           ]}
           normalize={(value) =>
             value && !value.startsWith('@') ? `@${value}` : value
-          } // Auto-add "@" if missing
+          }
         >
           <Input
             prefix={
@@ -201,7 +262,11 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
             { type: 'email', message: 'Enter a valid email' },
           ]}
         >
-          <Input prefix={<MailOutlined />} placeholder="your@email.com" disabled />
+          <Input
+            prefix={<MailOutlined />}
+            placeholder="your@email.com"
+            disabled
+          />
         </Form.Item>
 
         <Form.Item
@@ -221,20 +286,20 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
           rules={[
             { required: true, message: 'Phone number is required' },
             {
-              pattern: /^[0-9]{10}$/,
-              message: 'Enter a valid 10-digit number',
+              pattern: /^[0-9]{6,15}$/,
+              message: 'Enter a valid phone number (6-15 digits)',
             },
           ]}
         >
           <Input
             prefix={<PhoneOutlined />}
-            placeholder="without country code"
+            placeholder="Enter your phone number"
           />
         </Form.Item>
 
         <Form.Item
           label="Preferred Startup Stage"
-          name="startup_stage"
+          name="startupStage"
           rules={[{ required: true, message: 'Startup Stage is required' }]}
         >
           <Select placeholder="Select stage" className="w-full">
@@ -251,12 +316,8 @@ const BasicInfoForm = forwardRef(({ onNext }, ref) => {
   );
 });
 
-// Add display name for better debugging
 BasicInfoForm.displayName = 'BasicInfoForm';
-
-// Prop validation
 BasicInfoForm.propTypes = {
   onNext: PropTypes.func,
 };
-
 export default BasicInfoForm;
