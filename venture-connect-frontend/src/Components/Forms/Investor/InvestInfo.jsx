@@ -1,13 +1,15 @@
 import { forwardRef, useImperativeHandle, useEffect } from "react";
-import { Form, Input, Button, Slider, Radio, message, Select, Typography } from "antd";
+import { Form, Input, Button, Slider, Radio, Select, Typography } from "antd";
 import { BankOutlined, DeleteOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faIndianRupeeSign } from "@fortawesome/free-solid-svg-icons";
 import { formatAmount } from "../../../utils/formatUtils";
 import { useInvestorFormStore } from '../../../store/useInvestorFormStore';
+import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 
 const { Text } = Typography;
+
 const domains = [
   "Technology", 
   "Healthcare", 
@@ -33,7 +35,6 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
   } = useInvestorFormStore();
 
   useEffect(() => {
-    console.log('InvestInfo - Initializing form');
     if (isEdit && initialData) {
       form.setFieldsValue({
         ...initialData,
@@ -49,9 +50,7 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
     }
   }, [initialData, isEdit, form, investmentDetails]);
 
-  // Ensure form is initialized with default values
   useEffect(() => {
-    console.log('InvestInfo - Setting default values');
     const values = form.getFieldsValue();
     if (!values.investmentRange) {
       form.setFieldsValue({
@@ -82,13 +81,11 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
     updateInvestment(index, field, value);
   };
 
-  // Expose validateForm via ref
   useImperativeHandle(ref, () => ({
     validateForm: async () => {
       try {
         const values = await form.validateFields();
         
-        // Store the validated values in the store
         Object.entries(values).forEach(([key, value]) => {
           if (key === 'investmentRange') {
             setInvestmentRange(value);
@@ -98,17 +95,19 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
             setInvestmentField(key, value);
           }
         });
-        
-        // Additional validation for previous investments
-        if (previousInvestments.some(inv => 
-          !inv.year || !inv.startupName || !inv.domain || !inv.description
-        )) {
+
+        const isValid = previousInvestments.every(inv =>
+          inv.year && inv.startupName && inv.domain && inv.description
+        );
+
+        if (!isValid) {
           throw new Error("Please fill all fields in previous investments");
         }
-        
+
+        toast.success("Investment details validated successfully!");
         return true;
       } catch (error) {
-        message.error(error.message || "Please correct the errors in the form.");
+        toast.error(error.message || "Please correct the errors in the form.");
         return false;
       }
     },
@@ -145,8 +144,11 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
             min={20000}
             max={200000000}
             step={10000}
-            defaultValue={investmentDetails.investmentRange}
             tooltip={{ formatter: formatAmount }}
+            onChange={(value) => {
+              form.setFieldsValue({ investmentRange: value });
+              setInvestmentRange(value);
+            }}
           />
           <Text className="block mt-2">
             Selected Range: {formatAmount(investmentDetails.investmentRange[0])} -{' '}
@@ -230,10 +232,7 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
               name={['previousInvestments', index, 'year']}
               rules={[
                 { required: true, message: "Year is required" },
-                { 
-                  pattern: /^(200\d|20[1-9]\d|2099)$/, 
-                  message: "Year must be between 2000-2099" 
-                }
+                { pattern: /^(200\d|20[1-9]\d|2099)$/, message: "Year must be between 2000-2099" }
               ]}
               initialValue={investment.year}
             >

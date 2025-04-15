@@ -1,7 +1,7 @@
 import { useState } from "react";
 import BasicInfoForm from "./BasicInfo";
 import InvestmentDetailsForm from "./InvestInfo";
-import { Button, Progress, message } from "antd";
+import { Button, Progress, Alert, message } from "antd";
 import { useInvestorFormStore } from '../../../store/useInvestorFormStore';
 import { investoAPI } from '../../../api/endpoints/investor';
 import { useNavigate } from 'react-router-dom';
@@ -9,9 +9,9 @@ import { useNavigate } from 'react-router-dom';
 const InvestorProfileForm = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   
-  // Use the Zustand store directly
   const { 
     basicInfo, 
     investmentDetails, 
@@ -22,57 +22,50 @@ const InvestorProfileForm = () => {
     validateInvestmentDetails
   } = useInvestorFormStore();
 
-  const handleNext = async () => {
+  const handleNext = () => {
     try {
-      // Validate using the store's validation method
       const isValid = validateBasicInfo();
       if (isValid) {
         setStep(2);
+        setErrorMessage('');
       } else {
-        message.error('Please fill all required fields correctly');
+        setErrorMessage('Please fill all required fields correctly');
       }
     } catch (err) {
       console.error('Validation error:', err);
-      message.error('Please fill all required fields correctly');
+      setErrorMessage('Please fill all required fields correctly');
     }
   };
 
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      console.log('mainForm - Starting form submission');
-      
-      // Validate basic info
+      setErrorMessage('');
+
       const isBasicInfoValid = validateBasicInfo();
       if (!isBasicInfoValid) {
-        console.log('mainForm - Basic info validation failed');
-        message.error('Please correct the errors in the basic info form');
+        setErrorMessage('Please correct the errors in the basic info form');
         setLoading(false);
         return;
       }
-      
-      // Validate investment details
+
       const isInvestmentValid = validateInvestmentDetails();
       if (!isInvestmentValid) {
-        console.log('mainForm - Investment details validation failed');
-        message.error('Please correct the errors in the investment details form');
+        setErrorMessage('Please correct the errors in the investment details form');
         setLoading(false);
         return;
       }
-      
+
       const formData = new FormData();
-      
-      // Add profile image first
+
       if (profileImage) {
-        console.log('mainForm - Adding profile image to form data');
         formData.append('investor_image', profileImage);
       } else {
-        message.error('Profile image is required');
+        setErrorMessage('Profile image is required');
         setLoading(false);
         return;
       }
-  
-      // Prepare data in exact API format
+
       const apiData = {
         investorBasicInfo: {
           name: basicInfo.fullName,
@@ -83,7 +76,7 @@ const InvestorProfileForm = () => {
           experience: basicInfo.experience,
           preffered_stage: basicInfo.startupStage,
           twitter: basicInfo.twitter,
-          website: basicInfo.website
+          website_url: basicInfo.website
         },
         investmentDetails: {
           investmentRange: `$${investmentDetails.investmentRange[0]/1000}K - $${investmentDetails.investmentRange[1]/1000000}M`,
@@ -95,37 +88,27 @@ const InvestorProfileForm = () => {
         previousInvestments: previousInvestments,
         userId: localStorage.getItem('userId')
       };
-  
-      console.log('mainForm - Prepared API data:', apiData);
-      
-      // Add the entire objects as JSON strings
+
       formData.append('investorBasicInfo', JSON.stringify(apiData.investorBasicInfo));
       formData.append('investmentDetails', JSON.stringify(apiData.investmentDetails));
       formData.append('previousInvestments', JSON.stringify(apiData.previousInvestments));
       formData.append('userId', apiData.userId);
-      
-      console.log('mainForm - Submitting form data to API');
-      
-      // Log the FormData contents for debugging
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
-      }
 
       const response = await investoAPI.createInvestorProfile(formData);
-      
-      if (response.status === 201) {
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
         message.success('Profile created successfully!');
         resetForm();
-        navigate('/startups-hub');
+        setTimeout(() => navigate('/startups-hub'), 2000); // delay for toast
       }
     } catch (error) {
-      console.error('mainForm - Submission error:', error);
       if (error.response?.data?.message) {
-        message.error(error.response.data.message);
+        setErrorMessage(error.response.data.message);
       } else if (error.message) {
-        message.error(error.message);
+        setErrorMessage(error.message);
       } else {
-        message.error('Failed to submit form. Please try again.');
+        setErrorMessage('Failed to submit form. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -141,6 +124,18 @@ const InvestorProfileForm = () => {
         Submit your details to connect with promising startups and investment opportunities.
       </p>
 
+      {errorMessage && (
+        <Alert
+          message="Error"
+          description={errorMessage}
+          type="error"
+          showIcon
+          closable
+          onClose={() => setErrorMessage('')}
+          className="mb-4"
+        />
+      )}
+
       <div className="mt-4">
         <Progress percent={step === 1 ? 50 : 100} showInfo={false} strokeColor="#2563eb" />
         <div className="flex justify-between text-gray-500 text-sm mt-1">
@@ -149,7 +144,6 @@ const InvestorProfileForm = () => {
         </div>
       </div>
 
-      {/* Keep both components mounted but only display the active one */}
       <div style={{ display: step === 1 ? 'block' : 'none' }}>
         <BasicInfoForm />
       </div>

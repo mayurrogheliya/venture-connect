@@ -8,34 +8,30 @@ export const useInvestorFormStore = create((set) => ({
     linkedin: '',
     location: '',
     website: '',
-    investorType: 'Angel Investor', // Default value
+    investorType: '',
     twitter: '',
     email: '',
-    experience: '5', // Default value
+    experience: '',
     phone: '',
-    startupStage: 'Seed' // Default value
+    startupStage: ''
   },
   profileImage: null,
   imageError: '',
 
   // ============== Investment Details ==============
   investmentDetails: {
-    investmentRange: [100000, 2000000], // $100K - $2M
-    portfolioCompanies: 5,
-    totalInvestment: 2000000,
-    interestedDomains: ['AgriTech', 'IT', 'Business', 'Clothes'],
-    mentorship: true
+    investmentRange: [100000, 2000000],
+    portfolioCompanies: '',
+    totalInvestment: '',
+    interestedDomains: [],
+    mentorship: false
   },
 
   // ============== Previous Investments ==============
-  previousInvestments: [{
-    startupName: 'Tech Innovations',
-    domain: 'AI',
-    description: 'Invested in AI-driven platform',
-    year: 2021
-  }],
+  previousInvestments: [],
 
   // ============== Methods ==============
+
   // Basic Info Actions
   setBasicInfoField: (field, value) => set((state) => ({
     basicInfo: { ...state.basicInfo, [field]: value }
@@ -77,8 +73,7 @@ export const useInvestorFormStore = create((set) => ({
   validateInvestmentDetails: () => {
     const state = useInvestorFormStore.getState();
     const { investmentDetails } = state;
-    
-    // Validate required fields
+
     if (!investmentDetails.investmentRange || 
         investmentDetails.investmentRange.length !== 2 ||
         !investmentDetails.portfolioCompanies ||
@@ -88,21 +83,16 @@ export const useInvestorFormStore = create((set) => ({
       return false;
     }
 
-    // Validate investment range
-    const [min, max] = investmentDetails.investmentRange;
-    if (min < 0 || max < min) {
+    const [min, max] = investmentDetails.investmentRange.map(Number);
+    if (min < 0 || max < min || isNaN(min) || isNaN(max)) {
       return false;
     }
 
-    // Validate portfolio companies
-    if (isNaN(investmentDetails.portfolioCompanies) || 
-        investmentDetails.portfolioCompanies < 0) {
+    if (isNaN(investmentDetails.portfolioCompanies) || investmentDetails.portfolioCompanies < 0) {
       return false;
     }
 
-    // Validate total investment
-    if (isNaN(investmentDetails.totalInvestment) || 
-        investmentDetails.totalInvestment < 0) {
+    if (isNaN(investmentDetails.totalInvestment) || investmentDetails.totalInvestment < 0) {
       return false;
     }
 
@@ -118,24 +108,19 @@ export const useInvestorFormStore = create((set) => ({
       investorType: 'Angel Investor',
       twitter: '',
       email: '',
-      experience: '5',
+      experience: '',
       phone: '',
       startupStage: 'Seed'
     },
     profileImage: null,
     imageError: '',
     investmentDetails: {
-      investmentRange: [100000, 2000000],
-      portfolioCompanies: 5,
-      totalInvestment: 2000000,
-      interestedDomains: ['AgriTech', 'IT', 'Business', 'Clothes'],
-      mentorship: true
+      investmentRange: ['', ''],
+      portfolioCompanies: '',
+      totalInvestment: '',
+      interestedDomains: [],
+      mentorship: false
     },
-    previousInvestments: [{
-      startupName: 'Tech Innovations',
-      domain: 'AI',
-      description: 'Invested in AI-driven platform',
-      year: 2021
-    }]
+    previousInvestments: []
   })
 }));
