@@ -8,7 +8,7 @@ import users from './user.routes.js';
 import authRoutes from './auth.routes.js';
 import registerStartupRoutes from './registerStartup.routes.js';
 import { authMiddleware } from '../middlewares/authMiddleware.js';
-
+import bookmarkRouter from './bookmark.routes.js';
 const router = Router();
 
 router.use('/startup', authMiddleware, startupRoutes);
@@ -20,5 +20,5 @@ router.use('/opportunity', opportRoutes);
 router.use('/users', users);
 router.use('/auth', authRoutes);
 router.use('/registerstartup', registerStartupRoutes);
-
+router.use('/bookmark', bookmarkRouter);
 export default router;
