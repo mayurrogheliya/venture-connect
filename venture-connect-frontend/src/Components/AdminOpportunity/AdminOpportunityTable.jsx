@@ -5,10 +5,22 @@ import {
   SearchOutlined,
 } from '@ant-design/icons';
 import { useState } from 'react';
+import { useOpportunites } from '../../store/useOpportunites';
 
 const AdminOpportunityTable = () => {
   const [searchText, setSearchText] = useState('');
   const [pageSize, setPageSize] = useState(5);
+  const {
+    startupopportunities,
+    loading,
+    getStartUpOpportunities,
+    handledelete,
+  } = useOpportunites();
+
+  // Fetch opportunities on component mount
+  useState(() => {
+    getStartUpOpportunities();
+  }, []);
 
   const handleSearch = (e) => setSearchText(e.target.value);
 
@@ -35,129 +47,53 @@ const AdminOpportunityTable = () => {
     },
     {
       title: 'Preferred Stage',
-      dataIndex: 'stage',
-      sorter: (a, b) => a.stage.localeCompare(b.stage),
+      dataIndex: 'startupstage',
+      sorter: (a, b) => a.startupstage.localeCompare(b.startupstage),
       render: (text) => highlightText(text, searchText),
     },
     {
       title: 'Industry',
-      dataIndex: 'industry',
-      sorter: (a, b) => a.industry.localeCompare(b.industry),
+      dataIndex: 'domain',
+      sorter: (a, b) => a.domain.localeCompare(b.domain),
       render: (text) => highlightText(text, searchText),
     },
     {
       title: 'Investment Range',
       dataIndex: 'investmentRange',
+      render: (_, record) =>
+        `${record.mininvestment.toLocaleString()} - ${record.maxinvestment.toLocaleString()}`,
     },
     {
       title: 'Investor',
       dataIndex: 'investor',
       sorter: (a, b) => a.investor.localeCompare(b.investor),
-      render: (text) => highlightText(text, searchText),
+      render: (_, record) =>
+        highlightText(
+          record.user?.investor?.investorBasicInfo?.name,
+          searchText,
+        ),
     },
     {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <Space size={0}>
-          <Tooltip title="Edit Opportunity">
-            <Button
-              type="text"
-              icon={<EditOutlined />}
-              style={{ color: '#2ecc71' }}
-              onClick={() => console.log('Edit Opportunity')}
-            />
-          </Tooltip>
-          <Tooltip title="Delete Opportunity">
-            <Button
-              type="text"
-              icon={<DeleteOutlined />}
-              style={{ color: '#e74c3c' }}
-              onClick={() => console.log('Delete Opportunity')}
-            />
-          </Tooltip>
-        </Space>
-      ),
+      title: 'Status',
+      dataIndex: 'status',
+      render: (text) => text.charAt(0).toUpperCase() + text.slice(1),
     },
   ];
 
-  const data = [
-    {
-      key: '1',
-      name: 'Tech Innovation Fund',
-      stage: 'Series A',
-      industry: 'Technology',
-      investmentRange: '$500K - $2M',
-      investor: 'John Anderson',
-    },
-    {
-      key: '2',
-      name: 'Green Energy Ventures',
-      stage: 'Seed',
-      industry: 'Clean Energy',
-      investmentRange: '$100K - $500K',
-      investor: 'Sarah Williams',
-    },
-    {
-      key: '3',
-      name: 'Healthcare Solutions',
-      stage: 'Series B',
-      industry: 'Healthcare',
-      investmentRange: '$2M - $5M',
-      investor: 'Michael Chen',
-    },
-    {
-      key: '4',
-      name: 'AI Research Fund',
-      stage: 'Early Stage',
-      industry: 'Artificial Intelligence',
-      investmentRange: '$1M - $3M',
-      investor: 'Emily Johnson',
-    },
-    {
-      key: '5',
-      name: 'Fintech Growth Fund',
-      stage: 'Series A',
-      industry: 'Financial Technology',
-      investmentRange: '$500K - $2M',
-      investor: 'David Thompson',
-    },
-    {
-      key: '6',
-      name: 'Sustainable Agriculture',
-      stage: 'Seed',
-      industry: 'Agriculture',
-      investmentRange: '$250K - $1M',
-      investor: 'Lisa Martinez',
-    },
-    {
-      key: '7',
-      name: 'E-commerce Platform',
-      stage: 'Series B',
-      industry: 'E-commerce',
-      investmentRange: '$3M - $7M',
-      investor: 'Robert Wilson',
-    },
-    {
-      key: '8',
-      name: 'EdTech Innovation',
-      stage: 'Early Stage',
-      industry: 'Education',
-      investmentRange: '$300K - $1M',
-      investor: 'Amanda Brown',
-    },
-  ];
-
-  const excludedField = 'investmentRange';
-  const filteredData = data.filter((record) =>
-    Object.keys(record)
-      .filter((key) => key !== excludedField)
-      .some((key) =>
-        record[key]
-          ?.toString()
-          .toLowerCase()
-          .includes(searchText.toLowerCase()),
-      ),
+  const excludedFields = ['investmentRange', 'status'];
+  const filteredData = startupopportunities.filter(
+    (record) =>
+      Object.keys(record)
+        .filter((key) => !excludedFields.includes(key))
+        .some((key) =>
+          record[key]
+            ?.toString()
+            .toLowerCase()
+            .includes(searchText.toLowerCase()),
+        ) ||
+      record.user?.investor?.investorBasicInfo?.name
+        ?.toLowerCase()
+        .includes(searchText.toLowerCase()),
   );
 
   return (
@@ -175,6 +111,7 @@ const AdminOpportunityTable = () => {
         dataSource={filteredData}
         rowKey="id"
         bordered={true}
+        loading={loading}
         pagination={{
           pageSize: pageSize,
           showSizeChanger: true,
