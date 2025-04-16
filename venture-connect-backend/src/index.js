@@ -8,6 +8,7 @@ const ConnectDB = async () => {
     await sequelize.authenticate();
     //await sequelize.sync();
     await sequelize.sync({ alter: true });
+
     console.log('Database connected successfully.');
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
