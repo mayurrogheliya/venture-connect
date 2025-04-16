@@ -65,8 +65,9 @@ const AdminEventForm = ({ initialValues, onSubmit, isEdit }) => {
   };
 
   const beforeUpload = (file) => {
-    if (!file.type.startsWith('image/')) {
-      message.error('Only image files are allowed!');
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!allowedTypes.includes(file.type.toLowerCase())) {
+      message.error('You can only upload JPG/JPEG/PNG files!');
       return Upload.LIST_IGNORE;
     }
     return true;
