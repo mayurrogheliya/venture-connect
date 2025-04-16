@@ -38,11 +38,15 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
     if (isEdit && initialData) {
       form.setFieldsValue({
         ...initialData,
+        portfolioCompanies: '',
+        totalInvestment: '',
         investmentRange: [initialData.mininvestment, initialData.maxinvestment],
       });
     } else {
       form.setFieldsValue({
         ...investmentDetails,
+        portfolioCompanies: '',
+        totalInvestment: '',
         investmentRange: investmentDetails.investmentRange,
         interestedDomains: investmentDetails.interestedDomains,
         mentorship: investmentDetails.mentorship ? "Yes" : "No"
@@ -50,18 +54,6 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
     }
   }, [initialData, isEdit, form, investmentDetails]);
 
-  useEffect(() => {
-    const values = form.getFieldsValue();
-    if (!values.investmentRange) {
-      form.setFieldsValue({
-        investmentRange: [100000, 2000000],
-        portfolioCompanies: 5,
-        totalInvestment: 2000000,
-        interestedDomains: ['AgriTech', 'IT', 'Business', 'Clothes'],
-        mentorship: "Yes"
-      });
-    }
-  }, [form]);
 
   const handleAddInvestment = () => {
     const newInvestment = { 
