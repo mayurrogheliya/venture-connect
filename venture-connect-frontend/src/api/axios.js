@@ -5,7 +5,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 10000,
+  timeout: 100000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -14,7 +14,7 @@ const api = axios.create({
 
 export const multipartRequest = axios.create({
   baseURL: API_URL,
-  timeout: 10000,
+  timeout: 1000000,
   headers: {
     'Content-Type': 'multipart/form-data',
   },
