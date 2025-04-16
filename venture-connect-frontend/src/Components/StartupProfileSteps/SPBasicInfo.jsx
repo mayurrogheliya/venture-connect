@@ -1,13 +1,21 @@
 import { UploadOutlined } from '@ant-design/icons';
 import { faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Col, Form, Input, InputNumber, Row, Select, Upload } from 'antd';
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Select,
+  Upload,
+} from 'antd';
 import { IoLocationOutline } from 'react-icons/io5';
 import { TbWorld } from 'react-icons/tb';
 import { message } from 'antd';
 
 const SPBasicInfo = ({ form }) => {
-  const { Dragger } = Upload;
   const MAX_CHAR = 500;
   const MAX_WORDS = 100;
 
@@ -42,29 +50,19 @@ const SPBasicInfo = ({ form }) => {
     <Form form={form} layout="vertical" requiredMark="optional">
       <p className="text-xl font-semibold text-gray-800">Basic Information</p>
       <div className="flex justify-between my-5 gap-5 flex-col md:flex-row flex-wrap">
-        <Form.Item name={['basicInfo', 'startup_logo']}>
-          {/* Upload Section */}
-          <Dragger
-            name={['basicInfo', 'startupLogo']}
-            className="flex-1 min-h-full flex flex-col items-center justify-center p-5"
-            multiple={false} // Prevents multiple file uploads
-            maxCount={1} // Allows only one file at a time
+        <Form.Item
+          name={['basicInfo', 'startupLogo']}
+          valuePropName="fileList"
+          getValueFromEvent={(e) => e.fileList}
+        >
+          <Upload
+            name="startupLogo"
+            listType="picture"
             beforeUpload={() => false}
-            onChange={(info) => {
-              const file = info.file;
-              form.setFieldsValue({
-                basicInfo: {
-                  startup_logo: file.name, // Set only the file name
-                },
-              });
-            }}
+            maxCount={1}
           >
-            <p className="ant-upload-drag-icon">
-              <UploadOutlined style={{ color: 'gray', fontSize: 40 }} />
-            </p>
-            <p className="ant-upload-text">Upload your startup logo</p>
-            <p className="ant-upload-hint">PNG, JPG up to 5MB</p>
-          </Dragger>
+            <Button icon={<UploadOutlined />}>Upload Startup Logo</Button>
+          </Upload>
         </Form.Item>
         {/* Basic Info Inputs */}
         <div className="flex-1">

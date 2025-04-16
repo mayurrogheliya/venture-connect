@@ -2,7 +2,11 @@ import { Button, Card, Col, Form, Input, Row, Upload } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { faLinkedin } from '@fortawesome/free-brands-svg-icons';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  UploadOutlined,
+} from '@ant-design/icons';
 
 const SPTeam = ({ form }) => {
   const { Dragger } = Upload;
@@ -14,35 +18,19 @@ const SPTeam = ({ form }) => {
           Founder Information
         </p>
         <div className="flex justify-between my-5 gap-5 flex-col md:flex-row flex-wrap">
-          <Form.Item name={['team', 'founder_image']}>
-            <Dragger
-              name={['team', 'founderImage']}
-              className="flex-1 min-h-full flex flex-col items-center justify-center p-5"
+          <Form.Item
+            name={['team', 'founderImage']}
+            valuePropName="fileList"
+            getValueFromEvent={(e) => e.fileList}
+          >
+            <Upload
+              name="founderImage"
+              listType="picture"
               beforeUpload={() => false}
-              onChange={(info) => {
-                const file = info.file;
-                form.setFieldsValue({
-                  team: {
-                    founder_image: file.name, // Set only the file name
-                  },
-                });
-              }}
+              maxCount={1}
             >
-              <p className="ant-upload-drag-icon">
-                <FontAwesomeIcon
-                  icon={faUserTie}
-                  style={{ color: 'gray', fontSize: 40 }}
-                />
-              </p>
-              <p className="ant-upload-text">Upload founder photo</p>
-              <p className="ant-upload-hint">PNG, JPG up to 5MB</p>
-              <button
-                type="button"
-                className="mt-3 p-2 border border-gray-300 text-gray-600 font-normal rounded-lg cursor-pointer"
-              >
-                Choose File
-              </button>
-            </Dragger>
+              <Button icon={<UploadOutlined />}>Upload Founder Image</Button>
+            </Upload>
           </Form.Item>
 
           <div className="flex-1">
@@ -101,26 +89,27 @@ const SPTeam = ({ form }) => {
               <Row gutter={[16, 16]} className="my-5">
                 {fields.map(({ key, name, ...restField }, index) => (
                   <Col xs={24} md={8} key={key}>
-                    <Card bordered={true}>
-                      <Form.Item {...restField} name={[name, 'profile_image']}>
-                        <Dragger
-                          name={['teamMembers', name, 'teamMembersImages']}
-                          className="flex-1 min-h-full flex flex-col items-center justify-center p-5"
+                    <Card variant="outlined">
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'profile_image']}
+                        valuePropName="fileList"
+                        getValueFromEvent={(e) => e.fileList}
+                      >
+                        <Upload
+                          name="profile_image"
+                          listType="picture-card"
                           beforeUpload={() => false}
+                          maxCount={1}
                         >
-                          <p className="ant-upload-drag-icon">
+                          <div>
                             <FontAwesomeIcon
                               icon={faUserTie}
                               style={{ color: 'gray', fontSize: 25 }}
                             />
-                          </p>
-                          <button
-                            type="button"
-                            className="p-2 border border-gray-300 text-gray-600 font-normal rounded-lg cursor-pointer"
-                          >
-                            Upload Image
-                          </button>
-                        </Dragger>
+                            <div style={{ marginTop: 8 }}>Upload</div>
+                          </div>
+                        </Upload>
                       </Form.Item>
 
                       <Form.Item
