@@ -75,33 +75,37 @@ const Header = () => {
           >
             Events
           </button>
-          {!isAuthenticated && (
-            <div>
-              <Link
-                to="/signin"
-                onClick={() => {
-                  setIsOpen(false);
-                  window.scrollTo({ top: 0, behavior: 'instant' });
-                }}
-              >
-                <button className="pe-8 py-2 text-gray-600 hover:text-black">
-                  Sign In
-                </button>
-              </Link>
+          <div>
+            <button
+              className="pe-8 py-2 text-gray-600 hover:text-black"
+              onClick={() => {
+                setIsOpen(false);
+                window.scrollTo({ top: 0, behavior: 'instant' });
+                if (isAuthenticated) {
+                  navigate('/startups-hub');
+                } else {
+                  navigate('/signin');
+                }
+              }}
+            >
+              Sign In
+            </button>
 
-              <Link
-                to="/signup"
-                onClick={() => {
-                  setIsOpen(false);
-                  window.scrollTo({ top: 0, behavior: 'instant' });
-                }}
-              >
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                  Sign Up
-                </button>
-              </Link>
-            </div>
-          )}
+            <button
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              onClick={() => {
+                setIsOpen(false);
+                window.scrollTo({ top: 0, behavior: 'instant' });
+                if (isAuthenticated) {
+                  navigate('/startups-hub');
+                } else {
+                  navigate('/signup');
+                }
+              }}
+            >
+              Sign Up
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu Button */}
@@ -148,24 +152,34 @@ const Header = () => {
         >
           Events
         </button>
-        {!isAuthenticated && (
           <div className="flex flex-col items-center">
-            <Link
-              to="/signin"
+            <button
               className="text-gray-600 hover:text-black py-4"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                if (isAuthenticated) {
+                  navigate('/startup-hub');
+                } else {
+                  navigate('/signin');
+                }
+              }}
             >
               Sign In
-            </Link>
-            <Link
-              to="/signup"
+            </button>
+            <button
               className="px-4 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 "
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                if (isAuthenticated) {
+                  navigate('/startup-hub');
+                } else {
+                  navigate('/signup');
+                }
+              }}
             >
               Sign Up
-            </Link>
+            </button>
           </div>
-        )}
       </div>
     </nav>
   );
