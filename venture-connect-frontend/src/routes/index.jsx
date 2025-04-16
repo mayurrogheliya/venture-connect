@@ -32,6 +32,7 @@ import AdminOpportunity from '../pages/Admin/AdminOpportunity.jsx';
 import EditOpportunity from '../pages/Opportunity/EditOpportunity.jsx';
 import CreateOpportunity from '../pages/Opportunity/CreateOpportunity.jsx';
 import StartupRegister from '../pages/Opportunity/StartupRegister.jsx';
+import RoleProtectedRoute from './RoleProtectedRoute.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -54,39 +55,55 @@ const router = createBrowserRouter(
           path="/complete-investor-profile"
           element={<InvestorProfileForm />}
         />
+
         <Route path="/startup-profile/:id" element={<StartupProfile />} />
         <Route path="/investor-profile/:id" element={<InvestorProfile />} />
+
         <Route element={<UserLayout />}>
           <Route path="/startups-hub" element={<StartupsHub />} />
           <Route path="/investor-network" element={<InvestorNetwork />} />
-          <Route path="/register-startup/:id" element={<StartupRegister />} />
-          <Route
-            path="/startup-opportunities"
-            element={<StartupOpportunities />}
-          />
           <Route path="/bookmarks" element={<BookmarkedStartups />} />
-          <Route
-            path="/Add-Oppertunity-Investor"
-            element={<CreateOpportunity />}
-          />
-          <Route path="opportunities/edit/:id" element={<EditOpportunity />} />
-          <Route
-            path="/Investor-Opportunity"
-            element={<InvestorOpportunity />}
-          />
+
+          <Route element={<RoleProtectedRoute allowedRoles={['startup']} />}>
+            <Route
+              path="/startup-opportunities"
+              element={<StartupOpportunities />}
+            />
+          </Route>
+
+          <Route element={<RoleProtectedRoute allowedRoles={['investor']} />}>
+            <Route path="/register-startup/:id" element={<StartupRegister />} />
+            <Route
+              path="opportunities/edit/:id"
+              element={<EditOpportunity />}
+            />
+            <Route
+              path="/Add-Oppertunity-Investor"
+              element={<CreateOpportunity />}
+            />
+            <Route
+              path="/Investor-Opportunity"
+              element={<InvestorOpportunity />}
+            />
+            <Route path="/Registered-Startups" element={<RegStartup />} />
+          </Route>
         </Route>
-        <Route path="/Registered-Startups" element={<RegStartup />} />
 
         {/* Admin Routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Navigate to="users" replace />} />
-          <Route path="users" element={<UserMain />} />
-          <Route path="opportunities" element={<AdminOpportunity />} />
+        <Route element={<RoleProtectedRoute allowedRoles={['admin']} />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Navigate to="users" replace />} />
+            <Route path="users" element={<UserMain />} />
+            <Route path="opportunities" element={<AdminOpportunity />} />
 
-          <Route path="events" element={<AdminEvents />} />
-          <Route path="events/create" element={<CreateEvent />} />
-          <Route path="events/edit/:id" element={<EditEvent />} />
-          <Route path="events/eventattends/:id" element={<EventAttendees />} />
+            <Route path="events" element={<AdminEvents />} />
+            <Route path="events/create" element={<CreateEvent />} />
+            <Route path="events/edit/:id" element={<EditEvent />} />
+            <Route
+              path="events/eventattends/:id"
+              element={<EventAttendees />}
+            />
+          </Route>
         </Route>
       </Route>
     </Route>,

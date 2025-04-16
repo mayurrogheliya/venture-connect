@@ -13,7 +13,9 @@ const Signin = () => {
   useEffect(() => {
     if (isAuthenticated) {
       console.log('Authenticated', isAuthenticated);
-      if (user?.user_type === 'startup') {
+      if (user?.user_type === 'admin') {
+        navigate('/admin');
+      } else if (user?.user_type === 'startup') {
         navigate(
           user.isProfileCompleted
             ? '/startups-hub'
@@ -22,7 +24,7 @@ const Signin = () => {
       } else if (user?.user_type === 'investor') {
         navigate(
           user.isProfileCompleted
-            ? '/investor-network'
+            ? '/startups-hub'
             : '/complete-investor-profile',
         );
       } else {
@@ -39,7 +41,9 @@ const Signin = () => {
       login(user, accessToken);
       message.success(response?.message || 'Login Success');
 
-      if (user.user_type === 'startup') {
+      if (user.user_type === 'admin') {
+        navigate('/admin');
+      } else if (user.user_type === 'startup') {
         navigate(
           user.isProfileCompleted
             ? '/startups-hub'
@@ -101,7 +105,7 @@ const Signin = () => {
                 className="font-bold"
                 name="password"
                 rules={[
-                  { required: true, message: 'Please enter your password!' }
+                  { required: true, message: 'Please enter your password!' },
                 ]}
               >
                 <Input.Password placeholder="Enter your password" />

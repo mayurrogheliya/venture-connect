@@ -26,7 +26,12 @@ export const useUserStore = create((set) => {
     getUserById: async (userId) => {
       try {
         const response = await usersAPI.getUser(userId);
-        const userData = response?.data;
+        let userData;
+        if (response?.user_type === 'admin') {
+          userData = response?.data;
+        } else {
+          userData = response?.data;
+        }
         set({ user: userData });
         return userData;
       } catch (error) {

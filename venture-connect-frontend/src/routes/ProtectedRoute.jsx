@@ -2,7 +2,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useUserStore } from '../store/useUserStore';
 
 const ProtectedRoute = () => {
-  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const { isAuthenticated } = useUserStore();
   if (!isAuthenticated) {
     return <Navigate to="/signin" replace />;
   }
