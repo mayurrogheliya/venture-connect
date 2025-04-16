@@ -1,4 +1,4 @@
-import { Button, Form, message, Steps } from 'antd';
+import { Button, Form, message, Spin, Steps } from 'antd';
 import SPBasicInfo from '../components/StartupProfileSteps/SPBasicInfo';
 import { useState } from 'react';
 import SPMatrices from '../components/StartupProfileSteps/SPMetrices';
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 const StartupProfileForm = () => {
   const [form] = Form.useForm();
   const userId = localStorage.getItem('userId');
-  const { setLoading } = useStartupProfileStore();
+  const { loading, setLoading } = useStartupProfileStore();
   const navigate = useNavigate();
 
   const steps = [
@@ -75,7 +75,7 @@ const StartupProfileForm = () => {
       }
 
       if (formValues.teamMembers) {
-        formValues.teamMembers.forEach((member, index) => {
+        formValues.teamMembers.forEach((member) => {
           if (member.profile_image?.[0]?.originFileObj) {
             formData.append(
               'teamMembersImages',
@@ -83,16 +83,6 @@ const StartupProfileForm = () => {
             );
           }
         });
-      }
-
-      for (let pair of formData.entries()) {
-        console.log(
-          pair[0] +
-            ': ' +
-            (pair[1] instanceof File
-              ? `File: ${pair[1].name}, size: ${pair[1].size}`
-              : pair[1]),
-        );
       }
 
       const response = await startupAPI.createStartupProfile(formData);
@@ -114,47 +104,54 @@ const StartupProfileForm = () => {
 
   return (
     <>
-      <div className="bg-neutral-50 md:pt-10 md:pb-5 md:px-20 pt-5 pb-3 px-10 border-b border-gray-200">
-        <h2 className="md:text-4xl text-3xl font-bold">
-          Complete Your <span className="text-blue-500">Startup Profile</span>
-        </h2>
-        <p className="text-lg text-gray-600 font-normal mt-3 mb-6">
-          Explore and Connect with innovative startups
-        </p>
-        <Steps current={current} items={items} />
-      </div>
+      {loading ? (
+        <Spin tip="Loading..." size="large" fullscreen />
+      ) : (
+        <div>
+          <div className="bg-neutral-50 md:pt-10 md:pb-5 md:px-20 pt-5 pb-3 px-10 border-b border-gray-200">
+            <h2 className="md:text-4xl text-3xl font-bold">
+              Complete Your{' '}
+              <span className="text-blue-500">Startup Profile</span>
+            </h2>
+            <p className="text-lg text-gray-600 font-normal mt-3 mb-6">
+              Explore and Connect with innovative startups
+            </p>
+            <Steps current={current} items={items} />
+          </div>
 
-      <div className="md:py-8 md:px-20 py-4 px-5">
-        {steps[current].content}
-        <div
-          style={{
-            marginTop: 24,
-            display: 'flex',
-            justifyContent: 'flex-end',
-          }}
-        >
-          {current < steps.length - 1 && (
-            <Button type="primary" onClick={() => next()}>
-              Next
-            </Button>
-          )}
-          {current === steps.length - 1 && (
-            <Button type="primary" onClick={handleSubmit}>
-              Submit
-            </Button>
-          )}
-          {current > 0 && (
-            <Button
+          <div className="md:py-8 md:px-20 py-4 px-5">
+            {steps[current].content}
+            <div
               style={{
-                margin: '0 8px',
+                marginTop: 24,
+                display: 'flex',
+                justifyContent: 'flex-end',
               }}
-              onClick={() => prev()}
             >
-              Previous
-            </Button>
-          )}
+              {current > 0 && (
+                <Button
+                  style={{
+                    margin: '0 8px',
+                  }}
+                  onClick={() => prev()}
+                >
+                  Previous
+                </Button>
+              )}
+              {current < steps.length - 1 && (
+                <Button type="primary" onClick={() => next()}>
+                  Next
+                </Button>
+              )}
+              {current === steps.length - 1 && (
+                <Button type="primary" onClick={handleSubmit} loading={loading}>
+                  Submit
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

@@ -55,7 +55,7 @@ export const createInvestor = async (
 
 export const getAllInvestors = async () => {
   const { count, rows } = await User.findAndCountAll({
-    where: { user_type: 'investor' },
+    where: { user_type: 'investor', status: true },
     attributes: ['id', 'email', 'status', 'isProfileCompleted'],
     include: [
       {

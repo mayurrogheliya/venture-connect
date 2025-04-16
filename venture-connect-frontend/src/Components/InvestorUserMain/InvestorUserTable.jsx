@@ -3,10 +3,20 @@ import {
   EditOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import { Button, Input, Space, Table, Tooltip } from 'antd';
-import { useState } from 'react';
+import { Button, Input, message, Space, Table, Tooltip } from 'antd';
+import { useEffect, useState } from 'react';
+import { useInvestorProfileStore } from '../../store/useInvestorProfileStore';
+import { investoAPI } from '../../api/endpoints/investor';
 
 const InvestorUserTable = () => {
+  const {
+    getAllInvestorProfiles,
+    investorAllProfile,
+    setEditingInvestorProfile,
+    setLoading,
+    loading,
+    setMode,
+  } = useInvestorProfileStore();
   const [searchText, setSearchText] = useState('');
   const [pageSize, setPageSize] = useState(5);
 
@@ -26,32 +36,46 @@ const InvestorUserTable = () => {
     );
   };
 
-  const StartupsRecords = [
-    {
-      key: 1,
-      name: 'Startup A',
-      type: 'Tech Startup',
-      location: 'New York',
-      investmentRange: '$100,000 - $500,000',
-      domains: 'Tech, AI',
-    },
-    {
-      key: 2,
-      name: 'Startup B',
-      type: 'Finance Startup',
-      location: 'San Francisco',
-      investmentRange: '$500,000 - $1,000,000',
-      domains: 'Finance, Blockchain',
-    },
-    {
-      key: 3,
-      name: 'Startup C',
-      type: 'Healthcare Startup',
-      location: 'San Francisco',
-      investmentRange: '$1,000,000 - $2,000,000',
-      domains: 'Healthcare, Biotech',
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await getAllInvestorProfiles();
+      } catch (error) {
+        console.error('Error fetching investor profiles:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [getAllInvestorProfiles]);
+
+  console.log('investor all profiles: ', investorAllProfile);
+
+  const investorData =
+    Array.isArray(investorAllProfile) &&
+    investorAllProfile?.map((item) => ({
+      id: item?.id,
+      investorId: item?.investor?.id,
+      name: item?.investor?.investorBasicInfo?.name,
+      investor_type: item?.investor?.investorBasicInfo?.investor_type,
+      location: item?.investor?.investorBasicInfo?.location,
+      investmentRange: item?.investor?.investmentDetails?.investmentRange,
+      interestedDomain: item?.investor?.investmentDetails?.interestedDomain,
+    }));
+
+  const handleDelete = async (investorId) => {
+    try {
+      const response = await investoAPI.deleteInvestorProfile(investorId);
+      message.success(response?.data?.message || 'Deleted investor profile');
+      getAllInvestorProfiles();
+    } catch (error) {
+      console.error('Error deleting investor profile:', error);
+      message.error(
+        error?.response?.message || 'Error deleting investor profile',
+      );
+    }
+  };
 
   const columns = [
     {
@@ -62,8 +86,8 @@ const InvestorUserTable = () => {
     },
     {
       title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'investor_type',
+      key: 'investor_type',
       render: (text) => highlightText(text, searchText),
     },
     {
@@ -79,15 +103,16 @@ const InvestorUserTable = () => {
     },
     {
       title: 'Domains',
-      dataIndex: 'domains',
-      key: 'domains',
-      render: (text) =>
-        text.split(',').map((domain, index) => (
+      dataIndex: 'interestedDomain',
+      key: 'interestedDomain',
+      render: (domains) =>
+        domains &&
+        domains.map((domain, index) => (
           <span
             key={index}
             className="text-blue-700 mr-1 md:text-base bg-blue-100 rounded-full px-2 py-1"
           >
-            {highlightText(domain.trim(), searchText)}
+            {highlightText(domain, searchText)}
           </span>
         )),
     },
@@ -96,20 +121,36 @@ const InvestorUserTable = () => {
       key: 'actions',
       render: (_, record) => (
         <Space size={0}>
-          <Tooltip title="Edit Startup">
+          <Tooltip title="Edit Investor">
             <Button
               type="text"
               icon={<EditOutlined />}
               style={{ color: '#2ecc71' }}
-              onClick={() => console.log('Edit Startup')}
+              onClick={() => {
+                const fullProfile = investorAllProfile.find(
+                  (item) => item?.id === record.id,
+                );
+                if (fullProfile) {
+                  setEditingInvestorProfile({
+                    ...fullProfile.investor,
+                    userId: fullProfile.id,
+                    email: fullProfile.email,
+                  });
+                  setMode('form');
+                } else {
+                  console.error('Investor profile not found');
+                }
+              }}
             />
           </Tooltip>
-          <Tooltip title="Delete Startup">
+          <Tooltip title="Delete Investor">
             <Button
               type="text"
               icon={<DeleteOutlined />}
               style={{ color: '#e74c3c' }}
-              onClick={() => console.log('Delete Startup')}
+              onClick={() => {
+                handleDelete(record?.investorId);
+              }}
             />
           </Tooltip>
         </Space>
@@ -117,11 +158,13 @@ const InvestorUserTable = () => {
     },
   ];
 
-  const filteredData = StartupsRecords.filter((record) =>
-    ['name', 'type', 'location', 'domains'].some((key) =>
-      record[key]?.toString().toLowerCase().includes(searchText),
-    ),
-  );
+  const filteredData =
+    Array.isArray(investorAllProfile) &&
+    investorData?.filter((record) =>
+      ['name', 'investor_type', 'location', 'interestedDomain'].some((key) =>
+        record[key]?.toString().toLowerCase().includes(searchText),
+      ),
+    );
 
   return (
     <>
@@ -142,7 +185,7 @@ const InvestorUserTable = () => {
           pageSize: pageSize,
           showSizeChanger: true,
           showQuickJumper: true,
-          showTotal: (total) => `Total ${total} startups`,
+          showTotal: (total) => `Total ${total} Investors`,
           pageSizeOptions: ['5', '10', '20'],
           onShowSizeChange: (_, size) => setPageSize(size),
         }}

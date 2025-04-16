@@ -14,7 +14,7 @@ const api = axios.create({
 
 export const multipartRequest = axios.create({
   baseURL: API_URL,
-  timeout: 100000,
+  timeout: 1000000,
   headers: {
     'Content-Type': 'multipart/form-data',
   },

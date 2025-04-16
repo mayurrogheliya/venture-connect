@@ -1,12 +1,13 @@
 import { EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Flex, Space, Typography } from 'antd';
-import { useState } from 'react';
 import InvestorUserForm from '../../../components/InvestorUserMain/InvestorUserForm';
 import InvestorUserTable from '../../../components/InvestorUserMain/InvestorUserTable';
+import { useInvestorProfileStore } from '../../../store/useInvestorProfileStore';
 
 const { Title } = Typography;
 const InvestorUser = () => {
-  const [mode, setMode] = useState('table');
+  const { mode, setMode, setEditingInvestorProfile } =
+    useInvestorProfileStore();
   return (
     <>
       <Space direction="vertical" style={{ width: '100%' }}>
@@ -19,6 +20,7 @@ const InvestorUser = () => {
                 variant="solid"
                 icon={<EyeOutlined />}
                 onClick={() => {
+                  setEditingInvestorProfile(null);
                   setMode('table');
                 }}
               >
@@ -31,6 +33,7 @@ const InvestorUser = () => {
                 variant="solid"
                 icon={<PlusOutlined />}
                 onClick={() => {
+                  setEditingInvestorProfile(null);
                   setMode('form');
                 }}
               >
