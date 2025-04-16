@@ -11,7 +11,7 @@ User.init(
       primaryKey: true,
     },
     user_type: {
-      type: DataTypes.ENUM(['startup', 'investor']),
+      type: DataTypes.ENUM(['startup', 'investor', 'admin']),
       allowNull: false,
     },
     email: {
