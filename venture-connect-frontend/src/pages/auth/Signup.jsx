@@ -2,7 +2,7 @@ import { Form, Input, Button, Select, message, Spin } from 'antd';
 import signupImage from '../../assets/images/signupSIdeImage.png';
 import { useUserStore } from '../../store/useUserStore';
 import { usersAPI } from '../../api/endpoints/users';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const { Option } = Select;
 const Signup = () => {
@@ -124,6 +124,17 @@ const Signup = () => {
                     Signup
                   </Button>
                 </Form.Item>
+
+                 {/* Login Link */}
+            <p className="text-center text-gray-600 mt-3 sm:mt-4 font-medium text-sm sm:text-base">
+              Don&#39;t have an account?
+              <Link
+                to="/signin"
+                className="text-blue-600 hover:underline ml-1 font-semibold"
+              >
+                Register
+              </Link>
+            </p>
               </Form>
             </div>
 
