@@ -2,8 +2,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faClose } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { Avatar, Dropdown } from 'antd';
+import { Avatar, Dropdown, message, Spin } from 'antd';
 import DefaultUser from '../assets/images/default-user.png';
+import { useUserStore } from '../store/useUserStore';
+import { authAPI } from '../api/endpoints/auth';
 
 const AdminLayout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,12 +18,39 @@ const AdminLayout = () => {
     setIsMenuOpen(false);
   };
 
+  const { logout, loading, setLoading } = useUserStore();
+
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+      const response = await authAPI.logout();
+      message.success(response?.data?.message || 'Logged out successfully');
+    } catch (error) {
+      message.error(
+        error?.response?.data?.message || 'Logout failed. Please try again.',
+      );
+    } finally {
+      setLoading(false);
+      logout();
+    }
+  };
+
   const items = [
     {
       key: '1',
       label: <NavLink to="/change-password">Change Password</NavLink>,
     },
-    { key: '2', label: <NavLink to="/">Logout</NavLink> },
+    {
+      key: '2',
+      label: (
+        <button
+          onClick={handleLogout}
+          className="text-red-500 w-full text-left cursor-pointer"
+        >
+          Logout
+        </button>
+      ),
+    },
   ];
 
   return (
@@ -154,9 +183,13 @@ const AdminLayout = () => {
       </div>
 
       {/* Page Content */}
-      <main className="flex-1 bg-white overflow-y-auto py-5 px-4 lg:px-8">
-        <Outlet />
-      </main>
+      {loading ? (
+        <Spin tip="Loading..." size="large" fullscreen />
+      ) : (
+        <main className="flex-1 bg-white overflow-y-auto py-5 px-4 lg:px-8">
+          <Outlet />
+        </main>
+      )}
     </div>
   );
 };
