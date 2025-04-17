@@ -37,31 +37,20 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
   useEffect(() => {
     if (isEdit && initialData) {
       form.setFieldsValue({
-        ...initialData,
         investmentRange: [initialData.mininvestment, initialData.maxinvestment],
+        portfolioCompanies: initialData.portfolioCompanies !== undefined ? initialData.portfolioCompanies : undefined, // Prevent default value
+        totalInvestment: initialData.totalInvestment !== undefined ? initialData.totalInvestment : undefined // Prevent default value
       });
     } else {
       form.setFieldsValue({
-        ...investmentDetails,
         investmentRange: investmentDetails.investmentRange,
         interestedDomains: investmentDetails.interestedDomains,
-        mentorship: investmentDetails.mentorship ? "Yes" : "No"
+        mentorship: investmentDetails.mentorship ? "Yes" : "No",
+        portfolioCompanies: investmentDetails.portfolioCompanies !== undefined ? investmentDetails.portfolioCompanies : undefined, // Prevent default value
+        totalInvestment: investmentDetails.totalInvestment !== undefined ? investmentDetails.totalInvestment : undefined // Prevent default value
       });
     }
   }, [initialData, isEdit, form, investmentDetails]);
-
-  useEffect(() => {
-    const values = form.getFieldsValue();
-    if (!values.investmentRange) {
-      form.setFieldsValue({
-        investmentRange: [100000, 2000000],
-        portfolioCompanies: 5,
-        totalInvestment: 2000000,
-        interestedDomains: ['AgriTech', 'IT', 'Business', 'Clothes'],
-        mentorship: "Yes"
-      });
-    }
-  }, [form]);
 
   const handleAddInvestment = () => {
     const newInvestment = { 
@@ -161,10 +150,7 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
         <Form.Item
           label="Portfolio Companies"
           name="portfolioCompanies"
-          rules={[
-            { required: true, message: "Enter the number of companies" },
-            { pattern: /^[0-9]+$/, message: "Only numbers are allowed" }
-          ]}
+          rules={[{ required: true, message: "Enter the number of companies" }, { pattern: /^[0-9]+$/, message: "Only numbers are allowed" }]}
         >
           <Input 
             prefix={<BankOutlined />} 
@@ -175,19 +161,10 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
         <Form.Item
           label="Total Investments (₹)"
           name="totalInvestment"
-          rules={[
-            { required: true, message: "Enter total investment amount" },
-            { pattern: /^[0-9]+$/, message: "Only numbers are allowed" }
-          ]}
+          rules={[{ required: true, message: "Enter total investment amount" }, { pattern: /^[0-9]+$/, message: "Only numbers are allowed" }]}
         >
           <Input
-            prefix={
-              <FontAwesomeIcon 
-                icon={faIndianRupeeSign} 
-                size="sm" 
-                style={{ marginRight: "5px", color: "gray" }} 
-              />
-            }
+            prefix={<FontAwesomeIcon icon={faIndianRupeeSign} size="sm" style={{ marginRight: "5px", color: "gray" }} />}
             placeholder="Enter amount"
           />
         </Form.Item>
@@ -230,11 +207,7 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
           <div key={index} className="grid grid-cols-5 gap-2 mt-2">
             <Form.Item
               name={['previousInvestments', index, 'year']}
-              rules={[
-                { required: true, message: "Year is required" },
-                { pattern: /^(200\d|20[1-9]\d|2099)$/, message: "Year must be between 2000-2099" }
-              ]}
-              initialValue={investment.year}
+              rules={[{ required: true, message: "Year is required" }, { pattern: /^(200\d|20[1-9]\d|2099)$/, message: "Year must be between 2000-2099" }]}
             >
               <Input 
                 placeholder="YYYY" 
@@ -245,7 +218,6 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
             <Form.Item
               name={['previousInvestments', index, 'startupName']}
               rules={[{ required: true, message: "Required" }]}
-              initialValue={investment.startupName}
             >
               <Input 
                 placeholder="Startup name" 
@@ -256,7 +228,6 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
             <Form.Item
               name={['previousInvestments', index, 'domain']}
               rules={[{ required: true, message: "Required" }]}
-              initialValue={investment.domain}
             >
               <Input 
                 placeholder="Domain" 
@@ -266,11 +237,7 @@ const InvestmentDetailsForm = forwardRef(({ initialData, isEdit }, ref) => {
 
             <Form.Item
               name={['previousInvestments', index, 'description']}
-              rules={[
-                { required: true, message: "Required" },
-                { max: 100, message: "Max 100 characters allowed" }
-              ]}
-              initialValue={investment.description}
+              rules={[{ required: true, message: "Required" }, { max: 100, message: "Max 100 characters allowed" }]}
             >
               <Input 
                 placeholder="Brief description" 
@@ -303,7 +270,8 @@ InvestmentDetailsForm.displayName = 'InvestmentDetailsForm';
 InvestmentDetailsForm.propTypes = {
   initialData: PropTypes.shape({
     mininvestment: PropTypes.number,
-    maxinvestment: PropTypes.number
+    maxinvestment: PropTypes.number,
+    totalInvestment: PropTypes.number // Add totalInvestment to initialData propTypes
   }),
   isEdit: PropTypes.bool
 };
