@@ -1,9 +1,11 @@
 import { faBolt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
+import { useUserStore } from '../store/useUserStore';
 
 const LandingHome = () => {
   const navigate = useNavigate();
+  const { userId } = useUserStore();
   return (
     <section
       className="flex flex-col items-center justify-center text-center px-6 py-12 pt-44 md:pt-48"
@@ -23,7 +25,9 @@ const LandingHome = () => {
       </p>
       <button
         className="font-sarabun mt-10 px-7 py-2 bg-blue-500 text-white text-lg md:text-lg rounded-lg hover:bg-blue-600 shadow-xl cursor-pointer"
-        onClick={() => navigate('/signin')}
+        onClick={() => {
+          userId ? navigate('/startups-hub') : navigate('/signin');
+        }}
       >
         <FontAwesomeIcon icon={faBolt} size="xs" style={{ color: '#ffffff' }} />{' '}
         Join Us – It’s Free

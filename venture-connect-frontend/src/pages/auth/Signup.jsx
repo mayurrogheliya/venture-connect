@@ -125,16 +125,16 @@ const Signup = () => {
                   </Button>
                 </Form.Item>
 
-                 {/* Login Link */}
-            <p className="text-center text-gray-600 mt-3 sm:mt-4 font-medium text-sm sm:text-base">
-              Don&#39;t have an account?
-              <Link
-                to="/signin"
-                className="text-blue-600 hover:underline ml-1 font-semibold"
-              >
-                Register
-              </Link>
-            </p>
+                {/* Login Link */}
+                <p className="text-center text-gray-600 mt-3 sm:mt-4 font-medium text-sm sm:text-base">
+                  Already have an account?
+                  <Link
+                    to="/signin"
+                    className="text-blue-600 hover:underline ml-1 font-semibold"
+                  >
+                    Login
+                  </Link>
+                </p>
               </Form>
             </div>
 
