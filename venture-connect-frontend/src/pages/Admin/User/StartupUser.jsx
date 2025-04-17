@@ -28,7 +28,7 @@ const StartupUser = () => {
                 {'View'}
               </Button>
             )}
-            {mode == 'table' && (
+            {/* {mode == 'table' && (
               <Button
                 color="primary"
                 variant="solid"
@@ -40,7 +40,7 @@ const StartupUser = () => {
               >
                 {'Add'}
               </Button>
-            )}
+            )} */}
           </>
         </Flex>
         {mode == 'form' && <StartupUserForm />}
