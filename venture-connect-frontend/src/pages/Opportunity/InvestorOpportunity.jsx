@@ -1,17 +1,31 @@
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Spin } from 'antd';
-import InvestmentCard from '../../Components/Opportunities/OppInvestorCard'; // Adjust the import path as necessary
+import InvestmentCard from '../../Components/Opportunities/OppInvestorCard';
 import { useNavigate } from 'react-router-dom';
 import { useOpportunites } from '../../store/useOpportunites';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
 const InvestorOpportunity = () => {
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
 
   const { opportunities, loading, fechOpportunities, setOpportunities } =
     useOpportunites();
+
   useEffect(() => {
     fechOpportunities();
   }, [setOpportunities]);
+
+  // Filter opportunities based on search term
+  const filteredOpportunities = opportunities.filter(
+    (opportunity) =>
+      opportunity.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      opportunity.description
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      opportunity.domain.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      opportunity.startupstage.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   return (
     <div className="max-w-6xl">
@@ -33,6 +47,8 @@ const InvestorOpportunity = () => {
           prefix={<SearchOutlined className="text-gray-500 px-1 pe-1.5" />}
           allowClear
           className="flex-1 min-w-md rounded-lg h-10 bg-gray-100"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
         <Button
           icon={<PlusOutlined className="text-gray-700" />}
@@ -48,12 +64,18 @@ const InvestorOpportunity = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mt-6 auto-rows-fr">
         {loading ? (
           <div className="flex justify-center items-center min-h-screen">
-            <Spin size="large" /> {/* Ant Design Loading Spinner */}
+            <Spin size="large" />
           </div>
-        ) : (
-          opportunities.map((opportunity) => (
+        ) : filteredOpportunities.length > 0 ? (
+          filteredOpportunities.map((opportunity) => (
             <InvestmentCard key={opportunity.id} opportunity={opportunity} />
           ))
+        ) : (
+          <div className="col-span-full text-center py-10">
+            <p className="text-gray-500">
+              No opportunities found matching your search.
+            </p>
+          </div>
         )}
       </div>
     </div>

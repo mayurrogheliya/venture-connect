@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Input, Button, Flex, Spin, Empty } from 'antd';
 import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
 import InvestorNetworkCard from '../Components/InvestorNetwork/InvestorNetworkCard';
@@ -9,6 +9,7 @@ const InvestorNetwork = () => {
   const { getAllInvestorProfiles, investorAllProfile, setLoading, loading } =
     useInvestorProfileStore();
   const { userId } = useUserStore();
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,7 +18,30 @@ const InvestorNetwork = () => {
       setLoading(false);
     };
     fetchData();
-  }, [getAllInvestorProfiles]);
+  }, [getAllInvestorProfiles, userId]);
+
+  const filteredInvestors = investorAllProfile?.filter((investor) => {
+    if (!investor?.investor) return false;
+
+    const name =
+      investor?.investor?.investorBasicInfo?.name?.toLowerCase() || '';
+    const type =
+      investor?.investor?.investorBasicInfo?.investor_type?.toLowerCase() || '';
+    const location =
+      investor?.investor?.investorBasicInfo?.location?.toLowerCase() || '';
+    const domains =
+      investor?.investor?.investmentDetails?.interestedDomain
+        ?.join(' ')
+        ?.toLowerCase() || '';
+    const term = searchTerm.toLowerCase();
+
+    return (
+      name.includes(term) ||
+      type.includes(term) ||
+      location.includes(term) ||
+      domains.includes(term)
+    );
+  });
 
   console.log('investor all profile', investorAllProfile);
 
@@ -37,6 +61,8 @@ const InvestorNetwork = () => {
           prefix={<SearchOutlined className="text-gray-500 px-1 pe-1.5" />}
           allowClear
           className="flex-1 min-w-md rounded-lg h-10 bg-gray-100"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)} // Update search term
         />
         <Button
           icon={<FilterOutlined className="text-gray-700" />}
@@ -68,9 +94,8 @@ const InvestorNetwork = () => {
         </Flex>
       ) : (
         <div className="mt-8 grid gap-6">
-          {Array.isArray(investorAllProfile) &&
-          investorAllProfile.length > 0 ? (
-            investorAllProfile.map((items, index) => (
+          {filteredInvestors && filteredInvestors.length > 0 ? (
+            filteredInvestors.map((items, index) => (
               <InvestorNetworkCard
                 key={index}
                 investor={items?.investor}

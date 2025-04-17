@@ -1,7 +1,7 @@
-import { Button, Empty, Flex, Input, Spin } from 'antd';
+import { Empty, Flex, Input, Spin } from 'antd';
 import StartupHubCard from '../Components/StartupHub/StartupHubCard';
-import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
-import { useEffect } from 'react';
+import { SearchOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react'; // Add useState import
 import { useStartupProfileStore } from '../store/useStartupProfileStore';
 import { useUserStore } from '../store/useUserStore';
 
@@ -9,6 +9,8 @@ const StartupsHub = () => {
   const { getAllStartupProfiles, startupAllProfile, setLoading, loading } =
     useStartupProfileStore();
   const { userId } = useUserStore();
+  const [searchTerm, setSearchTerm] = useState(''); // Add search term state
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -16,7 +18,22 @@ const StartupsHub = () => {
       setLoading(false);
     };
     fetchData();
-  }, [getAllStartupProfiles]);
+  }, [getAllStartupProfiles, userId]);
+
+  // Filter startups based on search term
+  const filteredStartups = startupAllProfile?.filter((startup) => {
+    const name = startup?.startup?.basicInfo?.startup_name?.toLowerCase() || '';
+    const overview =
+      startup?.startup?.basicInfo?.company_overview?.toLowerCase() || '';
+    const industry = startup?.startup?.basicInfo?.industry?.toLowerCase() || '';
+    const term = searchTerm.toLowerCase();
+
+    return (
+      name.includes(term) || overview.includes(term) || industry.includes(term)
+    );
+  });
+
+  console.log(startupAllProfile);
 
   return (
     <>
@@ -35,14 +52,9 @@ const StartupsHub = () => {
           prefix={<SearchOutlined className="text-gray-500 px-1 pe-1.5" />}
           allowClear
           className="flex-1 min-w-md rounded-lg h-10 bg-gray-100"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)} // Update search term
         />
-        <Button
-          icon={<FilterOutlined className="text-gray-700" />}
-          className="flex-0 rounded-full h-10 bg-white border-gray-300 font-medium"
-          size="large"
-        >
-          Filters
-        </Button>
       </div>
 
       <div className="flex gap-6 items-center text-gray-600 break-words">
@@ -66,8 +78,8 @@ const StartupsHub = () => {
         </Flex>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
-          {Array.isArray(startupAllProfile) && startupAllProfile.length > 0 ? (
-            startupAllProfile?.map((items, index) => (
+          {filteredStartups && filteredStartups.length > 0 ? (
+            filteredStartups.map((items, index) => (
               <StartupHubCard
                 key={index}
                 startup={items?.startup}
