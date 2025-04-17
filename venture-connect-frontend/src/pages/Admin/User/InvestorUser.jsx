@@ -27,7 +27,7 @@ const InvestorUser = () => {
                 {'View'}
               </Button>
             )}
-            {mode == 'table' && (
+            {/* {mode == 'table' && (
               <Button
                 color="primary"
                 variant="solid"
@@ -39,7 +39,7 @@ const InvestorUser = () => {
               >
                 {'Add'}
               </Button>
-            )}
+            )} */}
           </>
         </Flex>
         {mode == 'form' && <InvestorUserForm />}
