@@ -16,25 +16,27 @@ import {
 import { faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useInvestorProfileStore } from '../store/useInvestorProfileStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { formatAmount } from '../utils/formatUtils';
+import { usersAPI } from '../api/endpoints/users';
 
 const InvestorProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getInvestorProfile, investorProfile, setLoading, loading } =
     useInvestorProfileStore();
-
+  const [userData, setUserData] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       await getInvestorProfile(id);
+      const { data } = await usersAPI.getUser(id);
+      setUserData(data.data);
       setLoading(false);
     };
     fetchData();
   }, [getInvestorProfile, id]);
 
-  console.log('investor profile', investorProfile);
   const { investorBasicInfo, investmentDetails, previousInvestments } =
     investorProfile || {};
 
@@ -120,7 +122,7 @@ const InvestorProfile = () => {
                   Contact Information
                 </h3>
                 <p className="text-gray-700 flex items-center gap-2 text-lg">
-                  <MailOutlined /> {investorBasicInfo?.email}
+                  <MailOutlined /> {userData?.email}
                 </p>
                 {investorBasicInfo?.phone && (
                   <p className="text-gray-700 flex items-center gap-2 text-lg mt-2">
