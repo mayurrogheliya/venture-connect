@@ -6,11 +6,9 @@ import { toast } from 'react-toastify';
 import { formatAmount } from '../../utils/formatUtils';
 
 const OppStartupCard = ({ data }) => {
-  const investorImage =
-    data.user?.investorBasicInfo?.investor_image || UserImage;
-  const investorName = data.user?.investorBasicInfo?.name || 'mayur';
-  const investorType =
-    data.user?.investorBasicInfo?.investor_type || 'angel investor';
+  const investorBasicInfo = data.user?.investor?.investorBasicInfo;
+
+  console.log('data', data);
   const handleApply = async () => {
     try {
       await registerStartupAPIs.registerStartup(data.id);
@@ -47,14 +45,16 @@ const OppStartupCard = ({ data }) => {
           <div className="flex items-center gap-x-3 flex-wrap">
             <div>
               <img
-                src={investorImage}
+                src={investorBasicInfo?.investor_image || UserImage}
                 alt="investor-img"
                 className="w-10 h-10 rounded-full object-cover"
               />
             </div>
             <div>
-              <p className="font-semibold">{investorName}</p>
-              <p className="text-gray-500">{investorType}</p>
+              <p className="font-semibold">{investorBasicInfo.name}</p>
+              <p className="text-gray-500">
+                {investorBasicInfo?.investor_type}
+              </p>
             </div>
           </div>
           <button
