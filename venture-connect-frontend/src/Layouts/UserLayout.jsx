@@ -80,10 +80,6 @@ const UserLayout = () => {
       ),
     },
     {
-      key: '2',
-      label: <NavLink to="/change-password">Change Password</NavLink>,
-    },
-    {
       key: '3',
       label: (
         <button

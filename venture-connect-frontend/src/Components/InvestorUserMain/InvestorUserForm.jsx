@@ -126,6 +126,11 @@ const EditInvestorProfile = () => {
         investmentDetails: editingInvestorProfile?.investmentDetails,
       };
       form.setFieldsValue(formattedData);
+      if (editingInvestorProfile?.investorBasicInfo?.investor_image) {
+        setProfileImage(
+          editingInvestorProfile.investorBasicInfo.investor_image,
+        );
+      }
       setFormReady(true);
     }
   }, [editingInvestorProfile, form]);
