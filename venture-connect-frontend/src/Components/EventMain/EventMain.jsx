@@ -5,10 +5,12 @@ import { useEffect } from 'react';
 import { useEventStore } from '../../store/useEventStore'; // Adjust the import path
 import { Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { useUserStore } from '../../store/useUserStore';
 
 function EventMain() {
   const { events, fetchEvents, loading } = useEventStore();
   const navigate = useNavigate();
+  const { userId } = useUserStore();
   useEffect(() => {
     fetchEvents();
   }, [fetchEvents]);
@@ -57,7 +59,9 @@ function EventMain() {
           </p>
           <button
             className="font-sarabun mt-6 px-7 py-2 bg-blue-500 text-white text-lg md:text-xl rounded-lg hover:bg-blue-600 shadow-xl cursor-pointer"
-            onClick={() => navigate('/signin')}
+            onClick={() => {
+              userId ? navigate('/startups-hub') : navigate('/signin');
+            }}
           >
             <FontAwesomeIcon
               icon={faBolt}

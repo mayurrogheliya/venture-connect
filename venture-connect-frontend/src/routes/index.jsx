@@ -60,9 +60,15 @@ const router = createBrowserRouter(
         <Route path="/investor-profile/:id" element={<InvestorProfile />} />
 
         <Route element={<UserLayout />}>
-          <Route path="/startups-hub" element={<StartupsHub />} />
-          <Route path="/investor-network" element={<InvestorNetwork />} />
-          <Route path="/bookmarks" element={<BookmarkedStartups />} />
+          <Route
+            element={
+              <RoleProtectedRoute allowedRoles={['startup', 'investor']} />
+            }
+          >
+            <Route path="/startups-hub" element={<StartupsHub />} />
+            <Route path="/investor-network" element={<InvestorNetwork />} />
+            <Route path="/bookmarks" element={<BookmarkedStartups />} />
+          </Route>
 
           <Route element={<RoleProtectedRoute allowedRoles={['startup']} />}>
             <Route

@@ -48,12 +48,16 @@ const Header = () => {
         className={`max-w-7xl w-full mx-auto px-6 py-4 flex justify-between items-center rounded-full border border-gray-100/75 bg-white shadow-sm transition-all duration-300 ease-in-out ${isScrolled ? 'backdrop-blur-md bg-white/70 shadow-md' : 'bg-white shadow-sm'}`}
       >
         {/* Logo */}
-        <div className="flex items-center gap-5">
+        <Link
+          to="/"
+          onClick={() => scrollToSection('home')}
+          className="flex items-center gap-5"
+        >
           <div className="object-fill w-10 h-12 rounded-full ">
             <img src={logo} alt="logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-lg font-semibold">Venture Connect</h1>
-        </div>
+        </Link>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-10 items-center">
@@ -152,34 +156,34 @@ const Header = () => {
         >
           Events
         </button>
-          <div className="flex flex-col items-center">
-            <button
-              className="text-gray-600 hover:text-black py-4"
-              onClick={() => {
-                setIsOpen(false);
-                if (isAuthenticated) {
-                  navigate('/startup-hub');
-                } else {
-                  navigate('/signin');
-                }
-              }}
-            >
-              Sign In
-            </button>
-            <button
-              className="px-4 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 "
-              onClick={() => {
-                setIsOpen(false);
-                if (isAuthenticated) {
-                  navigate('/startup-hub');
-                } else {
-                  navigate('/signup');
-                }
-              }}
-            >
-              Sign Up
-            </button>
-          </div>
+        <div className="flex flex-col items-center">
+          <button
+            className="text-gray-600 hover:text-black py-4"
+            onClick={() => {
+              setIsOpen(false);
+              if (isAuthenticated) {
+                navigate('/startup-hub');
+              } else {
+                navigate('/signin');
+              }
+            }}
+          >
+            Sign In
+          </button>
+          <button
+            className="px-4 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 "
+            onClick={() => {
+              setIsOpen(false);
+              if (isAuthenticated) {
+                navigate('/startup-hub');
+              } else {
+                navigate('/signup');
+              }
+            }}
+          >
+            Sign Up
+          </button>
+        </div>
       </div>
     </nav>
   );
