@@ -90,14 +90,6 @@ const BookmarkedStartups = () => {
             saved to your bookmarks
           </p>
         </div>
-
-        <Button
-          icon={<SortAscendingOutlined className="text-gray-700" />}
-          className="flex-0 rounded-full h-10 bg-white border-gray-300 font-medium"
-          size="large"
-        >
-          Sort
-        </Button>
       </div>
 
       {/* Startup Cards Grid */}

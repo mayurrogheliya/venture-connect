@@ -5,14 +5,15 @@ import { useOpportunites } from '../../store/useOpportunites';
 import { useEffect, useState } from 'react';
 
 const StartupOpportunities = () => {
-  const { getStartUpOpportunities, startupopportunities, loading } = useOpportunites();
+  const { getStartUpOpportunities, startupopportunities, loading } =
+    useOpportunites();
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     domain: [],
     startupstage: [],
     minInvestment: null,
     maxInvestment: null,
-    status: 'active'
+    status: 'active',
   });
 
   useEffect(() => {
@@ -20,39 +21,56 @@ const StartupOpportunities = () => {
   }, []);
 
   // Extract all unique values for filter options
-  const allDomains = [...new Set(startupopportunities.map(opp => opp.domain).filter(Boolean))];
-  const allStages = [...new Set(startupopportunities.map(opp => opp.startupstage).filter(Boolean))];
-  
+  const allDomains = [
+    ...new Set(startupopportunities.map((opp) => opp.domain).filter(Boolean)),
+  ];
+  const allStages = [
+    ...new Set(
+      startupopportunities.map((opp) => opp.startupstage).filter(Boolean),
+    ),
+  ];
+
   // Filter opportunities based on all criteria
-  const filteredOpportunities = startupopportunities.filter(opportunity => {
+  const filteredOpportunities = startupopportunities.filter((opportunity) => {
     // Search term matching (name or description)
-    const matchesSearch = searchTerm === '' || 
+    const matchesSearch =
+      searchTerm === '' ||
       opportunity.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       opportunity.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     // Domain filter
-    const matchesDomain = filters.domain.length === 0 || 
+    const matchesDomain =
+      filters.domain.length === 0 ||
       filters.domain.includes(opportunity.domain);
-    
+
     // Stage filter
-    const matchesStage = filters.startupstage.length === 0 || 
+    const matchesStage =
+      filters.startupstage.length === 0 ||
       filters.startupstage.includes(opportunity.startupstage);
-    
+
     // Investment range filter
-    const matchesInvestment = (
-      (filters.minInvestment === null || opportunity.mininvestment >= filters.minInvestment) &&
-      (filters.maxInvestment === null || opportunity.maxinvestment <= filters.maxInvestment)
-    );
-    
+    const matchesInvestment =
+      (filters.minInvestment === null ||
+        opportunity.mininvestment >= filters.minInvestment) &&
+      (filters.maxInvestment === null ||
+        opportunity.maxinvestment <= filters.maxInvestment);
+
     // Status filter
     const matchesStatus = opportunity.status === filters.status;
 
-    return matchesSearch && matchesDomain && matchesStage && matchesInvestment && matchesStatus;
+    return (
+      matchesSearch &&
+      matchesDomain &&
+      matchesStage &&
+      matchesInvestment &&
+      matchesStatus
+    );
   });
 
   // Calculate statistics for display
   const totalInvestment = filteredOpportunities.reduce(
-    (sum, opp) => sum + (opp.maxinvestment || 0), 0
+    (sum, opp) => sum + (opp.maxinvestment || 0),
+    0,
   );
 
   const filterMenu = (
@@ -64,11 +82,14 @@ const StartupOpportunities = () => {
           placeholder="Select domains"
           style={{ width: '100%' }}
           value={filters.domain}
-          onChange={(values) => setFilters({...filters, domain: values})}
-          options={allDomains.map(domain => ({ value: domain, label: domain }))}
+          onChange={(values) => setFilters({ ...filters, domain: values })}
+          options={allDomains.map((domain) => ({
+            value: domain,
+            label: domain,
+          }))}
         />
       </div>
-      
+
       <div className="mb-4">
         <h4 className="font-semibold mb-2">Startup Stage</h4>
         <Select
@@ -76,11 +97,13 @@ const StartupOpportunities = () => {
           placeholder="Select stages"
           style={{ width: '100%' }}
           value={filters.startupstage}
-          onChange={(values) => setFilters({...filters, startupstage: values})}
-          options={allStages.map(stage => ({ value: stage, label: stage }))}
+          onChange={(values) =>
+            setFilters({ ...filters, startupstage: values })
+          }
+          options={allStages.map((stage) => ({ value: stage, label: stage }))}
         />
       </div>
-      
+
       <div className="mb-4">
         <h4 className="font-semibold mb-2">Investment Range</h4>
         <div className="flex space-x-2">
@@ -88,33 +111,37 @@ const StartupOpportunities = () => {
             placeholder="Min ($)"
             type="number"
             value={filters.minInvestment}
-            onChange={(e) => setFilters({
-              ...filters, 
-              minInvestment: e.target.value ? Number(e.target.value) : null
-            })}
+            onChange={(e) =>
+              setFilters({
+                ...filters,
+                minInvestment: e.target.value ? Number(e.target.value) : null,
+              })
+            }
           />
           <Input
             placeholder="Max ($)"
             type="number"
             value={filters.maxInvestment}
-            onChange={(e) => setFilters({
-              ...filters, 
-              maxInvestment: e.target.value ? Number(e.target.value) : null
-            })}
+            onChange={(e) =>
+              setFilters({
+                ...filters,
+                maxInvestment: e.target.value ? Number(e.target.value) : null,
+              })
+            }
           />
         </div>
       </div>
-      
+
       <div className="mb-2">
         <h4 className="font-semibold mb-2">Status</h4>
         <Select
           style={{ width: '100%' }}
           value={filters.status}
-          onChange={(value) => setFilters({...filters, status: value})}
+          onChange={(value) => setFilters({ ...filters, status: value })}
           options={[
             { value: 'active', label: 'Active' },
             { value: 'closed', label: 'Closed' },
-            { value: 'upcoming', label: 'Upcoming' }
+            { value: 'upcoming', label: 'Upcoming' },
           ]}
         />
       </div>
@@ -143,9 +170,9 @@ const StartupOpportunities = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        
-        <Dropdown 
-          overlay={filterMenu} 
+
+        <Dropdown
+          overlay={filterMenu}
           trigger={['click']}
           placement="bottomRight"
         >
@@ -161,55 +188,60 @@ const StartupOpportunities = () => {
 
       {/* Active filters display */}
       <div className="flex flex-wrap gap-2 mb-4">
-        {filters.domain.map(domain => (
-          <Tag 
-            closable 
-            onClose={() => setFilters({
-              ...filters,
-              domain: filters.domain.filter(d => d !== domain)
-            })}
+        {filters.domain.map((domain) => (
+          <Tag
+            closable
+            onClose={() =>
+              setFilters({
+                ...filters,
+                domain: filters.domain.filter((d) => d !== domain),
+              })
+            }
             key={`domain-${domain}`}
           >
             Domain: {domain}
           </Tag>
         ))}
-        
-        {filters.startupstage.map(stage => (
-          <Tag 
-            closable 
-            onClose={() => setFilters({
-              ...filters,
-              startupstage: filters.startupstage.filter(s => s !== stage)
-            })}
+
+        {filters.startupstage.map((stage) => (
+          <Tag
+            closable
+            onClose={() =>
+              setFilters({
+                ...filters,
+                startupstage: filters.startupstage.filter((s) => s !== stage),
+              })
+            }
             key={`stage-${stage}`}
           >
             Stage: {stage}
           </Tag>
         ))}
-        
+
         {filters.minInvestment && (
           <Tag
             closable
-            onClose={() => setFilters({...filters, minInvestment: null})}
+            onClose={() => setFilters({ ...filters, minInvestment: null })}
           >
             Min: ${filters.minInvestment.toLocaleString()}
           </Tag>
         )}
-        
+
         {filters.maxInvestment && (
           <Tag
             closable
-            onClose={() => setFilters({...filters, maxInvestment: null})}
+            onClose={() => setFilters({ ...filters, maxInvestment: null })}
           >
             Max: ${filters.maxInvestment.toLocaleString()}
           </Tag>
         )}
-        
+
         <Tag
           closable={filters.status !== 'active'}
-          onClose={() => setFilters({...filters, status: 'active'})}
+          onClose={() => setFilters({ ...filters, status: 'active' })}
         >
-          Status: {filters.status.charAt(0).toUpperCase() + filters.status.slice(1)}
+          Status:{' '}
+          {filters.status.charAt(0).toUpperCase() + filters.status.slice(1)}
         </Tag>
       </div>
 
@@ -217,16 +249,14 @@ const StartupOpportunities = () => {
         <p className="text-lg">
           <span className="text-blue-500 text-xl font-bold">
             {filteredOpportunities.length}
-          </span> Active Opportunities
+          </span>{' '}
+          Active Opportunities
         </p>
         <p className="text-lg">
           <span className="text-blue-500 text-xl font-bold">
             ${(totalInvestment / 1000).toFixed(0)}K+
-          </span> Total Investment
-        </p>
-        <p className="text-lg">
-          <span className="text-blue-500 text-xl font-bold">1000+ </span>
-          Startups Funded
+          </span>{' '}
+          Total Investment
         </p>
       </div>
 
@@ -237,9 +267,11 @@ const StartupOpportunities = () => {
           </div>
         ) : filteredOpportunities.length === 0 ? (
           <div className="col-span-2 text-center py-10">
-            <p className="text-gray-500 text-lg">No opportunities match your search criteria</p>
-            <Button 
-              type="link" 
+            <p className="text-gray-500 text-lg">
+              No opportunities match your search criteria
+            </p>
+            <Button
+              type="link"
               onClick={() => {
                 setSearchTerm('');
                 setFilters({
@@ -247,7 +279,7 @@ const StartupOpportunities = () => {
                   startupstage: [],
                   minInvestment: null,
                   maxInvestment: null,
-                  status: 'active'
+                  status: 'active',
                 });
               }}
             >

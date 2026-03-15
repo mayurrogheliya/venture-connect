@@ -57,21 +57,6 @@ const StartupsHub = () => {
         />
       </div>
 
-      <div className="flex gap-6 items-center text-gray-600 break-words">
-        <p className="text-lg">
-          <span className="text-blue-500 text-xl font-bold">200+ </span>
-          Opportunities
-        </p>
-        <p className="text-lg">
-          <span className="text-blue-500 text-xl font-bold">50K+ </span>
-          Investors
-        </p>
-        <p className="text-lg">
-          <span className="text-blue-500 text-xl font-bold">1000+ </span>
-          Startups
-        </p>
-      </div>
-
       {loading ? (
         <Flex gap="middle" vertical>
           <Spin tip="Loading..." size="large" />

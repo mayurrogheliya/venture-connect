@@ -64,13 +64,6 @@ const InvestorNetwork = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)} // Update search term
         />
-        <Button
-          icon={<FilterOutlined className="text-gray-700" />}
-          className="flex-0 rounded-full h-10 bg-white border-gray-300 font-medium"
-          size="large"
-        >
-          Filters
-        </Button>
       </div>
 
       <div className="flex gap-6 items-center text-gray-600 break-words">
