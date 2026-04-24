@@ -37,7 +37,6 @@ import RoleProtectedRoute from './RoleProtectedRoute.jsx';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
-      {/* Public Routes */}
       <Route element={<MainLayout />}>
         <Route index element={<Landing />} />
         <Route path="signin" element={<Signin />} />
@@ -45,7 +44,6 @@ const router = createBrowserRouter(
         <Route path="joinevent/:id" element={<JoinEvent />} />
       </Route>
 
-      {/* User Protected Routes */}
       <Route element={<ProtectedRoute />}>
         <Route
           path="/complete-startup-profile"

@@ -116,46 +116,46 @@ const InvestorUserTable = () => {
           </span>
         )),
     },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <Space size={0}>
-          <Tooltip title="Edit Investor">
-            <Button
-              type="text"
-              icon={<EditOutlined />}
-              style={{ color: '#2ecc71' }}
-              onClick={() => {
-                const fullProfile = investorAllProfile.find(
-                  (item) => item?.id === record.id,
-                );
-                if (fullProfile) {
-                  setEditingInvestorProfile({
-                    ...fullProfile.investor,
-                    userId: fullProfile.id,
-                    email: fullProfile.email,
-                  });
-                  setMode('form');
-                } else {
-                  console.error('Investor profile not found');
-                }
-              }}
-            />
-          </Tooltip>
-          <Tooltip title="Delete Investor">
-            <Button
-              type="text"
-              icon={<DeleteOutlined />}
-              style={{ color: '#e74c3c' }}
-              onClick={() => {
-                handleDelete(record?.investorId);
-              }}
-            />
-          </Tooltip>
-        </Space>
-      ),
-    },
+    // {
+    //   title: 'Actions',
+    //   key: 'actions',
+    //   render: (_, record) => (
+    //     <Space size={0}>
+    //       <Tooltip title="Edit Investor">
+    //         <Button
+    //           type="text"
+    //           icon={<EditOutlined />}
+    //           style={{ color: '#2ecc71' }}
+    //           onClick={() => {
+    //             const fullProfile = investorAllProfile.find(
+    //               (item) => item?.id === record.id,
+    //             );
+    //             if (fullProfile) {
+    //               setEditingInvestorProfile({
+    //                 ...fullProfile.investor,
+    //                 userId: fullProfile.id,
+    //                 email: fullProfile.email,
+    //               });
+    //               setMode('form');
+    //             } else {
+    //               console.error('Investor profile not found');
+    //             }
+    //           }}
+    //         />
+    //       </Tooltip>
+    //       <Tooltip title="Delete Investor">
+    //         <Button
+    //           type="text"
+    //           icon={<DeleteOutlined />}
+    //           style={{ color: '#e74c3c' }}
+    //           onClick={() => {
+    //             handleDelete(record?.investorId);
+    //           }}
+    //         />
+    //       </Tooltip>
+    //     </Space>
+    //   ),
+    // },
   ];
 
   const filteredData =

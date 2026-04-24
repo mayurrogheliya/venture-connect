@@ -109,45 +109,45 @@ const StartupUserTable = () => {
       dataIndex: 'current_valuation',
       key: 'current_valuation',
     },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <Space size={0}>
-          <Tooltip title="Edit Startup">
-            <Button
-              type="text"
-              icon={<EditOutlined />}
-              style={{ color: '#2ecc71' }}
-              onClick={() => {
-                const fullProfile = startupAllProfile.find(
-                  (item) => item?.id === record.id,
-                );
-                if (fullProfile) {
-                  setEditingStartupProfile({
-                    ...fullProfile.startup,
-                    userId: fullProfile.id,
-                  });
-                  setMode('form');
-                } else {
-                  console.error('Startup profile not found');
-                }
-              }}
-            />
-          </Tooltip>
-          <Tooltip title="Delete Startup">
-            <Button
-              type="text"
-              icon={<DeleteOutlined />}
-              style={{ color: '#e74c3c' }}
-              onClick={() => {
-                handleDelete(record?.startupId);
-              }}
-            />
-          </Tooltip>
-        </Space>
-      ),
-    },
+    // {
+    //   title: 'Actions',
+    //   key: 'actions',
+    //   render: (_, record) => (
+    //     <Space size={0}>
+    //       <Tooltip title="Edit Startup">
+    //         <Button
+    //           type="text"
+    //           icon={<EditOutlined />}
+    //           style={{ color: '#2ecc71' }}
+    //           onClick={() => {
+    //             const fullProfile = startupAllProfile.find(
+    //               (item) => item?.id === record.id,
+    //             );
+    //             if (fullProfile) {
+    //               setEditingStartupProfile({
+    //                 ...fullProfile.startup,
+    //                 userId: fullProfile.id,
+    //               });
+    //               setMode('form');
+    //             } else {
+    //               console.error('Startup profile not found');
+    //             }
+    //           }}
+    //         />
+    //       </Tooltip>
+    //       <Tooltip title="Delete Startup">
+    //         <Button
+    //           type="text"
+    //           icon={<DeleteOutlined />}
+    //           style={{ color: '#e74c3c' }}
+    //           onClick={() => {
+    //             handleDelete(record?.startupId);
+    //           }}
+    //         />
+    //       </Tooltip>
+    //     </Space>
+    //   ),
+    // },
   ];
 
   const filteredData =
